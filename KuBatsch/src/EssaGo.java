@@ -1,5 +1,8 @@
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 
@@ -23,18 +26,21 @@ public class EssaGo
         System.out.println(oCalendar.get(Calendar.MILLISECOND));
         String[] asTest = { "Interspar", "Döner", "Mensa", "Mäki", "Mama", "Oma"};
         
-        int[] anzahl = new int[asTest.length];
+        PriorityQueue<Location> location = new PriorityQueue<Location>();
+
         
-        for (int i = 0; i < 100; i++)
-        {
-            int iRandom = new Random().nextInt(asTest.length);
-//            System.out.println(asTest[iRandom]);
-            anzahl[iRandom]++;
-        }
+        for (String item : asTest) {
+        	        	       	
+			location.add(new Location(item,new Random().nextInt(100)));
+		}
+             
+        while(!location.isEmpty()){
+        	Location place = location.remove();
+        	System.out.println(place._priority+" "+place._location);
         
-        for (int i = 0; i < anzahl.length; i++)
-        {
-            System.out.println(anzahl[i] + ". " + asTest[i]);
         }
     }
+    
+    
+    
 }
