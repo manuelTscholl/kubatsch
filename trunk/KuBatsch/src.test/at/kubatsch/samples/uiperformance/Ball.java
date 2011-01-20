@@ -7,12 +7,13 @@
 package at.kubatsch.samples.uiperformance;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * @author Daniel Kuschny (dku2375)
  *
  */
-public class Ball
+public class Ball implements Serializable
 {
     private double _size;
     

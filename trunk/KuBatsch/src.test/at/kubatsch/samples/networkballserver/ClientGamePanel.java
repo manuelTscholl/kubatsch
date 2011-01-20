@@ -1,32 +1,46 @@
 /**
- * This file is part of KuBatsch.
- *   created on: 02.01.2011
- *   filename: GamePanel.java
- *   project: KuBatsch
+ * author: Manuel Tscholl(mts3970)
+ * created on: 19.01.2011
+ * filename: ClientGamePanel.java
+ * project: KuBaTsch
  */
-package at.kubatsch.samples.uiperformance;
+package at.kubatsch.samples.networkballserver;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
+
+import at.kubatsch.samples.uiperformance.Ball;
+import at.kubatsch.samples.uiperformance.GamePanel;
 
 /**
- * @author Daniel Kuschny (dku2375)
+ * @author Manuel Tscholl (mts3970)
  * 
  */
-public class GamePanel extends JComponent implements Runnable
+public class ClientGamePanel extends JComponent
 {
-    private Thread     _updateThread;
-    private List<Ball> _balls;
-    private boolean    _running;
-    
-    private int _size;
+    private Thread            _updateThread;
+    private Thread            _networkUpdateThread;
+    private List<Ball>        _balls;
+    private boolean           _running;
+    private Socket            _socket;
+    private InputStream       _inputStream;
+    private ObjectInputStream _objectInputStream;
+
+    private int               _size;
 
     /**
      * Gets the running.
@@ -36,10 +50,16 @@ public class GamePanel extends JComponent implements Runnable
     {
         return _running;
     }
-    
+
     public synchronized List<Ball> getBalls()
     {
         return _balls;
+    }
+
+    public synchronized void setBalls(List<Ball> balls)
+    {
+        System.out.println(balls.size());
+        _balls = balls;
     }
 
     /**
@@ -54,15 +74,29 @@ public class GamePanel extends JComponent implements Runnable
     /**
      * Initializes a new instance of the {@link GamePanel} class.
      */
-    public GamePanel()
+    public ClientGamePanel(String host, int port)
     {
         _balls = new ArrayList<Ball>();
-        addBall(Color.black);
         setDoubleBuffered(true);
-        
         _size = 800;
+
+        try
+        {
+            _socket = new Socket(host, port);
+            _inputStream = _socket.getInputStream();
+            _objectInputStream = new ObjectInputStream(_inputStream);
+        }
+        catch (UnknownHostException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
     }
-    
+
     /**
      * @see javax.swing.JComponent#reshape(int, int, int, int)
      */
@@ -70,19 +104,20 @@ public class GamePanel extends JComponent implements Runnable
     @Override
     public void reshape(int x, int y, int width, int height)
     {
-        if(width > height) // landscape mode
+        if (width > height) // landscape mode
         {
             width = height;
         }
-        else // portrait
+        else
+        // portrait
         {
             height = width;
         }
         _size = width;
-        
+
         super.reshape(x, y, width, height);
     }
-    
+
     /**
      * @see javax.swing.JComponent#getPreferredSize()
      */
@@ -91,7 +126,7 @@ public class GamePanel extends JComponent implements Runnable
     {
         return new Dimension(_size, _size);
     }
-    
+
     public void start()
     {
         if (_updateThread != null)
@@ -100,33 +135,88 @@ public class GamePanel extends JComponent implements Runnable
         // initialize
         setRunning(true);
 
-        _updateThread = new Thread(this);
+        _updateThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                runUpdate();
+            }
+        });
         _updateThread.start();
+
+        _networkUpdateThread = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                runNetwork();
+            }
+        });
+        _networkUpdateThread.start();
+
     }
 
     public void stop()
     {
-        if (_updateThread == null)
-            return; // not running
         setRunning(false);
 
-        try
+        if (_updateThread != null)
         {
-            _updateThread.interrupt();
-            _updateThread.join();
+            try
+            {
+                _updateThread.interrupt();
+                _updateThread.join();
+                _updateThread = null;
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
         }
-        catch (InterruptedException e)
+        if (_networkUpdateThread != null)
         {
-            e.printStackTrace();
+            try
+            {
+                _networkUpdateThread.interrupt();
+                _networkUpdateThread.join();
+                _networkUpdateThread = null;
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
-    /**
-     * @see java.lang.Runnable#run()
-     */
-    @Override
-    public void run()
+    public void runNetwork()
     {
+        while (isRunning())
+        {
+
+            try
+            {
+                Ball[] balls = (Ball[]) _objectInputStream.readObject();
+
+                setBalls(Arrays.asList(balls));
+
+            }
+            catch (IOException e1)
+            {
+                e1.printStackTrace();
+            }
+
+            catch (ClassNotFoundException e1)
+            {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    public void runUpdate()
+    {
+        while (isRunning())
+        {
             updateGame();
             try
             {
@@ -134,7 +224,9 @@ public class GamePanel extends JComponent implements Runnable
             }
             catch (InterruptedException e)
             {
-            }        
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -145,7 +237,7 @@ public class GamePanel extends JComponent implements Runnable
     {
         super.paint(g);
         g.setColor(Color.white);
-        g.fillRect(0,0, getWidth(), getHeight());
+        g.fillRect(0, 0, getWidth(), getHeight());
         for (Ball ball : getBalls())
         {
             g.setColor(ball.getColor());
@@ -191,35 +283,5 @@ public class GamePanel extends JComponent implements Runnable
         }
 
         repaint();
-    }
-
-    public synchronized void addBall(Color color)
-    {
-        Random rnd = new Random();
-        Ball ball = new Ball(color);
-        // place balls at center
-        ball.setPosX((1 - ball.getSize()) / 2);
-        ball.setPosY((1 - ball.getSize()) / 2);
-
-        // random direction with random speed
-        double speed = (rnd.nextInt(20) + 5) / 1000.0;
-        if (rnd.nextBoolean())
-        {
-            speed = -speed;
-        }
-        ball.setSpeedX(speed);
-        speed = (rnd.nextInt(20) + 5) / 1000.0;
-        if (rnd.nextBoolean())
-        {
-            speed = -speed;
-        }
-        ball.setSpeedY(speed);
-        getBalls().add(ball);
-    }
-    
-    public synchronized void removeBall()
-    {
-        if (getBalls().size() > 0)
-            getBalls().remove(0);
     }
 }
