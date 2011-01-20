@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="KuBaTsch" default="main-app" basedir=".">
+    <description>
+        a buildfile for building and packaging KuBaTsch
+    </description>
+    
+    <!-- Directory Definition -->
+    <property name="binaries" location="bin"/>
+    <property name="libraries" location="lib"/>
+    <property name="sources" location="src"/>
+    <property name="packages" location="dist"/>
+    <property name="main-binary" location="${packages}/KuBaTsch.jar"/>
+    
+    <target name="global-init">
+        <tstamp/>
+    </target>
+    
+    <!-- KuBaTsch Main Build -->  
+    <target name="main-app" depends="global-init">
+        <!-- Compile Sources -->
+        <echo message="compiling KuBaTsch"/>
+        <javac srcdir="${sources}" destdir="${binaries}" classpath="C:/Program Files/Java/jre6/lib/plugin.jar;${libraries}" />
+        
+        <!-- Package Jar -->
+        <echo message="create executable"/>
+        <delete file="${main-binary}" />
+        <jar destfile="${main-binary}">
+            <fileset dir="${binaries}" includes="**/*.*" />  
+            <zipgroupfileset dir="${libraries}" includes="*.jar" /> 
+            <manifest>
+                <attribute name="Main-Class" value="at.kubatsch.KuBaTschApplication" />
+            </manifest>
+        </jar>
+    </target>	
+</project>
