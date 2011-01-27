@@ -7,6 +7,7 @@
 package at.kubatsch.model;
 
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 
 /**
  * This class is a main part of the game logic implementation.
@@ -22,7 +23,7 @@ import java.awt.geom.Point2D;
  * @author Daniel Kuschny (dku2375)
  * 
  */
-public interface ICollidable
+public interface ICollidable extends Serializable
 {
     public Point2D.Float[] getCollisionMap();
 
