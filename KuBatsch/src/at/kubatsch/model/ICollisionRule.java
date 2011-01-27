@@ -6,13 +6,15 @@
  */
 package at.kubatsch.model;
 
+import java.io.Serializable;
+
 /**
  * A collision rule will be as soon a {@link ICollidable} collides with another
  * {@link ICollidable}.
  * @author Daniel Kuschny (dku2375)
  * 
  */
-public interface ICollisionRule
+public interface ICollisionRule extends Serializable
 {
     /**
      * Called as soon the rule needs to be applied. 
