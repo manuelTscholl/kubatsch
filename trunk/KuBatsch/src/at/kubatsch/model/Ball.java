@@ -1,0 +1,225 @@
+/**
+ * This file is part of KuBatsch.
+ *   created on: 24.01.2011
+ *   filename: Ball.java
+ *   project: KuBatsch
+ */
+package at.kubatsch.model;
+
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.geom.Point2D;
+
+/**
+ * This class is the representation of a game ball which 
+ * can have a position and a velocity. Additionally it stores the information 
+ * how often the ball was hit and which color it currently has. 
+ * @author Daniel Kuschny (dku2375)
+ * 
+ */
+public class Ball extends CollidableBase implements IDrawable, IUpdatable
+{
+    private static final Point2D.Float[] BALL_COLLISION_REGION = {
+            new Point2D.Float(0.5f, 0), // top
+            new Point2D.Float(0.85f, 0.15f), // top-right
+            new Point2D.Float(1f, 0.5f), // right
+            new Point2D.Float(0.85f, 0.85f), // right-bottom
+            new Point2D.Float(0.5f, 1f), // bottom
+            new Point2D.Float(0.15f, 0.85f), // bottom-left
+            new Point2D.Float(0f, 0.5f), // left
+            new Point2D.Float(0.15f, 0.15f), // topleft
+                                                               };
+
+    private Point2D.Float                _position;
+    private Point2D.Float                _velocity;
+    private float                        _size;
+    private int                          _hitCount;
+    private Color                        _color;
+
+    /**
+     * Initializes a new instance of the {@link Ball} class.
+     */
+    public Ball()
+    {
+        this(0.035f);
+    }
+
+    /**
+     * Initializes a new instance of the {@link Ball} class.
+     * @param size the size of the ball.
+     */
+    public Ball(float size)
+    {
+        this(size, Color.GRAY);
+    }
+
+    /**
+     * Initializes a new instance of the {@link Ball} class.
+     * @param color the color of the ball
+     */
+    public Ball(Color color)
+    {
+        this(0.035f, color);
+    }
+
+    /**
+     * Initializes a new instance of the {@link Ball} class.
+     * @param size the size of the ball.
+     * @param color the color of the ball
+     */
+    public Ball(float size, Color color)
+    {
+        _position = new Point2D.Float();
+        _velocity = new Point2D.Float();
+        _color = color;
+        setSize(size);
+    }
+
+    /**
+     * Gets the color of the ball. 
+     * @return the color of the ball.
+     */
+    public Color getColor()
+    {
+        return _color;
+    }
+
+    /**
+     * Sets the color of the ball.
+     * @param color the new color.
+     */
+    public void setColor(Color color)
+    {
+        _color = color;
+    }
+
+    /**
+     * @see at.kubatsch.model.CollidableBase#getPosition()
+     */
+    @Override
+    public Point2D.Float getPosition()
+    {
+        return _position;
+    }
+
+    /**
+     * Sets the position of the ball within the gameboard.
+     * @param position the position
+     */
+    public void setPosition(Point2D.Float position)
+    {
+        _position.setLocation(position);
+    }
+    
+    /**
+     * Sets the position of the ball within the gameboard.
+     * @param x the x position
+     * @param y the y position
+     */
+    public void setPosition(float x, float y)
+    {
+        _position.setLocation(x, y);
+    }
+
+    /**
+     * Gets the velocity of the ball. 
+     * @return the velocity
+     */
+    public Point2D.Float getVelocity()
+    {
+        return _velocity;
+    }
+
+    /**
+     * Sets the velocity of the ball.
+     * @param velocity the velocity.
+     */
+    public void setVelocity(Point2D.Float velocity)
+    {
+        _velocity.setLocation(velocity);
+    }
+
+    /**
+     * Sets the velocity of the ball.
+     * @param xd the x velocity 
+     * @param yd the y velocity
+     */
+    public void setVelocity(float xd, float yd)
+    {
+        _velocity.setLocation(xd, yd);
+    }
+
+    /**
+     * Gets the size of the ball.
+     * @return the size.
+     */
+    public float getSize()
+    {
+        return _size;
+    }
+
+    /**
+     * Sets the size of the ball.
+     * @param size the ball.
+     */
+    public void setSize(float size)
+    {
+        _size = size;
+        updateCollisionMap(BALL_COLLISION_REGION, _size, _size);
+    }
+
+    /**
+     * Gets the amount of hits the ball had. 
+     * @return the amount of hits.
+     */
+    public int getHitCount()
+    {
+        return _hitCount;
+    }
+
+    /**
+     * Sets the amount of hits the ball had. 
+     * @param hitCount the amount of hits.
+     */
+    public void setHitCount(int hitCount)
+    {
+        _hitCount = hitCount;
+    }
+
+    /**
+     * @see at.kubatsch.model.IDrawable#paint(java.awt.Graphics, java.awt.Dimension)
+     */
+    @Override
+    public void paint(Graphics g, Dimension bounds)
+    {
+        // calculate real bounds
+        int realX = (int) (_position.x * bounds.width);
+        int realY = (int) (_position.y * bounds.height);
+        int realSizeX = (int) (_size * bounds.width);
+        int realSizeY = (int) (_size * bounds.height);
+
+        g.setColor(_color.getColor());
+        g.fillOval(realX, realY, realSizeX, realSizeY);
+        
+        float smallX = realSizeX/5;
+        float smallY = realSizeY/5;
+        for (Point2D.Float point : getCollisionMap())
+        {
+            realX = (int) ((_position.x + point.x) * bounds.width);
+            realY = (int) ((_position.y + point.y)* bounds.height);
+
+            g.setColor(_color.getColor().darker().darker());
+            g.fillRect((int)(realX - smallX/2), (int)(realY - smallY/2), (int)smallX, (int)smallY);
+        }
+    }
+
+    /**
+     * @see at.kubatsch.model.IUpdatable#update()
+     */
+    @Override
+    public void update()
+    {
+        setPosition(getPosition().x + getVelocity().x, getPosition().y
+                + getVelocity().y);
+    }
+}

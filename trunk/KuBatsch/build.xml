@@ -1,59 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="KuBaTsch" default="main-client" basedir=".">
-    <description>
+	<description>
         a buildfile for building and packaging KuBaTsch
     </description>
-    
-    <!-- Directory Definition -->
-    <property name="binaries" location="bin"/>
-    <property name="libraries" location="lib"/>
-    <property name="sources" location="src"/>
-    <property name="packages" location="dist"/>
-    <property name="main-binary" location="${packages}/KuBaTsch.jar"/>
-    
-    <target name="global-init">
-        <tstamp/>
-    </target>
-    
-    <!-- KuBaTsch Main Build -->  
-    <target name="rebuild-src" depends="global-init">
-        <!-- Compile Sources -->
-        <echo message="compiling KuBaTsch"/>
-        <javac srcdir="${sources}" destdir="${binaries}" classpath="C:/Program Files/Java/jre6/lib/plugin.jar;${libraries}" />
-    </target>	
+
+	<!-- Directory Definition -->
+	<property name="binaries" location="bin" />
+	<property name="libraries" location="lib" />
+	<property name="sources" location="src" />
+	<property name="packages" location="dist" />
+	<property name="main-binary" location="${packages}/KuBaTsch.jar" />
+
+	<target name="global-init">
+		<tstamp />
+	</target>
+
+	<!-- KuBaTsch Main Build -->
+	<target name="rebuild-src" depends="global-init">
+		<!-- Compile Sources -->
+		<echo message="compiling KuBaTsch" />
+		<javac srcdir="${sources}" destdir="${binaries}" classpath="C:/Program Files/Java/jre6/lib/plugin.jar;${libraries}" />
+	</target>
 
 	<target name="package-jar" depends="global-init">
-        <!-- Package Jar -->
-        <echo message="create executable"/>
-        <delete file="${binary-name}" />
-        <jar destfile="${binary-name}">
-            <fileset dir="${binaries}" includes="**/*.*" />  
-            <zipgroupfileset dir="${libraries}" includes="*.jar" /> 
-            <manifest>
-                <attribute name="Main-Class" value="${main-file}" />
-            </manifest>
-        </jar>
-    </target>	
-	
-	
-    <target name="main-client" depends="global-init">
-    	
-    	<antcall target="rebuild-src" />
-    	<antcall target="package-jar">
-    		<param name="binary-name" value="${main-binary}"/>	
-    		<param name="main-file" value="at.kubatsch.KuBaTschApplication"/>	
-    	</antcall>
+		<!-- Package Jar -->
+		<echo message="create executable" />
+		<delete file="${binary-name}" />
+		<jar destfile="${binary-name}">
+			<fileset dir="${binaries}" includes="**/*.*" />
+			<zipgroupfileset dir="${libraries}" includes="*.jar" />
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}" />
+			</manifest>
+		</jar>
+	</target>
 
-    </target>	
-	
-    <target name="nw-client" depends="global-init">
-    	
-    	<antcall target="rebuild-src" />
-    	<antcall target="package-jar">
-    		<param name="binary-name" value="${packages}/nw-client.jar"/>	
-    		<param name="main-file" value="at.kubatsch.samples.networkballserver.ClientTestStarter"/>	
-    	</antcall>
 
-    </target>	
-	
+	<target name="main-client" depends="global-init">
+
+		<antcall target="rebuild-src" />
+		<antcall target="package-jar">
+			<param name="binary-name" value="${main-binary}" />
+			<param name="main-class" value="at.kubatsch.client.KuBaTschClient" />
+		</antcall>
+
+	</target>
+
+	<target name="nw-client" depends="global-init">
+
+		<antcall target="rebuild-src" />
+		<antcall target="package-jar">
+			<param name="binary-name" value="${packages}/nw-client.jar" />
+			<param name="main-class" value="at.kubatsch.samples.networkballserver.ClientTestStarter" />
+		</antcall>
+
+	</target>
+	<target name="collision-test" depends="global-init">
+
+		<antcall target="rebuild-src" />
+		<antcall target="package-jar">
+			<param name="binary-name" value="${packages}/collision-test.jar" />
+			<param name="main-class" value="at.kubatsch.samples.collisionperformance.TestWindow" />
+		</antcall>
+
+	</target>
+
 </project>
