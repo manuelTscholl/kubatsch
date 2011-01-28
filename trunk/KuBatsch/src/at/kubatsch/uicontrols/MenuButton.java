@@ -17,6 +17,7 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
 import javax.swing.Timer;
@@ -32,11 +33,11 @@ import at.kubatsch.uicontrols.KuBatschTheme.ButtonTheme;
 public class MenuButton extends JLabel
 {
     /**
-     * A unique serialization id. 
+     * A unique serialization id.
      */
-    private static final long serialVersionUID = -950923926760782060L;
+    private static final long  serialVersionUID = -950923926760782060L;
 
-    private static final float GLOW_INTERVAL = 0.1f;
+    private static final float GLOW_INTERVAL    = 0.1f;
 
     private boolean            _isSelected;
     private float              _glowAlpha;
@@ -130,8 +131,9 @@ public class MenuButton extends JLabel
      */
     public void setSelected(boolean isSelected)
     {
-        if(_isSelected == isSelected) return;
-        
+        if (_isSelected == isSelected)
+            return;
+
         _isSelected = isSelected;
         if (_glowTimer != null)
         {
@@ -173,6 +175,15 @@ public class MenuButton extends JLabel
     public Dimension getMaximumSize()
     {
         return KuBatschTheme.BUTTON_SIZE;
+    }
+
+    /**
+     * Simulates a mouselick onto the button.
+     */
+    public void doClick()
+    {
+        processMouseEvent(new MouseEvent(this, MouseEvent.MOUSE_CLICKED,
+                System.currentTimeMillis(), 0, 0, 0, 1, false));
     }
 
     /**
@@ -268,8 +279,8 @@ public class MenuButton extends JLabel
                     updateGlow();
                 }
             });
-            
-            if(isSelected())
+
+            if (isSelected())
             {
                 _glowTimer.start();
             }

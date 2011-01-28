@@ -15,14 +15,14 @@ package at.kubatsch.model;
  */
 public enum Color
 {
-    RED(0, java.awt.Color.red),
-    BLUE(1, java.awt.Color.blue),
-    CYAN(2, java.awt.Color.cyan),
-    GOLD(3, java.awt.Color.orange),
-    GRAY(4, java.awt.Color.gray),
-    GREEN(5, java.awt.Color.green),
-    VIOLET(6, java.awt.Color.magenta)
-    ;
+    RED(0),
+    BLUE(1),
+    CYAN(2),
+    GOLD(3),
+    GRAY(4),
+    GREEN(5),
+    VIOLET(6)
+    ; 
     
     private int _index;
     
@@ -45,25 +45,13 @@ public enum Color
         return Color.RED;
     }
     
-    private java.awt.Color _color;
-    
     /**
      * Initializes a new instance of the {@link Color} class.
      * @param index a numerial index which can be used to map this enumeration to arrays. 
      * @param awtColor deprecated
      */
-    Color(int index, java.awt.Color awtColor)
+    Color(int index)
     {
         _index = index; 
-        _color = awtColor;
-    }
-    /**
-     * "Need to remove this, only for testdummy"
-     * @return the color
-     */
-    @Deprecated
-    public java.awt.Color getColor()
-    {
-        return _color;
     }
 }

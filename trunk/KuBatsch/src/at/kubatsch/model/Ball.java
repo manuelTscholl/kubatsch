@@ -8,7 +8,10 @@ package at.kubatsch.model;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.geom.Point2D;
+
+import at.kubatsch.uicontrols.KuBatschTheme;
 
 /**
  * This class is the representation of a game ball which 
@@ -19,15 +22,25 @@ import java.awt.geom.Point2D;
  */
 public class Ball extends CollidableBase implements IDrawable, IUpdatable
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3283765169642426276L;
+    
+    /**
+     * This size will size the ball to 24 pixel on a 800x800 surface
+     */
+    private static final float DEFAULT_BALL_SIZE = KuBatschTheme.BALL_SIZE / (float)KuBatschTheme.MAIN_SIZE;
+
     private static final Point2D.Float[] BALL_COLLISION_REGION = {
-            new Point2D.Float(0.5f, 0), // top
-            new Point2D.Float(0.85f, 0.15f), // top-right
-            new Point2D.Float(1f, 0.5f), // right
-            new Point2D.Float(0.85f, 0.85f), // right-bottom
-            new Point2D.Float(0.5f, 1f), // bottom
-            new Point2D.Float(0.15f, 0.85f), // bottom-left
-            new Point2D.Float(0f, 0.5f), // left
-            new Point2D.Float(0.15f, 0.15f), // topleft
+            new Point2D.Float(0.5f, 0.038f), // top
+            new Point2D.Float(0.752f, 0.141f), // top-right
+            new Point2D.Float(0.829f, 0.389f), // right
+            new Point2D.Float(0.752f, 0.639f), // right-bottom
+            new Point2D.Float(0.5f, 0.741f), // bottom
+            new Point2D.Float(0.25f, 0.639f), // bottom-left
+            new Point2D.Float(0.149f, 0.389f), // left
+            new Point2D.Float(0.25f, 0.141f), // topleft
                                                                };
 
     private Point2D.Float                _position;
@@ -41,7 +54,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
      */
     public Ball()
     {
-        this(0.035f);
+        this(DEFAULT_BALL_SIZE);
     }
 
     /**
@@ -59,7 +72,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
      */
     public Ball(Color color)
     {
-        this(0.035f, color);
+        this(DEFAULT_BALL_SIZE, color);
     }
 
     /**
@@ -197,20 +210,11 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
         int realY = (int) (_position.y * bounds.height);
         int realSizeX = (int) (_size * bounds.width);
         int realSizeY = (int) (_size * bounds.height);
-
-        g.setColor(_color.getColor());
-        g.fillOval(realX, realY, realSizeX, realSizeY);
         
-        float smallX = realSizeX/5;
-        float smallY = realSizeY/5;
-        for (Point2D.Float point : getCollisionMap())
-        {
-            realX = (int) ((_position.x + point.x) * bounds.width);
-            realY = (int) ((_position.y + point.y)* bounds.height);
-
-            g.setColor(_color.getColor().darker().darker());
-            g.fillRect((int)(realX - smallX/2), (int)(realY - smallY/2), (int)smallX, (int)smallY);
-        }
+        // Draw image
+        Image ballImage = KuBatschTheme.BALLS[_color.getIndex()];
+        g.drawImage(ballImage, realX, realY, realX + realSizeX, realY + realSizeY, 
+                                0,0, KuBatschTheme.BALL_SIZE, KuBatschTheme.BALL_SIZE, null);
     }
 
     /**
