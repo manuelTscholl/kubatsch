@@ -157,6 +157,16 @@ public class BloodIntTextfield extends BloodTextfield
     }
 
     /**
+     * Sets the numerical value of this textbox.
+     * @param value the numerical value of the data stored within this numerical
+     *            textbox.
+     */
+    public void setValue(int value)
+    {
+        setText(new Integer(value).toString());
+    }
+
+    /**
      * A textdocument which validates inserted text for numbers.
      * @author Daniel Kuschny (dku2375)
      */

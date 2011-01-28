@@ -22,11 +22,6 @@ import java.awt.image.BufferedImage;
 public class BloodPanel extends KuBaTschPane
 {
     /**
-     * The applications content size.
-     */
-    private static final Dimension     PANEL_SIZE       = new Dimension(800,
-                                                                800);
-    /**
      * An image 
      */
     private static final BufferedImage BLOOD_ALPHA;
@@ -41,7 +36,7 @@ public class BloodPanel extends KuBaTschPane
      */
     static
     {
-        BLOOD_ALPHA = new BufferedImage(PANEL_SIZE.width, PANEL_SIZE.height,
+        BLOOD_ALPHA = new BufferedImage(KuBatschTheme.MAIN_SIZE, KuBatschTheme.MAIN_SIZE,
                 BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = BLOOD_ALPHA.createGraphics();
         g.drawImage(KuBatschTheme.BLOOD_BACKGROUND, 0, 0, null);
@@ -86,7 +81,7 @@ public class BloodPanel extends KuBaTschPane
     @Override
     public Dimension getPreferredSize()
     {
-        return PANEL_SIZE;
+        return new Dimension(KuBatschTheme.MAIN_SIZE,KuBatschTheme.MAIN_SIZE);
     }
 
     /**
@@ -99,7 +94,7 @@ public class BloodPanel extends KuBaTschPane
         // use deprecated method as java uses this method
         // as last call for applying the size.
         // this enforces the specified size.
-        super.resize(PANEL_SIZE.width, PANEL_SIZE.width);
+        super.resize(KuBatschTheme.MAIN_SIZE, KuBatschTheme.MAIN_SIZE);
     }
     
     /**
@@ -110,8 +105,8 @@ public class BloodPanel extends KuBaTschPane
     {
         // draw default background.
         Image img = KuBatschTheme.MAIN_BACKGROUND;
-        g.drawImage(img, 0, 0, PANEL_SIZE.width,
-                PANEL_SIZE.height, this);
+        g.drawImage(img, 0, 0, KuBatschTheme.MAIN_SIZE,
+                KuBatschTheme.MAIN_SIZE, this);
 
         // draw blood overlay
         if (_bloodOpacity > 0)

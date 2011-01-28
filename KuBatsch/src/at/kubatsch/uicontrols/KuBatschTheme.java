@@ -28,7 +28,8 @@ import javax.imageio.ImageIO;
 public class KuBatschTheme
 {
     private static final String       RESOURCES_DIR = "resources";
-
+    
+    public static final int           MAIN_SIZE;
     public static final Image         MAIN_BACKGROUND;
     public static final Image         CONTROL_SETTINGS;
     public static final Image         BLOOD_BACKGROUND;
@@ -85,13 +86,17 @@ public class KuBatschTheme
     public static final Dimension HEALTH_BALL_SIZE;
 
     public static final Dimension SLIDER_SIZE;
-    public static final Image SLIDER_BACKGROUND;
-    public static final Image SLIDER_THUMB;
+    public static final Image     SLIDER_BACKGROUND;
+    public static final Image     SLIDER_THUMB;
     public static final Dimension SLIDER_THUMB_SIZE;
-    
+
+    public static final Image[]   BALLS;
+    public static final int       BALL_SIZE;
+
     static
     {
         // general
+        MAIN_SIZE = 800;
         MAIN_BACKGROUND = getImage("background.jpg");
         BLOOD_BACKGROUND = getImage("blood-background.gif");
         KUBATSCH_LOGO = getImage("logo.png");
@@ -152,14 +157,25 @@ public class KuBatschTheme
         HEALTH_BALLS[at.kubatsch.model.Color.GREEN.getIndex()] = getImage("paddle/green.png");
         HEALTH_BALLS[at.kubatsch.model.Color.RED.getIndex()] = getImage("paddle/red.png");
         HEALTH_BALLS[at.kubatsch.model.Color.VIOLET.getIndex()] = getImage("paddle/violet.png");
-        
-        HEALTH_BALL_SIZE = new Dimension(14,15);
-        
+
+        HEALTH_BALL_SIZE = new Dimension(14, 15);
+
         // Slider
         SLIDER_SIZE = new Dimension(390, 60);
         SLIDER_BACKGROUND = getImage("slider/background.png");
         SLIDER_THUMB = getImage("slider/tracker.png");
-        SLIDER_THUMB_SIZE = new Dimension(31,54);
+        SLIDER_THUMB_SIZE = new Dimension(31, 54);
+
+        // balls
+        BALLS = new Image[at.kubatsch.model.Color.values().length];
+        BALLS[at.kubatsch.model.Color.BLUE.getIndex()] = getImage("ball/blue.png");
+        BALLS[at.kubatsch.model.Color.CYAN.getIndex()] = getImage("ball/cyan.png");
+        BALLS[at.kubatsch.model.Color.GOLD.getIndex()] = getImage("ball/gold.png");
+        BALLS[at.kubatsch.model.Color.GRAY.getIndex()] = getImage("ball/gray.png");
+        BALLS[at.kubatsch.model.Color.GREEN.getIndex()] = getImage("ball/green.png");
+        BALLS[at.kubatsch.model.Color.RED.getIndex()] = getImage("ball/red.png");
+        BALLS[at.kubatsch.model.Color.VIOLET.getIndex()] = getImage("ball/violet.png");
+        BALL_SIZE = 26;
     }
 
     public static class ButtonTheme
@@ -320,7 +336,7 @@ public class KuBatschTheme
     /**
      * @return
      */
-    public static BloodTextfield getNumericalTextBox(TextBoxSize size,
+    public static BloodIntTextfield getNumericalTextBox(TextBoxSize size,
             int minValue, int maxValue)
     {
         BloodIntTextfield txt = new BloodIntTextfield();
