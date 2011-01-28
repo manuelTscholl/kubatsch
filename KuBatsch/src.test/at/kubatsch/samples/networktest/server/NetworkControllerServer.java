@@ -7,6 +7,7 @@
 package at.kubatsch.samples.networktest.server;
 
 import java.io.IOException;
+import java.lang.Thread.State;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +16,11 @@ import java.util.Map;
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.ICollidable;
 import at.kubatsch.samples.networktest.MaximumPlayerReachedException;
-import at.kubatsch.samples.networktest.NetworkGameClient;
 
 /**
+ * Handels the communication between server and client. The maximum of connected
+ * clients which this Controler can have is 4
+ * 
  * @author Manuel Tscholl (mts3970)
  * 
  */
@@ -25,13 +28,11 @@ public class NetworkControllerServer
 {
 
     // the maximum of Players which connect to the server
-    final int                      MAXPLAYERS = 4;
-    ServerSocket                   _serverSocket;
-    List<NetworkGameClient>        _networkGameClients;
-    Thread                         _waitForPlayers;
-    Thread                         _updatePlayers;
-    Map<String, List<ICollidable>> _collidables;
-    Object                         _collidablesLock;
+    final int               MAXPLAYERS = 4;
+    ServerSocket            _serverSocket;
+    List<NetworkGameClient> _networkGameClients;
+    Thread                  _waitForPlayers;
+    boolean                 _isRunning;
 
     /**
      * Initializes a new instance of the {@link NetworkControllerServer} class.
@@ -43,57 +44,52 @@ public class NetworkControllerServer
         super();
         _serverSocket = new ServerSocket(portToListen);
         _networkGameClients = new ArrayList<NetworkGameClient>();
-        _collidablesLock = new Object();
 
         _waitForPlayers = new Thread(new Runnable()
         {
-
             @Override
             public void run()
             {
                 connectClient();
             }
         }, "PlayerConnecter");
-
-        _updatePlayers = new Thread(new Runnable()
-        {
-
-            @Override
-            public void run()
-            {
-                updateClients(_collidables);
-            }
-        }, "UpdateCollidables");
-
+        
+        isRunning(true);
         _waitForPlayers.start();
-        _updatePlayers.start();
-
     }
 
     /**
-     * Checks all WAITINGPLAYERSECONDS if a new player wants to connect
+     * Accepts new clients als long as the server is not full
+     * (clients<MAXPLAYERS)
      */
     public void connectClient()
     {
-        if (countConnectedPlayers() < MAXPLAYERS)
+        while (isRunning())
         {
-            try
-            {// clients connects to the server
-                NetworkGameClient client = new NetworkGameClient(
-                        _serverSocket.accept());
-                _networkGameClients.add(client);
+            if (countConnectedPlayers() < MAXPLAYERS)
+            {
+                try
+                {// clients connects to the server
+                    NetworkGameClient client = new NetworkGameClient(
+                            _serverSocket.accept(), this);//
+                    _networkGameClients.add(client);
+                    client.start();// client Thread is started
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
             }
-            catch (IOException e)
+            try
+            {
+                Thread.sleep(1000);
+            }
+            catch (InterruptedException e)
             {
                 e.printStackTrace();
             }
         }
-        else
-        {
-            throw new MaximumPlayerReachedException(
-                    "The maximum of players has reached not able to connect mor clients");
-        }
-                
+
         System.out.println("Client connected");
     }
 
@@ -106,40 +102,48 @@ public class NetworkControllerServer
         return _networkGameClients.size();
     }
 
-    public void updateClients(Map<String, List<ICollidable>> collidable)
-    {
-        synchronized (_collidablesLock)
-        {
-            if (collidable != null)
-            {
-                for (NetworkGameClient client : _networkGameClients)
-                {
-                    client.updateCollidable(collidable);
-                }
-                setCollidables(null);
-            }
-        }
-        try
-        {
-            Thread.sleep(4000);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
-        updateClients(_collidables);
-
-    }
-
     /**
-     * @param object
+     * 
+     * @param collidable the new mapping of collidables to update to all clients
+     *            (all types will be added/updated)
      */
     public void setCollidables(Map<String, List<ICollidable>> collidable)
     {
-        synchronized (_collidablesLock)
+        synchronized (collidable)
         {
-            _collidables = collidable;
+            for (NetworkGameClient client : _networkGameClients)
+            {// updates each client packet
+                client.setDataPacket(collidable);
+            }
         }
+    }
+
+    /**
+     * Disconnects a client from the server
+     * @param networkGameClient
+     */
+    public void clientDisconnected(NetworkGameClient networkGameClient)
+    {
+        networkGameClient.isRunning(false);
+        _networkGameClients.remove(networkGameClient);
+    }
+
+    /**
+     * Gets the isRunning.
+     * @return the isRunning
+     */
+    public synchronized boolean isRunning()
+    {
+        return _isRunning;
+    }
+
+    /**
+     * Sets the isRunning.
+     * @param isRunning the isRunning to set
+     */
+    public synchronized void isRunning(boolean isRunning)
+    {
+        _isRunning = isRunning;
     }
 
 }

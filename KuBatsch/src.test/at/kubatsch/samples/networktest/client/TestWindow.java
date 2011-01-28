@@ -39,6 +39,7 @@ public class TestWindow extends JFrame
 {
     private CollidablePanel _collidablePanel;
     private boolean _createCollisionBall;
+    public static String[] _args;
     /**
      * Initializes a new instance of the {@link TestWindow} class.
      */
@@ -117,5 +118,7 @@ public class TestWindow extends JFrame
                 new TestWindow().setVisible(true);
             }
         });
+        
+        _args= args;
     }
 }
