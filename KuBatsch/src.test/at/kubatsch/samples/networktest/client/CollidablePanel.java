@@ -39,7 +39,7 @@ public class CollidablePanel extends JPanel
     {
         try
         {
-            _networkController = new NetworkControllerClient("localhost",25000);
+            _networkController = new NetworkControllerClient(TestWindow._args[0],Integer.parseInt(TestWindow._args[1]));
             _networkController.addStateUpdatedHandler(new IEventHandler<EventArgs>()
             {                
                 /**

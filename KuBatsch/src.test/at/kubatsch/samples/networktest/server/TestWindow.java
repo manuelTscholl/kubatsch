@@ -103,7 +103,7 @@ public class TestWindow extends JFrame
                 
                 at.kubatsch.model.Color[] colors = at.kubatsch.model.Color.values();
                 at.kubatsch.model.Color rndColor = colors[rnd.nextInt(colors.length)];
-                
+                 
                 Ball newBall = new Ball(rndColor);
                 if(_createCollisionBall)
                 {
@@ -111,13 +111,13 @@ public class TestWindow extends JFrame
                 }
                 newBall.setPosition(0.5f,0.5f);
                 // random direction with random speed
-                float speedX = (rnd.nextInt(10) + 5) / 1000.0f;
+                float speedX = (rnd.nextInt(5) + 5) / 1000.0f;
                 if (rnd.nextBoolean())
                 {
                     speedX = -speedX;
                 }
 
-                float speedY = (rnd.nextInt(10) + 5) / 1000.0f;
+                float speedY = (rnd.nextInt(5) + 5) / 1000.0f;
                 if (rnd.nextBoolean())
                 {
                     speedY = -speedY;

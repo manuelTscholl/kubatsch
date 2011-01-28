@@ -27,12 +27,36 @@ import at.kubatsch.util.IEventHandler;
  */
 public class CollisionController
 {
+    /**
+     * The updateinterval in ms.
+     */
+    public static final int                UPDATE_INTERVAL = 30;
+
     private Map<String, List<ICollidable>> _collidables;
     private Map<ICollidable, String>       _collidableType;
     private Thread                         _updateThread;
     private boolean                        _running;
-    private Event<EventArgs>               _stateUpdated = new Event<EventArgs>(
-                                                                 this);
+    private Event<EventArgs>               _stateUpdated   = new Event<EventArgs>(
+                                                                   this);
+
+    private Object                         _lastUpdateLock = new Object();
+    private long                           _lastUpdate;
+
+    public long getLastUpdate()
+    {
+        synchronized (_lastUpdateLock)
+        {
+            return _lastUpdate;
+        }
+    }
+
+    public synchronized void setLastUpdate(long lastUpdate)
+    {
+        synchronized (_lastUpdateLock)
+        {
+            _lastUpdate = lastUpdate;
+        }
+    }
 
     /**
      * Initializes a new instance of the {@link CollisionController} class.
@@ -56,6 +80,10 @@ public class CollisionController
             Map<String, List<ICollidable>> collidables)
     {
         _collidables = collidables;
+        // store time of last update
+        setLastUpdate(System.currentTimeMillis());
+        // if thread is already waiting, interrupt sleep.
+        _updateThread.interrupt();
     }
 
     public synchronized void setRunning(boolean running)
@@ -65,7 +93,7 @@ public class CollisionController
 
     public synchronized Map<String, List<ICollidable>> getCollidablesMapping()
     {
-            return _collidables;
+        return _collidables;
     }
 
     /**
@@ -78,7 +106,7 @@ public class CollisionController
     {
         if (!getCollidablesMapping().containsKey(type))
         {
-            getCollidablesMapping().put(type, new Vector<ICollidable>());        
+            getCollidablesMapping().put(type, new Vector<ICollidable>());
         }
         getCollidablesMapping().get(type).add(collidable);
 
@@ -97,7 +125,8 @@ public class CollisionController
 
     public void removeCollidable(ICollidable collidable)
     {
-        getCollidablesMapping().get(_collidableType.get(collidable)).remove(collidable);
+        getCollidablesMapping().get(_collidableType.get(collidable)).remove(
+                collidable);
         _collidableType.remove(collidable);
         _stateUpdated.fireEvent(EventArgs.Empty);
     }
@@ -141,21 +170,34 @@ public class CollisionController
     {
         while (isRunning())
         {
+            long updateTime = getLastUpdate();
+            long startTime = System.currentTimeMillis();
             updateGame();
-            try
+
+            // only wait if we have still the same data
+            if (updateTime == getLastUpdate())
             {
-                Thread.sleep(30);
-            }
-            catch (InterruptedException e)
-            {
+                // calculate how many time we need to wait
+                long timeElapsed = System.currentTimeMillis() - startTime;
+                long waitTime = UPDATE_INTERVAL - timeElapsed;
+                if (waitTime > 0)
+                {
+                    try
+                    {
+                        Thread.sleep(waitTime);
+                    }
+                    catch (InterruptedException e)
+                    {
+                    }
+                }
             }
         }
     }
 
     private void updateGame()
     {
-        ICollidable[] collidables = getCollidables().toArray(
-                new ICollidable[0]);
+        ICollidable[] collidables = getCollidables()
+                .toArray(new ICollidable[0]);
 
         for (ICollidable collidable : collidables)
         {
@@ -189,11 +231,12 @@ public class CollisionController
     private List<ICollidable> getCollidables()
     {
         List<ICollidable> collidables = new ArrayList<ICollidable>();
-        for (Entry<String, List<ICollidable>> tempCollidable : getCollidablesMapping().entrySet())
+        for (Entry<String, List<ICollidable>> tempCollidable : getCollidablesMapping()
+                .entrySet())
         {
             collidables.addAll(tempCollidable.getValue());
-        }        
-        
+        }
+
         return collidables;
     }
 
