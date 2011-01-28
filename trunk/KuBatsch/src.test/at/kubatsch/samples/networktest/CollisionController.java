@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import at.kubatsch.model.ICollidable;
 import at.kubatsch.model.ICollisionRule;
@@ -29,7 +31,6 @@ public class CollisionController
     private Map<ICollidable, String>       _collidableType;
     private Thread                         _updateThread;
     private boolean                        _running;
-
     private Event<EventArgs>               _stateUpdated = new Event<EventArgs>(
                                                                  this);
 
@@ -38,7 +39,7 @@ public class CollisionController
      */
     public CollisionController()
     {
-        _collidables = new HashMap<String, List<ICollidable>>();
+        _collidables = new ConcurrentHashMap<String, List<ICollidable>>();
         _collidableType = new HashMap<ICollidable, String>();
     }
 
@@ -64,7 +65,7 @@ public class CollisionController
 
     public synchronized Map<String, List<ICollidable>> getCollidablesMapping()
     {
-        return _collidables;
+            return _collidables;
     }
 
     /**
@@ -77,7 +78,7 @@ public class CollisionController
     {
         if (!getCollidablesMapping().containsKey(type))
         {
-            getCollidablesMapping().put(type, new ArrayList());        
+            getCollidablesMapping().put(type, new Vector<ICollidable>());        
         }
         getCollidablesMapping().get(type).add(collidable);
 

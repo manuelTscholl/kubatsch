@@ -40,6 +40,17 @@ public class CollidablePanel extends JPanel
         try
         {
             _networkController = new NetworkControllerClient("localhost",25000);
+            _networkController.addStateUpdatedHandler(new IEventHandler<EventArgs>()
+            {                
+                /**
+                 * @see at.kubatsch.util.IEventHandler#fired(java.lang.Object, at.kubatsch.util.EventArgs)
+                 */
+                @Override
+                public void fired(Object sender, EventArgs e)
+                {
+                    _controller.setCollidables(_networkController.getCollidables());  
+                }
+            });
         }
         catch (IOException e1)
         {            
@@ -52,7 +63,6 @@ public class CollidablePanel extends JPanel
             @Override
             public void fired(Object sender, EventArgs e)
             {
-                _controller.setCollidables(_networkController.getCollidables());
                 repaint();
             }
         });        
