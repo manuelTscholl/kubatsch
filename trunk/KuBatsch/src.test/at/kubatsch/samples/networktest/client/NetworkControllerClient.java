@@ -8,19 +8,14 @@ package at.kubatsch.samples.networktest.client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import at.kubatsch.model.Ball;
 import at.kubatsch.model.ICollidable;
-import at.kubatsch.samples.networktest.MaximumPlayerReachedException;
-import at.kubatsch.samples.networktest.server.NetworkGameClient;
 import at.kubatsch.util.Event;
 import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.IEventHandler;

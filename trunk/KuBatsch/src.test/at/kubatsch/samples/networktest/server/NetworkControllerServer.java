@@ -7,15 +7,12 @@
 package at.kubatsch.samples.networktest.server;
 
 import java.io.IOException;
-import java.lang.Thread.State;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import at.kubatsch.model.Ball;
 import at.kubatsch.model.ICollidable;
-import at.kubatsch.samples.networktest.MaximumPlayerReachedException;
 
 /**
  * Handels the communication between server and client. The maximum of connected
@@ -26,9 +23,10 @@ import at.kubatsch.samples.networktest.MaximumPlayerReachedException;
  */
 public class NetworkControllerServer
 {
-
-    // the maximum of Players which connect to the server
-    final int               MAXPLAYERS = 4;
+    /**
+     * the maximum of Players which connect to the server
+     */
+    final int               MAX_PLAYERS = 4;
     ServerSocket            _serverSocket;
     List<NetworkGameClient> _networkGameClients;
     Thread                  _waitForPlayers;
@@ -66,7 +64,7 @@ public class NetworkControllerServer
     {
         while (isRunning())
         {
-            if (countConnectedPlayers() < MAXPLAYERS)
+            if (countConnectedPlayers() < MAX_PLAYERS)
             {
                 try
                 {// clients connects to the server
