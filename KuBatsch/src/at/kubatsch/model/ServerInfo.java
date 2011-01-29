@@ -15,6 +15,7 @@ package at.kubatsch.model;
 public class ServerInfo
 {
     private String _name;
+    private int    _port;
     private String _server;
     private int    _currentPlayers;
 
@@ -74,6 +75,24 @@ public class ServerInfo
     public void setServer(String server)
     {
         _server = server;
+    }
+
+    /**
+     * Gets the port to connect to.
+     * @return the port to connect to
+     */
+    public int getPort()
+    {
+        return _port;
+    }
+
+    /**
+     * Sets the port to connect to.
+     * @param port the port to set
+     */
+    public void setPort(int port)
+    {
+        _port = port;
     }
 
     /**

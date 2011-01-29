@@ -136,6 +136,8 @@ public class CollisionController
         if (_updateThread != null)
             return; // already running
 
+        getCollidables().clear();
+
         // initialize
         setRunning(true);
 
@@ -146,7 +148,7 @@ public class CollisionController
             {
                 doUpdateWork();
             }
-        });
+        }, "UpdateThread");
         _updateThread.start();
     }
 
@@ -164,6 +166,8 @@ public class CollisionController
         catch (InterruptedException e)
         {
         }
+        _updateThread = null;
+
     }
 
     private void doUpdateWork()
@@ -208,6 +212,11 @@ public class CollisionController
             }
         }
 
+        // store collision objects, rules can move balls, therefore we need to
+        // store
+        // all collisions before we apply rules.
+        List<ICollidable[]> toApply = new ArrayList<ICollidable[]>();
+
         for (ICollidable collidable : collidables)
         {
             // check if current item collides with any other element
@@ -216,12 +225,20 @@ public class CollisionController
                 if (collidable != potentialCollision
                         && collidable.collidesWith(potentialCollision))
                 {
-                    // if we collide, apply rules
-                    applyAllRules(collidable, potentialCollision);
+                    // add to list of collisions
+                    toApply.add(new ICollidable[] { collidable,
+                            potentialCollision });
                     break;
                 }
             }
         }
+
+        // apply all rules
+        for (ICollidable[] current : toApply)
+        {
+            applyAllRules(current[0], current[1]);
+        }
+
         _stateUpdated.fireEvent(EventArgs.Empty);
     }
 
@@ -264,6 +281,15 @@ public class CollisionController
     public void removeStateUpdatedHandler(IEventHandler<EventArgs> handler)
     {
         _stateUpdated.removeHandler(handler);
+    }
+
+    /**
+     * 
+     */
+    public void reset()
+    {
+        _collidables.clear();
+        _collidableType.clear();
     }
 
 }

@@ -6,10 +6,10 @@
  */
 package at.kubatsch.client.view;
 
-import java.awt.CardLayout;
-import java.awt.Container;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import at.kubatsch.client.controller.ViewController;
 
 /**
  * Changes the view on the specified container on a click. 
@@ -18,7 +18,6 @@ import java.awt.event.MouseEvent;
  */
 public class ChangeViewClickListener extends MouseAdapter
 {
-    private Container _container;
     private String _viewId;
     
     /**
@@ -26,9 +25,8 @@ public class ChangeViewClickListener extends MouseAdapter
      * @param container
      * @param view
      */
-    public ChangeViewClickListener(Container container, String view)
+    public ChangeViewClickListener(String view)
     {
-        _container = container;
         _viewId = view;
     }
 
@@ -38,7 +36,6 @@ public class ChangeViewClickListener extends MouseAdapter
     @Override
     public void mouseClicked(MouseEvent e)
     {
-        CardLayout cl = (CardLayout)(_container.getLayout());
-        cl.show(_container, _viewId);
+        ViewController.getInstance().switchToView(_viewId);
     }
 }

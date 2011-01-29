@@ -6,8 +6,6 @@
  */
 package at.kubatsch.client.view;
 
-import java.awt.Container;
-
 import at.kubatsch.uicontrols.BloodSlider;
 import at.kubatsch.uicontrols.KuBaTschPane;
 import at.kubatsch.uicontrols.KuBatschTheme;
@@ -37,7 +35,7 @@ public class MouseSettingsView extends NotGameView
      * Initializes a new instance of the {@link MouseSettingsView} class.
      * @param container the parent container
      */
-    public MouseSettingsView(Container container)
+    public MouseSettingsView()
     {
         setViewText("Mouse-Settings");
         
@@ -60,8 +58,7 @@ public class MouseSettingsView extends NotGameView
         
         MenuButton backButton = new MenuButton("Back", false);
         backButton.setTheme(KuBatschTheme.BUTTON_THEMES[3]);
-        backButton.addMouseListener(new ChangeViewClickListener(container,
-                SettingsView.PANEL_ID));
+        backButton.addMouseListener(new ChangeViewClickListener(SettingsView.PANEL_ID));
         add(backButton);
     }
 }

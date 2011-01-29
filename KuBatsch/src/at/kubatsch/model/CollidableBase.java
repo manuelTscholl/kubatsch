@@ -22,6 +22,11 @@ import at.kubatsch.util.CollisionCalculator;
  */
 public abstract class CollidableBase implements ICollidable 
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    
     private Point2D.Float _minPoint;
     private Point2D.Float _maxPoint;
 

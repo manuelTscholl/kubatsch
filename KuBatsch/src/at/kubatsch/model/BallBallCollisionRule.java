@@ -20,6 +20,11 @@ public class BallBallCollisionRule extends BallRule
 {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 1439429777618587858L;
+
+    /**
      * @see at.kubatsch.model.BallRule#apply(at.kubatsch.model.Ball,
      *      at.kubatsch.model.ICollidable)
      */

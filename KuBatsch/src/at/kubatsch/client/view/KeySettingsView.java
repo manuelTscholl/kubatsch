@@ -6,7 +6,6 @@
  */
 package at.kubatsch.client.view;
 
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -41,7 +40,7 @@ public class KeySettingsView extends NotGameView
      * Initializes a new instance of the {@link KeySettingsView} class.
      * @param container the parent container
      */
-    public KeySettingsView(Container container)
+    public KeySettingsView()
     {
         setViewText("Keyboard-Settings");
 
@@ -98,8 +97,7 @@ public class KeySettingsView extends NotGameView
 
         MenuButton backButton = new MenuButton("Back", false);
         backButton.setTheme(KuBatschTheme.BUTTON_THEMES[3]);
-        backButton.addMouseListener(new ChangeViewClickListener(container,
-                SettingsView.PANEL_ID));
+        backButton.addMouseListener(new ChangeViewClickListener(SettingsView.PANEL_ID));
         add(backButton);
     }
 }

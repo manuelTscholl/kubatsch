@@ -6,26 +6,30 @@
  */
 package at.kubatsch.client.view;
 
-import java.awt.Container;
 import java.awt.FlowLayout;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
+import at.kubatsch.client.controller.StartNewServerController;
+import at.kubatsch.client.controller.StartServerException;
+import at.kubatsch.client.controller.ViewController;
 import at.kubatsch.uicontrols.BloodTextfield;
 import at.kubatsch.uicontrols.layout.CustomGridLayout;
+import at.kubatsch.uicontrols.BloodIntTextfield;
 import at.kubatsch.uicontrols.KuBaTschPane;
 import at.kubatsch.uicontrols.KuBatschTheme;
 import at.kubatsch.uicontrols.MenuButton;
 import at.kubatsch.uicontrols.SmallCapsLabel;
 import at.kubatsch.uicontrols.layout.CustomGridLayout.CustomGridPosition;
 import at.kubatsch.uicontrols.KuBatschTheme.TextBoxSize;
+import at.kubatsch.util.KuBaTschUtils;
 
 /**
  * This view displays UI elements for configuring and starting a new server.
  * @author Daniel Kuschny (dku2375)
  * 
  */
-public class StartNewServerView extends NotGameView
+public class StartNewServerView extends NotGameView implements INotifiableView
 {
     private static final int PORT_MAX = 65535;
     /**
@@ -38,10 +42,12 @@ public class StartNewServerView extends NotGameView
      */
     public static final String PANEL_ID         = "start-server";
 
+    private SmallCapsLabel _errorLbl;
+    
     /**
      * Initializes a new instance of the {@link StartNewServerView} class.
      */
-    public StartNewServerView(Container container)
+    public StartNewServerView()
     {
         setViewText("Start New Server");
 
@@ -49,55 +55,82 @@ public class StartNewServerView extends NotGameView
         controlGrid.setLayout(new CustomGridLayout(new int[]{245,445},new int[]{45,45}, 0, 25));
 
         // Port 
-        {
-            SmallCapsLabel portLbl = KuBatschTheme.getLabel("Port");
-            portLbl.setAutoSize(false);
-            controlGrid.add(portLbl, CustomGridPosition.MiddleCenter);
+        SmallCapsLabel portLbl = KuBatschTheme.getLabel("Port");
+        portLbl.setAutoSize(false);
+        controlGrid.add(portLbl, CustomGridPosition.MiddleCenter);
 
-            controlGrid.add( KuBatschTheme.getNumericalTextBox(TextBoxSize.SMALL, 0, PORT_MAX), CustomGridPosition.MiddleLeft);
-        }
+        final BloodIntTextfield portBox = KuBatschTheme.getNumericalTextBox(TextBoxSize.SMALL, 0, PORT_MAX);
+        portBox.setValue(KuBaTschUtils.DEFAULT_SERVER_PORT);
+        controlGrid.add( portBox, CustomGridPosition.MiddleLeft);
          
         // IP 
-        {
-            SmallCapsLabel ipLbl = KuBatschTheme.getLabel("IP");
-            ipLbl.setAutoSize(false);
-            controlGrid.add(ipLbl, CustomGridPosition.MiddleCenter);
-            
-            
-            String ip = "";
-            try
-            {
-                ip = InetAddress.getLocalHost().getHostAddress();
-            }
-            catch(UnknownHostException e)
-            {
-                ip = "unknown";
-            }
-            BloodTextfield ipBox = KuBatschTheme.getTextBox(TextBoxSize.NORMAL);
-            ipBox.setText(ip);
-            ipBox.setEditable(false);
-            controlGrid.add(ipBox, CustomGridPosition.MiddleLeft);
-        }
+        SmallCapsLabel ipLbl = KuBatschTheme.getLabel("IP");
+        ipLbl.setAutoSize(false);
+        controlGrid.add(ipLbl, CustomGridPosition.MiddleCenter);
+        
+        
+        BloodTextfield ipBox = KuBatschTheme.getTextBox(TextBoxSize.NORMAL);
+        ipBox.setText(KuBaTschUtils.getLocalIp());
+        ipBox.setEditable(false);
+        controlGrid.add(ipBox, CustomGridPosition.MiddleLeft);
         add(controlGrid);
+        
+        // error label
+        _errorLbl = KuBatschTheme.getLabel("");
+        _errorLbl.setVisible(false);
+        add(_errorLbl);
         
         // Buttons
         KuBaTschPane buttonPane = new KuBaTschPane();
         buttonPane.setLayout(new FlowLayout());
         
+        final MenuButton backButton = new MenuButton("Back", false);
+
         MenuButton startButton = new MenuButton("Start", true);
         startButton.setGlowEnabled(true);
         startButton.setTheme(KuBatschTheme.BUTTON_THEMES[1]);
-        // TODO Start Server Listener
-        startButton.addMouseListener(new ChangeViewClickListener(container,
-                MenuView.PANEL_ID));
+        startButton.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                try
+                {
+                    StartNewServerController.getInstance().startServer(portBox.getValue());
+                    ViewController.getInstance().switchToView(MenuView.PANEL_ID);
+                }
+                catch (StartServerException ex)
+                {
+                    _errorLbl.setText(ex.getMessage());
+                    _errorLbl.setVisible(true);
+                }
+            }
+        });
         buttonPane.add(startButton);
         
-        MenuButton backButton = new MenuButton("Back", false);
         backButton.setTheme(KuBatschTheme.BUTTON_THEMES[3]);
-        backButton.addMouseListener(new ChangeViewClickListener(container,
-                MenuView.PANEL_ID));
+        backButton.addMouseListener(new ChangeViewClickListener(MenuView.PANEL_ID));
         buttonPane.add(backButton);
         
         add(buttonPane);
     }
+
+    /**
+     * @see at.kubatsch.client.view.INotifiableView#viewDisplaying()
+     */
+    @Override
+    public void viewDisplaying()
+    {
+        _errorLbl.setVisible(false);
+    }
+
+    /**
+     * @see at.kubatsch.client.view.INotifiableView#viewHidding()
+     */
+    @Override
+    public void viewHidding()
+    {
+    }
+    
+    
 }

@@ -17,6 +17,11 @@ public abstract class BallRule implements ICollisionRule
 {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = -5499704803685187836L;
+
+    /**
      * @see at.kubatsch.model.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
      */
     @Override

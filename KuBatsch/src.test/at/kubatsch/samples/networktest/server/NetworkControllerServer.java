@@ -124,6 +124,7 @@ public class NetworkControllerServer
     {
         networkGameClient.isRunning(false);
         _networkGameClients.remove(networkGameClient);
+        System.out.println("Client Disconnected");
     }
 
     /**

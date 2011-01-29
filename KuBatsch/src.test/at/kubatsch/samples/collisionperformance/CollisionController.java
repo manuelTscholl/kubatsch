@@ -7,7 +7,9 @@
 package at.kubatsch.samples.collisionperformance;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import at.kubatsch.model.ICollidable;
 import at.kubatsch.model.ICollisionRule;
@@ -161,6 +163,10 @@ public class CollisionController
                 ((IUpdatable) collidable).update();
             }
         }
+        
+        // store collision objects, rules can move balls, therefore we need to store 
+        // all collisions before we apply rules. 
+        List<ICollidable[]> toApply = new ArrayList<ICollidable[]>();
 
         for (ICollidable collidable : collidables)
         {
@@ -170,12 +176,19 @@ public class CollisionController
                 if (collidable != potentialCollision
                         && collidable.collidesWith(potentialCollision))
                 {
-                    // if we collide, apply rules
-                    applyAllRules(collidable, potentialCollision);
+                    // add to list of collisions
+                    toApply.add(new ICollidable[]{collidable, potentialCollision});
                     break;
                 }
             }
         }
+        
+        // apply all rules
+        for (ICollidable[] current : toApply)
+        {
+            applyAllRules(current[0], current[1]);
+        }
+        
         _stateUpdated.fireEvent(EventArgs.Empty);
     }
 
