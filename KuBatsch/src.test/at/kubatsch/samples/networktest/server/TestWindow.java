@@ -26,7 +26,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import at.kubatsch.client.controller.AudioController;
-import at.kubatsch.client.view.PlayTickRule;
+import at.kubatsch.model.PlayTickRule;
 import at.kubatsch.model.PlayerPosition;
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.BallBallCollisionRule;

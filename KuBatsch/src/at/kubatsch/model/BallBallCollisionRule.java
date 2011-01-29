@@ -7,6 +7,8 @@
 package at.kubatsch.model;
 
 import java.awt.geom.Point2D;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A collision rule which applies if two balls collide.
@@ -18,7 +20,10 @@ import java.awt.geom.Point2D;
  */
 public class BallBallCollisionRule extends BallRule
 {
-
+    // stores all balls which got already reflected
+    private Set<Ball> _appliedBalls = new HashSet<Ball>();
+    
+    
     /**
      * 
      */
@@ -31,6 +36,9 @@ public class BallBallCollisionRule extends BallRule
     @Override
     protected void apply(Ball toApply, ICollidable collidesWith)
     {
+        // don't apply rule to ball, if ball already got reflected by other rule
+        if(_appliedBalls.contains(toApply)) return; 
+        
         if (collidesWith instanceof Ball) // collides with another ball?
         {
             Ball otherBall = (Ball) collidesWith;
@@ -53,6 +61,17 @@ public class BallBallCollisionRule extends BallRule
             
             toApply.update();
             otherBall.update();
+            _appliedBalls.add(toApply);
+            _appliedBalls.add(otherBall);
         }
+    }
+
+    /**
+     * @see at.kubatsch.model.ICollisionRule#reset()
+     */
+    @Override
+    public void reset()
+    {
+        _appliedBalls.clear();
     }
 }

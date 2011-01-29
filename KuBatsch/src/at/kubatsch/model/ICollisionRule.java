@@ -17,6 +17,13 @@ import java.io.Serializable;
 public interface ICollisionRule extends Serializable
 {
     /**
+     * A rule is reset within any gameloop interval. 
+     * This allows to store any metadata in a rule during one timeslice. 
+     */
+    public void reset();
+    
+    
+    /**
      * Called as soon the rule needs to be applied. 
      * @param toApply The element which the rule is assigned to. 
      * @param collidesWith The element which the first element collided with. 

@@ -12,7 +12,7 @@ package at.kubatsch.model;
  * @author Daniel Kuschny (dku2375)
  * 
  */
-public class HitPanelReflectRule implements ICollisionRule
+public class HitPanelReflectRule extends AbstractRule
 {
     /**
      * 
