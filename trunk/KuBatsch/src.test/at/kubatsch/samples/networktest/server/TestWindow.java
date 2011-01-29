@@ -25,6 +25,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import at.kubatsch.client.controller.AudioController;
+import at.kubatsch.client.view.PlayTickRule;
 import at.kubatsch.model.PlayerPosition;
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.BallBallCollisionRule;
@@ -92,6 +94,7 @@ public class TestWindow extends JFrame
         });
         
         // add ball button
+        final PlayTickRule tickRule = new PlayTickRule();
         final BallBallCollisionRule ballRule = new BallBallCollisionRule();
         final JButton addBallBtn = new JButton("Add Ball");
         addBallBtn.addActionListener(new ActionListener()
@@ -109,6 +112,7 @@ public class TestWindow extends JFrame
                 {
                     newBall.addCollisionRule(ballRule);
                 }
+                newBall.addCollisionRule(tickRule);
                 newBall.setPosition(0.5f,0.5f);
                 // random direction with random speed
                 float speedX = (rnd.nextInt(5) + 5) / 1000.0f;
@@ -173,6 +177,7 @@ public class TestWindow extends JFrame
     
     public static void main(String[] args)
     {
+        AudioController.getInstance().setAudioEnabled(false);
         SwingUtilities.invokeLater(new Runnable()
         {
             @Override

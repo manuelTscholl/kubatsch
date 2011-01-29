@@ -6,8 +6,6 @@
  */
 package at.kubatsch.client.view;
 
-import java.awt.Container;
-
 import at.kubatsch.uicontrols.KuBatschTheme;
 import at.kubatsch.uicontrols.MenuButton;
 
@@ -32,7 +30,7 @@ public class MenuView extends NotGameView
      * Initializes a new instance of the {@link MenuView} class.
      * @param container 
      */
-    public MenuView(Container container)
+    public MenuView()
     {
         // Text
         setViewText("Will You Survive?");
@@ -40,19 +38,19 @@ public class MenuView extends NotGameView
         // Buttons
         MenuButton newServerBtn = new MenuButton("Start New Server", true);
         newServerBtn.setTheme(KuBatschTheme.BUTTON_THEMES[0]);
-        newServerBtn.addMouseListener(new ChangeViewClickListener(container, StartNewServerView.PANEL_ID));
+        newServerBtn.addMouseListener(new ChangeViewClickListener(StartNewServerView.PANEL_ID));
         
         MenuButton joinServerBtn = new MenuButton("Join Server", false);
         joinServerBtn.setTheme(KuBatschTheme.BUTTON_THEMES[1]);
-        joinServerBtn.addMouseListener(new ChangeViewClickListener(container, JoinServerView.PANEL_ID));
+        joinServerBtn.addMouseListener(new ChangeViewClickListener(JoinServerView.PANEL_ID));
         
         MenuButton playOnlineBtn = new MenuButton("Play Online", false);
         playOnlineBtn.setTheme(KuBatschTheme.BUTTON_THEMES[2]);
-        playOnlineBtn.addMouseListener(new ChangeViewClickListener(container, PlayOnlineView.PANEL_ID));
+        playOnlineBtn.addMouseListener(new ChangeViewClickListener(PlayOnlineView.PANEL_ID));
         
         MenuButton settingsBtn = new MenuButton("Settings", false);
         settingsBtn.setTheme(KuBatschTheme.BUTTON_THEMES[3]);
-        settingsBtn.addMouseListener(new ChangeViewClickListener(container, SettingsView.PANEL_ID));
+        settingsBtn.addMouseListener(new ChangeViewClickListener(SettingsView.PANEL_ID));
         
         MenuButton quitBtn = new MenuButton("Quit", false);
         quitBtn.setTheme(KuBatschTheme.BUTTON_THEMES[4]);

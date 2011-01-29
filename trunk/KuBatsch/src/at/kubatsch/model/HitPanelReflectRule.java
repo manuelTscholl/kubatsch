@@ -15,6 +15,11 @@ package at.kubatsch.model;
 public class HitPanelReflectRule implements ICollisionRule
 {
     /**
+     * 
+     */
+    private static final long serialVersionUID = 468589354943752426L;
+
+    /**
      * @see at.kubatsch.model.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
      */
     @Override
@@ -48,6 +53,8 @@ public class HitPanelReflectRule implements ICollisionRule
                             ball.getPosition().y);
                     break;
             }
+            
+            ball.setColor(Color.getColor(ball.getColor().getIndex() + 1));
         }
     }
 }

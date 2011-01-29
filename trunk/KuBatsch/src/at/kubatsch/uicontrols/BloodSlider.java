@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
+import javax.swing.BoundedRangeModel;
 import javax.swing.JSlider;
 import javax.swing.plaf.basic.BasicSliderUI;
 
@@ -29,6 +30,71 @@ public class BloodSlider extends JSlider
      * Initializes a new instance of the {@link BloodSlider} class.
      */
     public BloodSlider()
+    {
+        super();
+        initialize();
+    }
+
+    /**
+     * Initializes a new instance of the {@link BloodSlider} class.
+     * @param brm
+     */
+    public BloodSlider(BoundedRangeModel brm)
+    {
+        super(brm);
+        initialize();
+    }
+
+    /**
+     * Initializes a new instance of the {@link BloodSlider} class.
+     * @param orientation
+     * @param min
+     * @param max
+     * @param value
+     */
+    public BloodSlider(int orientation, int min, int max, int value)
+    {
+        super(orientation, min, max, value);
+        initialize();
+    }
+
+    /**
+     * Initializes a new instance of the {@link BloodSlider} class.
+     * @param min
+     * @param max
+     * @param value
+     */
+    public BloodSlider(int min, int max, int value)
+    {
+        super(min, max, value);
+        initialize();
+    }
+
+    /**
+     * Initializes a new instance of the {@link BloodSlider} class.
+     * @param min
+     * @param max
+     */
+    public BloodSlider(int min, int max)
+    {
+        super(min, max);
+        initialize();
+    }
+
+    /**
+     * Initializes a new instance of the {@link BloodSlider} class.
+     * @param orientation
+     */
+    public BloodSlider(int orientation)
+    {
+        super(orientation);
+        initialize();
+    }
+
+    /**
+     * Initializes the slider
+     */
+    private void initialize()
     {
         setDoubleBuffered(true);
         setOpaque(false);

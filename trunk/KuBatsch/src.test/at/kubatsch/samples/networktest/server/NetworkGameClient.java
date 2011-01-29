@@ -149,6 +149,7 @@ public class NetworkGameClient extends Thread
     public synchronized void start()
     {
         super.start();
+        System.out.println("new client accepted");
         isRunning(true);
         
     }

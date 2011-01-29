@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Socket;
 
 /**
  * A utility class for streams. 
@@ -28,6 +29,23 @@ public class StreamUtils
         try
         {
             closeable.close();
+            return true;
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+    /**
+     * Closes a {@link Socket} without throwing an exception and returning a boolean flag instead.
+     * @param socket The socket to close.
+     * @return true if the closeable was closed successfully, otherwise false.
+     */
+    public static boolean close(Socket socket)
+    {
+        try
+        {
+            socket.close();
             return true;
         }
         catch(Exception e)

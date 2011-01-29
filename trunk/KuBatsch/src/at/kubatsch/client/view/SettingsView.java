@@ -6,11 +6,14 @@
  */
 package at.kubatsch.client.view;
 
-import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.event.MouseListener;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import at.kubatsch.client.controller.AudioController;
 import at.kubatsch.model.Color;
 import at.kubatsch.uicontrols.BloodChooser;
 import at.kubatsch.uicontrols.BloodSlider;
@@ -46,7 +49,7 @@ public class SettingsView extends NotGameView
     /**
      * Initializes a new instance of the {@link SettingsView} class.
      */
-    public SettingsView(Container container)
+    public SettingsView()
     {
         setViewText("Settings");
 
@@ -72,10 +75,8 @@ public class SettingsView extends NotGameView
             controlsPane.setLayout(new FlowLayout());
 
             final MouseListener[] controlSettingsListener = {
-                    new ChangeViewClickListener(container,
-                            MouseSettingsView.PANEL_ID),
-                    new ChangeViewClickListener(container,
-                            KeySettingsView.PANEL_ID) };
+                    new ChangeViewClickListener(MouseSettingsView.PANEL_ID),
+                    new ChangeViewClickListener(KeySettingsView.PANEL_ID) };
 
             final ImageBox controlSettingsBtn = new ImageBox(
                     KuBatschTheme.CONTROL_SETTINGS);
@@ -141,29 +142,47 @@ public class SettingsView extends NotGameView
 
         // BgMusic
         {
-            SmallCapsLabel nicknameLbl = KuBatschTheme.getLabel("Bg-Music");
-            controlGrid.add(nicknameLbl, CustomGridPosition.MiddleCenter);
+            SmallCapsLabel bgMusicLbl = KuBatschTheme.getLabel("Bg-Music");
+            controlGrid.add(bgMusicLbl, CustomGridPosition.MiddleCenter);
 
-            BloodSlider slider = new BloodSlider();
-            controlGrid.add(slider, CustomGridPosition.MiddleLeft);
+            final BloodSlider bgMusicSlider = new BloodSlider(0,100,100);
+            bgMusicSlider.addChangeListener(new ChangeListener()
+            {
+                @Override
+                public void stateChanged(ChangeEvent e)
+                {
+                    AudioController.getInstance().setBackgroundVolume(
+                            bgMusicSlider.getValue() / 100f);
+                }
+            });
+            controlGrid.add(bgMusicSlider, CustomGridPosition.MiddleLeft);
         }
 
         // Effects
         {
-            SmallCapsLabel nicknameLbl = KuBatschTheme.getLabel("Effects");
-            controlGrid.add(nicknameLbl, CustomGridPosition.MiddleCenter);
+            SmallCapsLabel effectsLbl = KuBatschTheme.getLabel("Effects");
+            controlGrid.add(effectsLbl, CustomGridPosition.MiddleCenter);
 
-            BloodSlider slider = new BloodSlider();
-            controlGrid.add(slider, CustomGridPosition.MiddleLeft);
+            final BloodSlider effectsSlider = new BloodSlider(0,100,100);
+            effectsSlider.addChangeListener(new ChangeListener()
+            {
+                @Override
+                public void stateChanged(ChangeEvent e)
+                {
+                    AudioController.getInstance().setEffectsVolume(
+                            effectsSlider.getValue() / 100f);
+                }
+            });
+            controlGrid.add(effectsSlider, CustomGridPosition.MiddleLeft);
         }
 
         // Hud Alpha
         {
-            SmallCapsLabel nicknameLbl = KuBatschTheme.getLabel("HUD-Alpha");
-            controlGrid.add(nicknameLbl, CustomGridPosition.MiddleCenter);
+            SmallCapsLabel alphaLbl = KuBatschTheme.getLabel("HUD-Alpha");
+            controlGrid.add(alphaLbl, CustomGridPosition.MiddleCenter);
 
-            BloodSlider slider = new BloodSlider();
-            controlGrid.add(slider, CustomGridPosition.MiddleLeft);
+            BloodSlider alphaSlider = new BloodSlider();
+            controlGrid.add(alphaSlider, CustomGridPosition.MiddleLeft);
         }
 
         add(controlGrid);
@@ -176,13 +195,13 @@ public class SettingsView extends NotGameView
         startButton.setGlowEnabled(true);
         startButton.setTheme(KuBatschTheme.BUTTON_THEMES[1]);
         // TODO Start Server Listener
-        startButton.addMouseListener(new ChangeViewClickListener(container,
+        startButton.addMouseListener(new ChangeViewClickListener(
                 MenuView.PANEL_ID));
         buttonPane.add(startButton);
 
         MenuButton backButton = new MenuButton("Back", false);
         backButton.setTheme(KuBatschTheme.BUTTON_THEMES[3]);
-        backButton.addMouseListener(new ChangeViewClickListener(container,
+        backButton.addMouseListener(new ChangeViewClickListener(
                 MenuView.PANEL_ID));
         buttonPane.add(backButton);
 

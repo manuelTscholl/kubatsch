@@ -10,6 +10,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 import de.quippy.javamod.system.Helpers;
 
+import at.kubatsch.client.controller.AudioController;
 import at.kubatsch.client.view.MainForm;
 
 /**
@@ -34,6 +35,7 @@ public class KuBaTschClient
         // display UI
         form.setVisible(true);
         // start audio player
-        form.startPlayer();
+        AudioController.getInstance().setAudioEnabled(true);
+        AudioController.getInstance().start();
     }
 }

@@ -14,11 +14,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.StreamHandler;
 
 import at.kubatsch.model.ICollidable;
 import at.kubatsch.util.Event;
 import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.IEventHandler;
+import at.kubatsch.util.StreamUtils;
 
 /**
  * This class manages the communication between client and server, when new data
@@ -37,6 +39,7 @@ public class NetworkControllerClient
     ObjectInputStream              _objectInputStream;
     boolean                        _isRunning;
     private Event<EventArgs>       _stateUpdated = new Event<EventArgs>(this);
+    private Event<EventArgs>       _disconnected = new Event<EventArgs>(this);
 
     /**
      * Gets the isRunning.
@@ -65,23 +68,12 @@ public class NetworkControllerClient
     public NetworkControllerClient(String host, int port) throws IOException
     {
         super();
-        try
-        {
-            _clientSocket = new Socket(host, port);
-        }
-        catch (UnknownHostException e)
-        {
-            throw e;
-        }
-        catch (IOException e)
-        {
-            throw e;
-        }
+        _clientSocket = new Socket(host, port);
         
         _objectInputStream = new ObjectInputStream(
                 _clientSocket.getInputStream());
         _collidables = new HashMap<String, List<ICollidable>>();
-        _isRunning = true;
+        setRunning(true);
 
         // updating Thread for the colidabals
         _updateCollidables = new Thread(new Runnable()
@@ -89,13 +81,12 @@ public class NetworkControllerClient
             @Override
             public void run()
             {
-                while (_isRunning)
+                while (isRunning())
                 {
                     try
                     {
                         // the object which the server sent
                         Object temp = _objectInputStream.readObject();
-
                         if (temp != null)
                         {
                             @SuppressWarnings("unchecked")
@@ -105,19 +96,34 @@ public class NetworkControllerClient
                     }
                     catch (IOException e)
                     {
-                        e.printStackTrace();
+                        setRunning(false);
+
                     }
                     catch (ClassNotFoundException e)
                     {
-                        e.printStackTrace();
                     }
                 }
+                
+                disconnect();
             }
 
         }, "UpdateCollidables");
 
         _updateCollidables.start();
 
+    }
+    
+    /**
+     * Disconnects the client from the server
+     */
+    public void disconnect()
+    {
+        setRunning(false);
+        if(_clientSocket != null)
+        {
+            StreamUtils.close(_clientSocket);
+        }
+        _disconnected.fireEvent(EventArgs.Empty);
     }
 
     /**
@@ -164,5 +170,25 @@ public class NetworkControllerClient
     {
         _stateUpdated.removeHandler(handler);
     }
+
+    /**
+     * @param handler
+     * @see at.kubatsch.util.Event#addHandler(at.kubatsch.util.IEventHandler)
+     */
+    public void addDisconnectedListener(IEventHandler<EventArgs> handler)
+    {
+        _disconnected.addHandler(handler);
+    }
+
+    /**
+     * @param handler
+     * @see at.kubatsch.util.Event#removeHandler(at.kubatsch.util.IEventHandler)
+     */
+    public void removeDisconnectedListener(IEventHandler<EventArgs> handler)
+    {
+        _disconnected.removeHandler(handler);
+    }
+    
+    
 
 }

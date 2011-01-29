@@ -16,6 +16,11 @@ import java.awt.geom.Point2D;
  */
 public class PlayerHitArea extends CollidableBase 
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3046112050291545127L;
+
     private static final Point2D.Float[][] COLLISION_MAPS = {
             { 
                 new Point2D.Float(0.00011f, 0.9999f), new Point2D.Float(0.99989f, 0.9999f),
