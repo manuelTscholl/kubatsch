@@ -8,9 +8,11 @@ package at.kubatsch.samples.networktest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -211,11 +213,13 @@ public class CollisionController
                 ((IUpdatable) collidable).update();
             }
         }
-
+        
         // store collision objects, rules can move balls, therefore we need to
-        // store
-        // all collisions before we apply rules.
+        // store all collisions before we apply rules.
         List<ICollidable[]> toApply = new ArrayList<ICollidable[]>();
+        
+        // store all rules which will be applied
+        Set<ICollisionRule> rules = new HashSet<ICollisionRule>();
 
         for (ICollidable collidable : collidables)
         {
@@ -228,9 +232,19 @@ public class CollisionController
                     // add to list of collisions
                     toApply.add(new ICollidable[] { collidable,
                             potentialCollision });
+                    for (ICollisionRule iCollisionRule : collidable.getCollisionRules())
+                    {
+                        rules.add(iCollisionRule);
+                    }
                     break;
                 }
             }
+        }
+        
+        // reset all rules
+        for (ICollisionRule iCollisionRule : rules)
+        {
+            iCollisionRule.reset();
         }
 
         // apply all rules
