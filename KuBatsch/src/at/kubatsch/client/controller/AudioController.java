@@ -19,9 +19,13 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import at.kubatsch.util.StreamUtils;
 
 import de.quippy.javamod.main.gui.PlayThread;
 import de.quippy.javamod.main.gui.PlayThreadEventListener;
@@ -224,7 +228,7 @@ public class AudioController implements PlayThreadEventListener
         if (mixer != null)
         {
             mixer.setAudioProcessor(audioProcessor);
-            mixer.setVolume(1);
+            mixer.setVolume(_backgroundVolume);
         }
         return mixer;
     }
@@ -296,15 +300,32 @@ public class AudioController implements PlayThreadEventListener
         {
             try
             {
-                Clip clip = AudioSystem.getClip();
-                AudioInputStream inputStream = AudioSystem
+            
+                final Clip clip = AudioSystem.getClip();
+                final AudioInputStream inputStream = AudioSystem
                         .getAudioInputStream(_file);
+                clip.addLineListener(new LineListener()
+                {
+                    
+                    @Override
+                    public void update(LineEvent event)
+                    {
+                        if(event.getType() == LineEvent.Type.STOP)
+                        {
+                            clip.close();
+                            StreamUtils.close(inputStream);
+//                            System.gc();
+                        }                        
+                    }
+                });
                 clip.open(inputStream);
                 FloatControl gainControl = (FloatControl) clip
                         .getControl(FloatControl.Type.MASTER_GAIN);
                 float dB = (float)(Math.log(_volume)/Math.log(10.0)*20.0);
                 gainControl.setValue(dB);
+                
                 clip.start();
+                
             }
             catch (Exception e)
             {
