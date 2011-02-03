@@ -25,7 +25,7 @@ import at.kubatsch.client.controller.ViewController;
 import at.kubatsch.model.ICollidable;
 import at.kubatsch.model.IDrawable;
 import at.kubatsch.samples.networktest.CollisionController;
-import at.kubatsch.samples.networktest.client.NetworkControllerClient;
+import at.kubatsch.client.controller.NetworkControllerClient;
 import at.kubatsch.uicontrols.BloodPanel;
 import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.IEventHandler;
