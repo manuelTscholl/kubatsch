@@ -6,7 +6,10 @@
  */
 package at.kubatsch.server.model;
 
+import java.util.HashSet;
 import java.util.Set;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import at.kubatsch.model.Config;
 import at.kubatsch.util.KuBaTschUtils;
@@ -18,9 +21,23 @@ import at.kubatsch.util.KuBaTschUtils;
 public class ServerConfig extends Config
 {
     private static final long serialVersionUID = 5692189898306877962L;
+    public static final int STANDARD_PORT = 25000;
 
+    @XStreamAlias(value = "port")
     private int               _port;
+    @XStreamAlias(value = "spezialItems")
     private Set<String>       _specialItems;
+    
+    
+
+    /**
+     * Initializes a new instance of the {@link ServerConfig} class.
+     */
+    public ServerConfig()
+    {
+        _specialItems = new HashSet<String>();
+    }
+    
 
     /**
      * Gets the port.
@@ -53,7 +70,7 @@ public class ServerConfig extends Config
     public ServerConfig getDefaultConfig()
     {
         ServerConfig sc = new ServerConfig();
-        sc.setPort(45018);
+        sc.setPort(this.STANDARD_PORT);
         sc.getSpecialItems().add("StandardBall.class");
         
         return sc;
