@@ -218,6 +218,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
     }
 
     /**
+     * Moves the ball to the next timesliceposition
      * @see at.kubatsch.model.IUpdatable#update()
      */
     @Override
