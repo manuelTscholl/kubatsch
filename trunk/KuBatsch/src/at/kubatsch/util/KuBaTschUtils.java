@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 /**
  * Some utlily functions for KuBaTsch.
  * @author Daniel Kuschny (dku2375)
- * 
+ * @author Martin Balter (mba3717)
  */
 public class KuBaTschUtils
 {
@@ -28,6 +28,10 @@ public class KuBaTschUtils
     public static final int MAX_PLAYERS = 4;
 
 
+    /**
+     * Get the local ip address which is connected to the internet
+     * @return the {@link InetAddress} of your network card
+     */
     public static final String getLocalIp()
     {
         try
@@ -78,7 +82,7 @@ public class KuBaTschUtils
             return UpperRange;
         }
 
-        return value; // nothing of both
+        return value; // nothing of both and the value is valide
     }
 
     /**

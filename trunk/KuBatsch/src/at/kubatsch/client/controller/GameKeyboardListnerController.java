@@ -4,7 +4,7 @@
  * filename: GameKeyboardListner.java
  * project: KuBaTsch
  */
-package at.kubatsch.samples.motion;
+package at.kubatsch.client.controller;
 
 import java.awt.AWTEvent;
 import java.awt.Toolkit;
@@ -14,7 +14,8 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 
-import at.kubatsch.client.model.gear.KeyConfig;
+import at.kubatsch.client.model.gear.KeyboardConfig;
+import at.kubatsch.samples.motion.Paddle;
 import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.IEventHandler;
 
@@ -25,7 +26,7 @@ import at.kubatsch.util.IEventHandler;
 public class GameKeyboardListnerController extends KeyAdapter
 {
     private Paddle     _paddle;
-    private KeyConfig  _config;
+    private KeyboardConfig  _config;
     private boolean    _left;
     private boolean    _right;
     private Thread     _keyThread;
@@ -38,7 +39,7 @@ public class GameKeyboardListnerController extends KeyAdapter
      * @param paddle
      * @param config
      */
-    public GameKeyboardListnerController(Paddle paddle, KeyConfig config, JFrame frame)
+    public GameKeyboardListnerController(Paddle paddle, KeyboardConfig config, JFrame frame)
     {
         _paddle = paddle;
         _config = config;
@@ -57,7 +58,6 @@ public class GameKeyboardListnerController extends KeyAdapter
                     {
                         if (!(isLeft() || isRight()))
                         {
-                            System.out.println("Waiting for signal");
                             try
                             {
                                 _flagLock.wait();
@@ -69,20 +69,19 @@ public class GameKeyboardListnerController extends KeyAdapter
                         
                         if (isLeft() && isRight() == false)
                         {
-                            _paddle.movePaddle(-0.1f);
+                            _paddle.movePaddle(-0.001f);
                         }
                         else if (isLeft() == false && isRight())
                         {
-                            _paddle.movePaddle(0.1f);
+                            _paddle.movePaddle(0.001f);
                         }
                         try
                         {
-                            Thread.sleep(500);
+                            Thread.sleep(5);
                         }
                         catch (InterruptedException e)
                         {
                         }
-                        System.out.printf("%f%n", _paddle.getX());
                     }
                 }
 
@@ -108,7 +107,6 @@ public class GameKeyboardListnerController extends KeyAdapter
             @Override
             public void keyReleased(KeyEvent e)
             {
-                System.out.println("Release");
                 if (e.getKeyCode() == _config.getLeftKey())
                 {
                     setLeft(false);

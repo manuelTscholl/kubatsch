@@ -11,7 +11,9 @@ import org.apache.log4j.xml.DOMConfigurator;
 import de.quippy.javamod.system.Helpers;
 
 import at.kubatsch.client.controller.AudioController;
+import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.client.view.MainForm;
+import at.kubatsch.util.ConfigManager;
 
 /**
  * This is the main executable class for starting a new KuBaTsch client.
@@ -26,6 +28,8 @@ public class KuBaTschClient
      */
     public static void main(String args[])
     {
+        //initialize Client Config Controller
+        ClientConfigController.getInstance();
         // initialize log4j
         DOMConfigurator.configureAndWatch("kubatsch-log.xml", 60000L);
         // create UI
@@ -37,5 +41,6 @@ public class KuBaTschClient
         // start audio player
         AudioController.getInstance().setAudioEnabled(true);
         AudioController.getInstance().start();
+        
     }
 }

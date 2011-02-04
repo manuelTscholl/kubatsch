@@ -7,8 +7,6 @@ package at.kubatsch.samples.networkballserver;
  * project: KuBaTsch
  */
 
-import java.io.IOException;
-
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 

@@ -22,6 +22,8 @@ public class ServerConfig extends Config
 {
     private static final long serialVersionUID = 5692189898306877962L;
     public static final int STANDARD_PORT = 25000;
+    public static final String CONFIG_ID = "serverconfig";
+    
 
     @XStreamAlias(value = "port")
     private int               _port;
@@ -36,6 +38,8 @@ public class ServerConfig extends Config
     public ServerConfig()
     {
         _specialItems = new HashSet<String>();
+        setPort(this.STANDARD_PORT);
+        getSpecialItems().add("StandardBall.class");
     }
     
 
@@ -66,15 +70,6 @@ public class ServerConfig extends Config
         return _specialItems;
     }
 
-    @Override
-    public ServerConfig getDefaultConfig()
-    {
-        ServerConfig sc = new ServerConfig();
-        sc.setPort(this.STANDARD_PORT);
-        sc.getSpecialItems().add("StandardBall.class");
-        
-        return sc;
-    }
     
     @Override
     public String toString()
@@ -103,7 +98,7 @@ public class ServerConfig extends Config
     @Override
     public String getConfigType()
     {
-        return "SERVER_CONFIG";
+        return this.CONFIG_ID;
     }
 
 }

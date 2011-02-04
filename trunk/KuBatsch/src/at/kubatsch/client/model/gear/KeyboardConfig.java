@@ -1,7 +1,7 @@
 /**
  * author: Martin Balter
  * created on: 23.01.2011
- * filename: KeyConfig.java
+ * filename: KeyboardConfig.java
  * project: KuBaTsch
  */
 package at.kubatsch.client.model.gear;
@@ -16,23 +16,28 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @author Martin Balter
  * Configuration for the Keyboard
  */
-public class KeyConfig extends Config implements ControlType
+public class KeyboardConfig extends Config implements ControlType
 {
     private static final long serialVersionUID = -6004370472373242035L;
+    public static final String CONFIG_ID = "keyboardconfig";
     
     @XStreamAlias(value = "leftKey")
     private int   _leftKey;
     @XStreamAlias(value = "rightKey")
     private int   _rightKey;
     @XStreamAlias(value = "repeateRate")
-    private double _repeateRate;
+    private int _repeateRate;
 
     /**
-     * Initializes a new instance of the @see KeyConfig class.
+     * Initializes a new instance of the @see KeyboardConfig class.
      */
-    public KeyConfig()
+    public KeyboardConfig()
     {
         super();
+        
+        setLeftKey(KeyEvent.VK_LEFT);
+        setRightKey(KeyEvent.VK_RIGHT);
+        setRepeateRate(5);
     }
 
     /**
@@ -75,7 +80,7 @@ public class KeyConfig extends Config implements ControlType
      * Gets the repeateRate when the Key is presed for a while.
      * @return the repeateRate
      */
-    public double getRepeateRate()
+    public int getRepeateRate()
     {
         return _repeateRate;
     }
@@ -84,7 +89,7 @@ public class KeyConfig extends Config implements ControlType
      * Sets the repeateRate when the key is presed for a while.
      * @param repeateRate the repeateRate to set
      */
-    public void setRepeateRate(double repeateRate)
+    public void setRepeateRate(int repeateRate)
     {
         _repeateRate = repeateRate;
     }
@@ -102,19 +107,9 @@ public class KeyConfig extends Config implements ControlType
     }
 
     @Override
-    public KeyConfig getDefaultConfig()
-    {
-        KeyConfig kc = new KeyConfig();
-        kc.setLeftKey(KeyEvent.VK_LEFT);
-        kc.setRightKey(KeyEvent.VK_RIGHT);
-        
-        return kc;
-    }
-
-    @Override
     public String getConfigType()
     {
-        return "KEYBOARD";
+        return this.CONFIG_ID;
     }
 
 }

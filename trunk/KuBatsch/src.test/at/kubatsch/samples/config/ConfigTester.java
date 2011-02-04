@@ -60,7 +60,7 @@ public class ConfigTester
         try
         {
             cm = ConfigManager.getInstance();
-            ClientConfig cc = new ClientConfig().getDefaultConfig();
+            ClientConfig cc = new ClientConfig();
             System.out.println(cc.toString());
             cm.saveConfig(cc);
         }

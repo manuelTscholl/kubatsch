@@ -8,15 +8,24 @@ package at.kubatsch.client.view;
 
 import java.awt.Cursor;
 import java.awt.FlowLayout;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import at.kubatsch.client.controller.AudioController;
-import at.kubatsch.model.Color;
+import at.kubatsch.client.controller.ClientConfigController;
+import at.kubatsch.client.model.ClientConfig;
 import at.kubatsch.uicontrols.BloodChooser;
 import at.kubatsch.uicontrols.BloodSlider;
+import at.kubatsch.uicontrols.BloodTextfield;
 import at.kubatsch.uicontrols.ImageBox;
 import at.kubatsch.uicontrols.KuBaTschPane;
 import at.kubatsch.uicontrols.KuBatschTheme;
@@ -51,19 +60,38 @@ public class SettingsView extends NotGameView
      */
     public SettingsView()
     {
+        // Config
+        final ClientConfigController configController = ClientConfigController.getInstance();
+        final ClientConfig config = configController.getConfig();
+
         setViewText("Settings");
 
         KuBaTschPane controlGrid = new KuBaTschPane();
-        controlGrid.setLayout(new CustomGridLayout(new int[] { 245, 500 },
-                new int[] { 50, 55, 61, 60, 60, 60 }, 0, 10));
+        controlGrid.setLayout(new CustomGridLayout(new int[] { 245, 500 }, new int[] {
+                50, 55, 61, 60, 60, 60 }, 0, 10));
 
         // Nickname
         {
             SmallCapsLabel nicknameLbl = KuBatschTheme.getLabel("Nickname");
             controlGrid.add(nicknameLbl, CustomGridPosition.MiddleCenter);
 
-            controlGrid.add(KuBatschTheme.getTextBox(TextBoxSize.NORMAL),
-                    CustomGridPosition.MiddleLeft);
+            final BloodTextfield tNickname = KuBatschTheme.getTextBox(TextBoxSize.NORMAL);
+            tNickname.setText(config.getName());
+            tNickname.addKeyListener(new KeyAdapter()
+            {
+                @Override
+                public void keyPressed(KeyEvent e)
+                {
+                    config.setName(tNickname.getText());
+                }
+                
+                @Override
+                public void keyReleased(KeyEvent e)
+                {
+                    keyPressed(e);
+                }
+            });
+            controlGrid.add(tNickname, CustomGridPosition.MiddleLeft);
         }
 
         // Controls
@@ -80,8 +108,7 @@ public class SettingsView extends NotGameView
 
             final ImageBox controlSettingsBtn = new ImageBox(
                     KuBatschTheme.CONTROL_SETTINGS);
-            controlSettingsBtn.setCursor(Cursor
-                    .getPredefinedCursor(Cursor.HAND_CURSOR));
+            controlSettingsBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
             final BloodChooser chooser = new BloodChooser();
             chooser.addItem("Mouse");
@@ -122,19 +149,53 @@ public class SettingsView extends NotGameView
             KuBaTschPane paddleChooserPane = new KuBaTschPane();
             paddleChooserPane.setLayout(new FlowLayout());
 
-            PaddleChooser south = new PaddleChooser("South");
+            final PaddleChooser south = new PaddleChooser("South");
+            south.setSelectedColor(config.getSouthColor());
+            south.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseClicked(MouseEvent e)
+                {
+                    config.setSouthColor(south.getSelectedColor());
+                }
+            });
             paddleChooserPane.add(south);
 
-            PaddleChooser north = new PaddleChooser("North");
-            north.setSelectedColor(Color.BLUE);
+            final PaddleChooser north = new PaddleChooser("North");
+            north.setSelectedColor(config.getNorthColor());
+            north.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseClicked(MouseEvent e)
+                {
+                    config.setNorthColor(north.getSelectedColor());
+                }
+            });
+                    
             paddleChooserPane.add(north);
 
-            PaddleChooser east = new PaddleChooser("East");
-            east.setSelectedColor(Color.GREEN);
+            final PaddleChooser east = new PaddleChooser("East");
+            east.setSelectedColor(config.getEastColor());
+            east.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseClicked(MouseEvent e)
+                {
+                    config.setEastColor(east.getSelectedColor());
+                }
+            });
             paddleChooserPane.add(east);
 
-            PaddleChooser west = new PaddleChooser("West");
-            west.setSelectedColor(Color.VIOLET);
+            final PaddleChooser west = new PaddleChooser("West");
+            west.setSelectedColor(config.getWestColor());
+            west.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseClicked(MouseEvent e)
+                {
+                    config.setWestColor(west.getSelectedColor());
+                }
+            });
             paddleChooserPane.add(west);
 
             controlGrid.add(paddleChooserPane, CustomGridPosition.MiddleLeft);
@@ -145,14 +206,18 @@ public class SettingsView extends NotGameView
             SmallCapsLabel bgMusicLbl = KuBatschTheme.getLabel("Bg-Music");
             controlGrid.add(bgMusicLbl, CustomGridPosition.MiddleCenter);
 
-            final BloodSlider bgMusicSlider = new BloodSlider(0,100,100);
+            final BloodSlider bgMusicSlider = new BloodSlider(0, 100,
+                    (int) (config.getMusic() * 100));
             bgMusicSlider.addChangeListener(new ChangeListener()
             {
                 @Override
                 public void stateChanged(ChangeEvent e)
                 {
-                    AudioController.getInstance().setBackgroundVolume(
-                            bgMusicSlider.getValue() / 100f);
+                    float volume = bgMusicSlider.getValue() / 100f;
+
+                    config.setMusic(volume);
+
+                    AudioController.getInstance().setBackgroundVolume(volume);
                 }
             });
             controlGrid.add(bgMusicSlider, CustomGridPosition.MiddleLeft);
@@ -163,14 +228,18 @@ public class SettingsView extends NotGameView
             SmallCapsLabel effectsLbl = KuBatschTheme.getLabel("Effects");
             controlGrid.add(effectsLbl, CustomGridPosition.MiddleCenter);
 
-            final BloodSlider effectsSlider = new BloodSlider(0,100,100);
+            final BloodSlider effectsSlider = new BloodSlider(0, 100,
+                    (int) (config.getEffects() * 100));
             effectsSlider.addChangeListener(new ChangeListener()
             {
                 @Override
                 public void stateChanged(ChangeEvent e)
                 {
-                    AudioController.getInstance().setEffectsVolume(
-                            effectsSlider.getValue() / 100f);
+                    float volume = effectsSlider.getValue() / 100f;
+
+                    config.setEffects(volume);
+
+                    AudioController.getInstance().setEffectsVolume(volume);
                 }
             });
             controlGrid.add(effectsSlider, CustomGridPosition.MiddleLeft);
@@ -181,7 +250,17 @@ public class SettingsView extends NotGameView
             SmallCapsLabel alphaLbl = KuBatschTheme.getLabel("HUD-Alpha");
             controlGrid.add(alphaLbl, CustomGridPosition.MiddleCenter);
 
-            BloodSlider alphaSlider = new BloodSlider();
+            final BloodSlider alphaSlider = new BloodSlider(0, 100,
+                    (int) (config.getHudAlpha() * 100));
+            alphaSlider.addChangeListener(new ChangeListener()
+            {
+                @Override
+                public void stateChanged(ChangeEvent e)
+                {
+                    System.out.println(alphaSlider.getValue());
+                    config.setHudAlpha(alphaSlider.getValue() / 100f);
+                }
+            });
             controlGrid.add(alphaSlider, CustomGridPosition.MiddleLeft);
         }
 
@@ -191,18 +270,53 @@ public class SettingsView extends NotGameView
         KuBaTschPane buttonPane = new KuBaTschPane();
         buttonPane.setLayout(new FlowLayout());
 
-        MenuButton startButton = new MenuButton("Save", true);
+        final MenuButton startButton = new MenuButton("Save", true);
+        startButton.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                if (e.getButton() == MouseEvent.BUTTON1)
+                {
+                    try
+                    {
+                        //Save the changes in the configfile
+                        configController.writeConfig();
+                    }
+                    catch (IOException e1)
+                    {
+                        //TODO Loggen
+                    }
+                }
+            }
+        });
         startButton.setGlowEnabled(true);
         startButton.setTheme(KuBatschTheme.BUTTON_THEMES[1]);
-        // TODO Start Server Listener
-        startButton.addMouseListener(new ChangeViewClickListener(
-                MenuView.PANEL_ID));
+
+        startButton.addMouseListener(new ChangeViewClickListener(MenuView.PANEL_ID));
         buttonPane.add(startButton);
 
-        MenuButton backButton = new MenuButton("Back", false);
+        final MenuButton backButton = new MenuButton("Back", false);
+        backButton.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                if (e.getButton() == MouseEvent.BUTTON1)
+                {
+                    try
+                    {
+                        configController.loadConfig();
+                    }
+                    catch (Exception e1)
+                    {
+                        //TODO Loggen oder standartconfig Laden
+                    }
+                }
+            }
+        });
         backButton.setTheme(KuBatschTheme.BUTTON_THEMES[3]);
-        backButton.addMouseListener(new ChangeViewClickListener(
-                MenuView.PANEL_ID));
+        backButton.addMouseListener(new ChangeViewClickListener(MenuView.PANEL_ID));
         buttonPane.add(backButton);
 
         add(buttonPane);
