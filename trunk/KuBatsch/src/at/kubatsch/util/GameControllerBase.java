@@ -29,13 +29,32 @@ import at.kubatsch.server.controller.NetworkControllerServer;
  */
 public abstract class GameControllerBase
 {
-    protected static GameControllerBase   _mainController         = null;
-    protected static int              UPDATE_TIME_MILISECONDS = 30;
-    private GameState               _currentGameState;
-    protected Thread                  _updateGameState;
-    private boolean                 _isRunning;
-    private List<ICollidable>       _icollidables;
-    protected Event<EventArgs>        _stateUpdated;
+    protected static GameControllerBase _mainController         = null;
+    protected static int                UPDATE_INTERVAL = 30;
+    private GameState                   _currentGameState;
+    protected Thread                    _updateGameState;
+    
+    private boolean                     _isRunning;
+    private List<ICollidable>           _icollidables;
+    protected Event<EventArgs>          _stateUpdated;
+    private Object                      _lastUpdateLock         = new Object();
+    private long                        _lastUpdate;
+
+    public long getLastUpdate()
+    {
+        synchronized (_lastUpdateLock)
+        {
+            return _lastUpdate;
+        }
+    }
+
+    public synchronized void setLastUpdate(long lastUpdate)
+    {
+        synchronized (_lastUpdateLock)
+        {
+            _lastUpdate = lastUpdate;
+        }
+    }
 
     /**
      * 
@@ -48,25 +67,33 @@ public abstract class GameControllerBase
         _currentGameState = new GameState();
         _icollidables = new ArrayList<ICollidable>();
         _stateUpdated = new Event<EventArgs>(this);
-        
+
         setRunning(true);
         _updateGameState = new Thread(new Runnable()
         {
             @Override
             public void run()
             {
-                while (isRunning())
-                {
-                    updateGameState();
-                    try
-                    {
-                        _updateGameState.sleep(UPDATE_TIME_MILISECONDS);
-                    }
-                    catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
+                long updateTime = getLastUpdate();
+                long startTime = System.currentTimeMillis();
+                updateGameState();
 
+                // only wait if we have still the same data
+                if (updateTime == getLastUpdate())
+                {
+                    // calculate how many time we need to wait
+                    long timeElapsed = System.currentTimeMillis() - startTime;
+                    long waitTime = UPDATE_INTERVAL - timeElapsed;
+                    if (waitTime > 0)
+                    {
+                        try
+                        {
+                            Thread.sleep(waitTime);
+                        }
+                        catch (InterruptedException e)
+                        {
+                        }
+                    }
                 }
 
             }
@@ -75,7 +102,6 @@ public abstract class GameControllerBase
         _updateGameState.start();
     }
 
-    
     private void updateGameState()
     {
 
@@ -132,7 +158,7 @@ public abstract class GameControllerBase
         }
 
         _stateUpdated.fireEvent(EventArgs.Empty);
-        
+
     }
 
     private void applyAllRules(ICollidable toApply, ICollidable collidesWith)
@@ -158,7 +184,7 @@ public abstract class GameControllerBase
      */
     public synchronized void setCurrentGameState(GameState currentGameState)
     {
-        _currentGameState=currentGameState;
+        _currentGameState = currentGameState;
     }
 
     public void addBall(Ball ballToAdd)
