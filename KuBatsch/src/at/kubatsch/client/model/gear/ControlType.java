@@ -14,5 +14,4 @@ package at.kubatsch.client.model.gear;
  */
 public interface ControlType
 {
-    public String getConfigType();
 }

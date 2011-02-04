@@ -18,6 +18,7 @@ public class MouseConfig extends Config implements ControlType
 {
     
     private static final long serialVersionUID = -3167263316021675648L;
+    public static final String CONFIG_ID = "mouseconfig";
     
     
     @XStreamAlias(value = "sensitivity")
@@ -29,6 +30,7 @@ public class MouseConfig extends Config implements ControlType
     public MouseConfig()
     {
         super();
+        this.setSensitivity(1d);
     }
 
     /**
@@ -71,15 +73,10 @@ public class MouseConfig extends Config implements ControlType
         return super.toString();
     }
 
-    @Override
-    public MouseConfig getDefaultConfig()
-    {
-        return new MouseConfig(1);
-    }
 
     @Override
     public String getConfigType()
     {
-        return "MOUSE";
+        return this.CONFIG_ID;
     }
 }

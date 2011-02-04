@@ -69,7 +69,7 @@ public class ConsoleServer
             }
             catch (FileNotFoundException e)
             {
-                serverConfig = new ServerConfig().getDefaultConfig();
+                serverConfig = new ServerConfig();
             }
             catch (ClassCastException e)
             {

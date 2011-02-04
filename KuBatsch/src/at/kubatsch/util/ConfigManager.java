@@ -11,34 +11,34 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.model.Config;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
- * @author Martin Balter
  * Load the Configuration from the standard File "config.xml".
  * The Configuation has the Structure as a XML so that the User can edit it manuelly.
  * When the Standard Configuation cant be load the default configuration would be load.
  * There are differnt Types like {@link ClientConfig} or {@link ServerConfig}. 
  * Both implements {@link Config}
+ * @author Martin Balter
  */
 public class ConfigManager
 {
     private static ConfigManager _configManager = null;
-    // Path of the config, load from out of the Jar
-    public static final String   CONFIG_PATH    = KuBaTschUtils.getJarLocation()
-                                                        + "/config.xml";
-
     private XStream              _stream        = null;
+    private Config               _config        = null;
+    // Path of the config, load from out of the Jar
+    private String               _configFile    = null;
 
     /**
      * Singelton Pattern
      * There can only be one ConfigManager in the Program
      * Initializes a new instance of the {@link ConfigManager} class.
      */
-    private ConfigManager()
+    private ConfigManager(String configName)
     {
         // Load default information
         DomDriver dom = new DomDriver("UTF-8"); // Dom with the format of UTF-8
@@ -46,6 +46,8 @@ public class ConfigManager
         // XStream takes the Annotationinformation of the class to generate the
         // tag name
         _stream.autodetectAnnotations(true);
+
+        this.initialize(configName);
     }
 
     /**
@@ -53,14 +55,37 @@ public class ConfigManager
      * instance of the {@link ConfigManager} in the program.
      * @return the instance of the {@link ConfigManager} of the Program
      */
-    public static ConfigManager getInstance()
+    public static ConfigManager getInstance(String configName)
     {
         // Initial the ConfigManager if he isn't
         if (_configManager == null)
         {
-            _configManager = new ConfigManager();
+            _configManager = new ConfigManager(configName);
         }
+
         return _configManager;
+    }
+
+    /**
+     * Get the Instance of the {@link ConfigManager} with the default type.
+     * The Type depends on the Config
+     * @return Instance of the {@link ConfigManager}
+     * @see ClientConfigController
+     */
+    public static ConfigManager getInstance()
+    {
+
+        return ConfigManager.getInstance(_configManager._config.getConfigType());
+    }
+
+    /**
+     * initialize the Configmananger with the ConfigFileName. The Config comes into the directory there the JarFile is.
+     * @param configName Filename of the Config (no ".xml" needed and no Path needed)
+     */
+    private void initialize(String configName)
+    {
+        _configFile = new StringBuilder().append(KuBaTschUtils.getJarLocation())
+                .append("/").append(configName).append(".xml").toString();
     }
 
     /**
@@ -71,7 +96,16 @@ public class ConfigManager
      */
     public void saveConfig(Config config) throws IOException
     {
-        _stream.toXML(config, new FileWriter(CONFIG_PATH));
+        _stream.toXML(config, new FileWriter(_configFile));
+    }
+
+    /**
+     * Save the actual instance of the config in the standard config File.
+     * @throws IOException
+     */
+    public void saveConfig() throws IOException
+    {
+        saveConfig(_config);
     }
 
     /**
@@ -83,6 +117,8 @@ public class ConfigManager
     @SuppressWarnings("unchecked")
     public <T> T loadConfig() throws FileNotFoundException, ClassCastException
     {
-        return (T) _stream.fromXML(new FileReader(CONFIG_PATH));
+        if (this._config == null)
+            return (T) _stream.fromXML(new FileReader(_configFile));
+        return (T) _config;
     }
 }

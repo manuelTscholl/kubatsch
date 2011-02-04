@@ -8,18 +8,22 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import at.kubatsch.client.model.gear.KeyboardConfig;
+
 public class KeyboardListener
 {
-    private boolean   _left;
-    private boolean   _right;
+    private boolean        _left;
+    private boolean        _right;
 
-    private Lock      _flagLock     = new ReentrantLock();
-    private Condition _valueChanged = _flagLock.newCondition();
-    private Thread    _updateThread;
-    private Paddle _paddles;
-    
-    public KeyboardListener(Paddle paddles)
+    private Lock           _flagLock     = new ReentrantLock();
+    private Condition      _valueChanged = _flagLock.newCondition();
+    private Thread         _updateThread;
+    private Paddle         _paddles;
+    private KeyboardConfig _config;
+
+    public KeyboardListener(Paddle paddles, KeyboardConfig config)
     {
+        _config = config;
         _paddles = paddles;
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener()
         {
@@ -66,16 +70,16 @@ public class KeyboardListener
                     }
                     else if (left && !right)
                     {
-                        _paddles.movePaddle(-0.01f);
+                        _paddles.movePaddle(-_config.getRepeateRate());
                     }
                     else if (!left && right)
                     {
-                        _paddles.movePaddle(0.01f);
+                        _paddles.movePaddle(_config.getRepeateRate());
                     }
 
                     try
                     {
-                        Thread.sleep(30);
+                        Thread.sleep(5);
                     }
                     catch (InterruptedException e)
                     {
@@ -88,11 +92,11 @@ public class KeyboardListener
 
     protected void keyReleased(KeyEvent event)
     {
-        if (event.getKeyCode() == KeyEvent.VK_LEFT)
+        if (event.getKeyCode() == _config.getLeftKey())
         {
             setLeft(false);
         }
-        else if (event.getKeyCode() == KeyEvent.VK_RIGHT)
+        else if (event.getKeyCode() == _config.getRightKey())
         {
             setRight(false);
         }
@@ -100,11 +104,11 @@ public class KeyboardListener
 
     protected void keyPressed(KeyEvent event)
     {
-        if (event.getKeyCode() == KeyEvent.VK_LEFT)
+        if (event.getKeyCode() == _config.getLeftKey())
         {
             setLeft(true);
         }
-        else if (event.getKeyCode() == KeyEvent.VK_RIGHT)
+        else if (event.getKeyCode() == _config.getRightKey())
         {
             setRight(true);
         }
@@ -139,10 +143,7 @@ public class KeyboardListener
             if (_left == left)
                 return;
             _left = left;
-            if (left)
-                System.out.println("Left Down");
-            else
-                System.out.println("Left up");
+
             _valueChanged.signalAll();
         }
         finally
@@ -180,10 +181,7 @@ public class KeyboardListener
             if (right == _right)
                 return;
             _right = right;
-            if (right)
-                System.out.println("Right up");
-            else
-                System.out.println("Right down");
+
             _valueChanged.signalAll();
         }
         finally
@@ -192,6 +190,4 @@ public class KeyboardListener
         }
     }
 
-    
-    
 }

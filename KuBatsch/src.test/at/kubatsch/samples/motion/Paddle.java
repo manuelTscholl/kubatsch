@@ -6,7 +6,6 @@
  */
 package at.kubatsch.samples.motion;
 
-import at.kubatsch.model.IDrawable;
 import at.kubatsch.util.Event;
 import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.IEventHandler;

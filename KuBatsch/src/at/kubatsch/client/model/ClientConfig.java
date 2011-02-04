@@ -6,15 +6,13 @@
  */
 package at.kubatsch.client.model;
 
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-import at.kubatsch.client.model.gear.ControlType;
-import at.kubatsch.client.model.gear.KeyConfig;
+import at.kubatsch.client.model.gear.KeyboardConfig;
 import at.kubatsch.client.model.gear.MouseConfig;
 import at.kubatsch.model.Color;
 import at.kubatsch.model.Config;
 import at.kubatsch.util.KuBaTschUtils;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * @author Martin Balter
@@ -22,36 +20,46 @@ import at.kubatsch.util.KuBaTschUtils;
  */
 public class ClientConfig extends Config
 {
-    private static final long serialVersionUID = 6500513234673037329L;
-    
-    @XStreamAlias(value="name")
-    private String _name;
-    @XStreamAlias(value="controlType")
-    private ControlType[] _controlType;
-    @XStreamAlias(value="north")
-    private Color _northColor;
-    @XStreamAlias(value="south")
-    private Color _southColor;
-    @XStreamAlias(value="west")
-    private Color _westColor;
-    @XStreamAlias(value="east")
-    private Color _eastColor;
-    @XStreamAlias(value="music")
-    private double _music;
-    @XStreamAlias(value="effects")
-    private double _effects;
-    @XStreamAlias(value="hudAlpha")
-    private double _hudAlpha;
-    
+    private static final long  serialVersionUID = 6500513234673037329L;
+    public static final String CONFIG_ID        = "clientconfig";
+
+    @XStreamAlias(value = "name")
+    private String             _name;
+    @XStreamAlias(value = "controlType")
+    private Config[]           _controlType;
+    @XStreamAlias(value = "north")
+    private Color              _northColor;
+    @XStreamAlias(value = "south")
+    private Color              _southColor;
+    @XStreamAlias(value = "west")
+    private Color              _westColor;
+    @XStreamAlias(value = "east")
+    private Color              _eastColor;
+    @XStreamAlias(value = "music")
+    private double             _music;
+    @XStreamAlias(value = "effects")
+    private double             _effects;
+    @XStreamAlias(value = "hudAlpha")
+    private double             _hudAlpha;
+
     /**
      * Initializes a new instance of the @see ClientConfig class.
      */
     public ClientConfig()
     {
         super();
-        _controlType = new ControlType[2];
-        _controlType[0] = new KeyConfig().getDefaultConfig();
-        _controlType[1] = new MouseConfig().getDefaultConfig();
+        _controlType = new Config[2];
+        _controlType[0] = new KeyboardConfig();
+        _controlType[1] = new MouseConfig();
+
+        setEffects(1);
+        setMusic(1);
+        setName("Player");
+        setNorthColor(Color.BLUE);
+        setEastColor(Color.GREEN);
+        setSouthColor(Color.RED);
+        setWestColor(Color.GOLD);
+        setHudAlpha(0.5d);
     }
 
     /**
@@ -74,9 +82,11 @@ public class ClientConfig extends Config
 
     /**
      * Gets the controlTypes.
+     * At the first position [0] is the KeyBoardConfig
+     * At the secound position [1] is the MouseConfig
      * @return the controlTypes
      */
-    public ControlType[] getControlType()
+    public Config[] getControlType()
     {
         return _controlType;
     }
@@ -85,7 +95,7 @@ public class ClientConfig extends Config
      * Sets the controlType.
      * @param controlType the controlType to set
      */
-    public void setControlType(ControlType[] controlType)
+    public void setControlType(Config[] controlType)
     {
         _controlType = controlType;
     }
@@ -216,74 +226,52 @@ public class ClientConfig extends Config
         _hudAlpha = KuBaTschUtils.getValueBetweenRange(hudAlpha, 0d, 1d);
     }
 
-    /**
-     * Load Default ClientConfig with the standard parameters
-     * Copies the standard Config over the User Configuation
-     * @return Standard Config with default Config Parameters
-     */
-    @Override
-    public ClientConfig getDefaultConfig()
-    {
-        ClientConfig cc = new ClientConfig();
-        cc.getControlType()[0] = new MouseConfig(1);
-        cc.setEffects(1);
-        cc.setMusic(1);
-        cc.setName("Player");
-        cc.setNorthColor(Color.BLUE);
-        cc.setEastColor(Color.GREEN);
-        cc.setSouthColor(Color.RED);
-        cc.setWestColor(Color.GOLD);        
-        cc.setHudAlpha(0.5d);
-        
-        return cc;
-    }
-    
     @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append("Name: ");
         sb.append(this.getName());
         sb.append(System.getProperty("line.seperator"));
-        
-        sb.append("ControlType: ");
+
+        sb.append("ControlTypes: ");
         sb.append(this.getControlType()[0].getConfigType());
+        sb.append(" / ");
+        sb.append(this.getControlType()[1].getConfigType());
         sb.append(System.getProperty("line.seperator"));
-        
+
         sb.append("North: ");
         sb.append(this.getNorthColor());
         sb.append(System.getProperty("line.seperator"));
-        
+
         sb.append("East: ");
         sb.append(this.getEastColor());
         sb.append(System.getProperty("line.seperator"));
-        
+
         sb.append("South: ");
         sb.append(this.getSouthColor());
         sb.append(System.getProperty("line.seperator"));
-        
+
         sb.append("West: ");
         sb.append(this.getWestColor());
         sb.append(System.getProperty("line.seperator"));
-        
+
         sb.append("Music: ");
         sb.append(this.getMusic());
         sb.append(System.getProperty("line.separator"));
-        
+
         sb.append("SoundEffects: ");
         sb.append(this.getEffects());
         sb.append(System.getProperty("line.seperator"));
-        
+
         sb.append("HudAlpha: ");
         sb.append(this.getHudAlpha());
         sb.append(System.getProperty("line.seperator"));
-        
-        
+
         return sb.toString();
     }
 
-    
     /**
      * Returns the the Config is a "CLIENT_CONFIG";
      * @see at.kubatsch.model.Config#getConfigType()
@@ -291,6 +279,6 @@ public class ClientConfig extends Config
     @Override
     public String getConfigType()
     {
-        return "CLIENT_CONFIG";
+        return this.CONFIG_ID;
     }
 }

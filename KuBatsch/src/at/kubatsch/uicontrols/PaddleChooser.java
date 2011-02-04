@@ -33,12 +33,15 @@ public class PaddleChooser extends JComponent
      * A unique serialization id.
      */
     private static final long serialVersionUID = -6217817080413853695L;
-    private static final Font MAIN_FONT = KuBatschTheme.MAIN_FONT.deriveFont(KuBatschTheme.MAIN_FONT.getSize() * 0.7f);
-    private static final Font SMALL_FONT = KuBatschTheme.MAIN_FONT.deriveFont(KuBatschTheme.SMALL_FONT.getSize() * 0.7f);
+    private static final Font MAIN_FONT        = KuBatschTheme.MAIN_FONT
+                                                       .deriveFont(KuBatschTheme.MAIN_FONT
+                                                               .getSize() * 0.7f);
+    private static final Font SMALL_FONT       = KuBatschTheme.MAIN_FONT
+                                                       .deriveFont(KuBatschTheme.SMALL_FONT
+                                                               .getSize() * 0.7f);
 
-    
-    private Color _selectedColor;
-    private String _text;
+    private Color             _selectedColor;
+    private String            _text;
 
     /**
      * Gets the selectedColor.
@@ -58,7 +61,7 @@ public class PaddleChooser extends JComponent
         _selectedColor = selectedColor;
         repaint();
     }
-    
+
     /**
      * Gets the text.
      * @return the text
@@ -76,7 +79,7 @@ public class PaddleChooser extends JComponent
     {
         _text = text;
     }
-    
+
     /**
      * Initializes a new instance of the {@link PaddleChooser} class.
      */
@@ -98,13 +101,13 @@ public class PaddleChooser extends JComponent
         setOpaque(false);
         _text = text;
         _selectedColor = Color.RED;
-    }   
-    
+    }
+
     private void selectNextColor()
     {
-        setSelectedColor(Color.getColor(_selectedColor.getIndex()+1));
+        setSelectedColor(Color.getColor(_selectedColor.getIndex() + 1));
     }
-    
+
     /**
      * @see javax.swing.JComponent#getPreferredSize()
      */
@@ -113,25 +116,28 @@ public class PaddleChooser extends JComponent
     {
         return new Dimension(95, 65);
     }
-    
+
     /**
      * @see javax.swing.JComponent#paint(java.awt.Graphics)
      */
     @Override
     public void paint(Graphics g)
     {
-        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        PaddlePainter.paint(g, new Rectangle(-5, 0, getWidth() + 10, 30), _selectedColor, 1);
-        
+        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+        PaddlePainter.paint(g, new Rectangle(-5, 0, getWidth() + 10, 30), _selectedColor,
+                1);
+
         g.setColor(java.awt.Color.white);
-        Dimension size = SmallCapsUtility.calculateSize(this, _text,MAIN_FONT, SMALL_FONT); 
-        int x = (getWidth() - size.width)/2;
-        SmallCapsUtility.render(g, this, _text, MAIN_FONT, SMALL_FONT, x, 30);    
+        Dimension size = SmallCapsUtility.calculateSize(this, _text, MAIN_FONT,
+                SMALL_FONT);
+        int x = (getWidth() - size.width) / 2;
+        SmallCapsUtility.render(g, this, _text, MAIN_FONT, SMALL_FONT, x, 30);
     }
-        
-    
-    private Event<EventArgs> _colorChanged;
+
+    private Event<EventArgs> _colorChanged = new Event<EventArgs>(this);
+
     /**
      * @param handler
      * @see at.kubatsch.util.Event#addHandler(at.kubatsch.util.IEventHandler)
@@ -149,6 +155,5 @@ public class PaddleChooser extends JComponent
     {
         _colorChanged.removeHandler(handler);
     }
-    
-    
+
 }

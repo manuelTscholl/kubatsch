@@ -1,27 +1,25 @@
 package at.kubatsch.samples.motion;
 
 import java.awt.AWTException;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import at.kubatsch.client.model.gear.KeyConfig;
+import at.kubatsch.client.model.gear.KeyboardConfig;
+import at.kubatsch.model.Color;
+import at.kubatsch.server.model.ServerConfig;
 import at.kubatsch.uicontrols.PaddlePainter;
+import at.kubatsch.util.ConfigManager;
 import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.IEventHandler;
 
 public class DummyProgram
 {
 
-    public static void main(String[] args) throws AWTException
+    public static void main(String[] args) 
     {
-        
-        
         final JFrame f = new JFrame("TestCase");
         f.setSize(800, 800);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,26 +43,37 @@ public class DummyProgram
             {
                 super.paint(g);
                 int realX = (int)(p.getX() * getWidth());
-                PaddlePainter.paint(g, new Rectangle(realX, 50, (int)(getWidth()*p.getPaddleSize()),30), at.kubatsch.model.Color.RED, 0.7f);
+                PaddlePainter.paint(g, new Rectangle(realX, 50, (int)(getWidth()*p.getPaddleSize()),30),  Color.RED, 0.7f);
             }  
         };
         f.add(paddlPanel);
 
+        
+        
 //        GameKeyboardListnerController blub = new GameKeyboardListnerController(
-//                p, new KeyConfig().getDefaultConfig(), f);
+//                p, new KeyboardConfig().getDefaultConfig(), f);
 //        blub.addPaddleMovedListener(new IEventHandler<EventArgs>()
 //        {
 //
 //            @Override
 //            public void fired(Object sender, EventArgs e)
 //            {
-//                System.out.println("Moved");
 //                f.repaint();
 //            }
 //        });
-//        KeyboardListener listener = new KeyboardListener(p);
         
-        new GameMouseController(p, 2f, f);
+        
+        
+        KeyboardListener listener = new KeyboardListener(p, new KeyboardConfig());
+        
+        try
+        {
+            new GameMouseController(p, 2f, f);
+        }
+        catch (AWTException e1)
+        {
+            e1.printStackTrace();
+        }
         
         // f.addKeyListener(new KeyAdapter()
         // {
