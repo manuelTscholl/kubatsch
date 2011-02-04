@@ -15,6 +15,10 @@ import java.awt.Graphics;
  */
 public class Wall extends  CollidableBase implements IDrawable
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3149942231982833444L;
 
     /**
      * @see at.kubatsch.model.IDrawable#paint(java.awt.Graphics, java.awt.Dimension)
@@ -22,7 +26,6 @@ public class Wall extends  CollidableBase implements IDrawable
     @Override
     public void paint(Graphics g, Dimension realSize)
     {
-        // TODO Auto-generated method stub
         
     }
 

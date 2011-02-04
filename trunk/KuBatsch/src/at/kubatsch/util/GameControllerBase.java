@@ -7,7 +7,6 @@
 package at.kubatsch.util;
 
 import java.io.IOException;
-import java.text.RuleBasedCollator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,10 +17,7 @@ import at.kubatsch.model.GameState;
 import at.kubatsch.model.ICollidable;
 import at.kubatsch.model.ICollisionRule;
 import at.kubatsch.model.IUpdatable;
-import at.kubatsch.model.Paddle;
-import at.kubatsch.model.Player;
 import at.kubatsch.model.SpecialItem;
-import at.kubatsch.server.controller.NetworkControllerServer;
 
 /**
  * @author Manuel Tscholl (mts3970)
@@ -35,7 +31,7 @@ public abstract class GameControllerBase
     protected Thread                    _updateGameState;
     
     private boolean                     _isRunning;
-    private List<ICollidable>           _icollidables;
+    private List<ICollidable>           _collidables;
     protected Event<EventArgs>          _stateUpdated;
     private Object                      _lastUpdateLock         = new Object();
     private long                        _lastUpdate;
@@ -65,7 +61,7 @@ public abstract class GameControllerBase
     protected GameControllerBase() throws IOException
     {
         _currentGameState = new GameState();
-        _icollidables = new ArrayList<ICollidable>();
+        _collidables = new ArrayList<ICollidable>();
         _stateUpdated = new Event<EventArgs>(this);
 
         setRunning(true);
@@ -225,8 +221,19 @@ public abstract class GameControllerBase
         _isRunning = isRunning;
     }
 
+    /**
+     * Gets the collidables.
+     * @return the collidables
+     */
+    protected List<ICollidable> getCollidables()
+    {
+        return _collidables;
+    }
+    
+    
+
     // Countdown
-    // Regeln für spielrunde
+    // Regeln fï¿½r spielrunde
     // Kollision berechnen
     // start
     // stoppen

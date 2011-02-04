@@ -9,7 +9,6 @@ package at.kubatsch.model.rules;
 import at.kubatsch.model.AbstractRule;
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.ICollidable;
-import at.kubatsch.model.ICollisionRule;
 
 /**
  * This is the base class for creating rules which will be applied to a ball.

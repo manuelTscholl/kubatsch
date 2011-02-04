@@ -77,6 +77,6 @@ public class MouseConfig extends Config implements ControlType
     @Override
     public String getConfigType()
     {
-        return this.CONFIG_ID;
+        return CONFIG_ID;
     }
 }

@@ -38,7 +38,7 @@ public class ServerConfig extends Config
     public ServerConfig()
     {
         _specialItems = new HashSet<String>();
-        setPort(this.STANDARD_PORT);
+        setPort(STANDARD_PORT);
         getSpecialItems().add("StandardBall.class");
     }
     
@@ -98,7 +98,7 @@ public class ServerConfig extends Config
     @Override
     public String getConfigType()
     {
-        return this.CONFIG_ID;
+        return CONFIG_ID;
     }
 
 }

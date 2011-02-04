@@ -13,7 +13,6 @@ import de.quippy.javamod.system.Helpers;
 import at.kubatsch.client.controller.AudioController;
 import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.client.view.MainForm;
-import at.kubatsch.util.ConfigManager;
 
 /**
  * This is the main executable class for starting a new KuBaTsch client.
@@ -28,7 +27,7 @@ public class KuBaTschClient
      */
     public static void main(String args[])
     {
-        //initialize Client Config Controller
+        // initialize Client Config Controller
         ClientConfigController.getInstance();
         // initialize log4j
         DOMConfigurator.configureAndWatch("kubatsch-log.xml", 60000L);
@@ -38,9 +37,15 @@ public class KuBaTschClient
         Helpers.setCoding(true);
         // display UI
         form.setVisible(true);
-        // start audio player
+        // start audio player using correct volume
         AudioController.getInstance().setAudioEnabled(true);
+        AudioController.getInstance().setBackgroundVolume(
+                (float) ClientConfigController.getInstance().getConfig()
+                        .getMusic());
+        AudioController.getInstance().setEffectsVolume(
+                (float) ClientConfigController.getInstance().getConfig()
+                        .getEffects());
         AudioController.getInstance().start();
-        
+
     }
 }

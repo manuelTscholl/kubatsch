@@ -294,26 +294,5 @@ public class Paddle extends CollidableBase implements IDrawable
                 0.7f);
 
         ((Graphics2D) g).setTransform(t);
-        
-        // Draw image
-        pos = getPosition();
-        g.setColor(java.awt.Color.red);
-        int realX = (int) (pos.x * realSize.width);
-        int realY = (int) (pos.y * realSize.width);
-        for (int i = 0; i < getCollisionMap().length; i++)
-        {
-            int j = i + 1;
-            if (j >= getCollisionMap().length)
-            {
-                j = 0;
-            }
-
-            int x1 = (int) (getCollisionMap()[i].x * realSize.width);
-            int y1 = (int) (getCollisionMap()[i].y * realSize.height);
-            int x2 = (int) (getCollisionMap()[j].x * realSize.width);
-            int y2 = (int) (getCollisionMap()[j].y * realSize.height);
-            g.drawLine(realX + x1, realY + y1, realX + x2, realY + y2);
-        }
-
     }
 }

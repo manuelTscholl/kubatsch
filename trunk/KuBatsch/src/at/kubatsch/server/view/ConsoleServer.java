@@ -9,19 +9,11 @@ package at.kubatsch.server.view;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.log4j.lf5.viewer.configure.ConfigurationManager;
 
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.Color;
 import at.kubatsch.model.GameState;
-import at.kubatsch.model.ICollidable;
-import at.kubatsch.samples.networktest.server.NetworkControllerServer;
 import at.kubatsch.server.controller.GameController;
 import at.kubatsch.server.model.ServerConfig;
 import at.kubatsch.util.ConfigManager;
@@ -62,7 +54,7 @@ public class ConsoleServer
         //not in port range
         if (!(port > 0 && port <= 65535))
         {
-            ConfigManager configManager = ConfigManager.getInstance();
+            ConfigManager configManager = ConfigManager.getInstance(configName);
             ServerConfig serverConfig = null;
 
             try
@@ -83,7 +75,7 @@ public class ConsoleServer
 
         }
 
-        List balls = new ArrayList<Ball>();
+        List<Ball> balls = new ArrayList<Ball>();
         balls.add(new Ball(10, Color.BLUE));
         balls.add(new Ball(15, Color.RED));
         

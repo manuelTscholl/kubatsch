@@ -9,7 +9,6 @@ package at.kubatsch.model.rules;
 import at.kubatsch.client.controller.AudioController;
 import at.kubatsch.model.AbstractRule;
 import at.kubatsch.model.ICollidable;
-import at.kubatsch.model.ICollisionRule;
 
 /**
  * A rule which plays a sound if a ball collides with anything
@@ -18,6 +17,8 @@ import at.kubatsch.model.ICollisionRule;
  */
 public class PlayTickRule extends AbstractRule
 {
+    private static final long serialVersionUID = 6125514617720936444L;
+
     /**
      * @see at.kubatsch.model.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
      */

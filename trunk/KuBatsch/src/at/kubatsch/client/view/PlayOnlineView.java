@@ -123,6 +123,7 @@ public class PlayOnlineView extends NotGameView implements INotifiableView
             {
                 final List<ServerInfo> data = PlayOnlineController.getInstance().getServers();
                 _serverList.setModel(new AbstractListModel() {
+                    private static final long serialVersionUID = 1L;
                     public int getSize() { return data.size(); }
                     public Object getElementAt(int i) { return data.get(i); }
                 });

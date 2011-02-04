@@ -10,7 +10,6 @@ import at.kubatsch.model.AbstractRule;
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.Color;
 import at.kubatsch.model.ICollidable;
-import at.kubatsch.model.ICollisionRule;
 import at.kubatsch.model.PlayerHitArea;
 
 /**

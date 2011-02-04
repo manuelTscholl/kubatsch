@@ -10,15 +10,12 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import at.kubatsch.model.GameState;
-import at.kubatsch.model.ICollidable;
 import at.kubatsch.server.model.NetworkGameClient;
 import at.kubatsch.util.Event;
 import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.IEventHandler;
-import at.kubatsch.util.PaddleEventArgs;
 
 /**
  * Handels the communication between server and client. The maximum of connected

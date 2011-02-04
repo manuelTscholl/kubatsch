@@ -279,6 +279,6 @@ public class ClientConfig extends Config
     @Override
     public String getConfigType()
     {
-        return this.CONFIG_ID;
+        return CONFIG_ID;
     }
 }
