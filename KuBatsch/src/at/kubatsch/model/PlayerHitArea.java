@@ -14,30 +14,31 @@ import java.awt.geom.Point2D;
  * @author Daniel Kuschny (dku2375)
  * 
  */
-public class PlayerHitArea extends CollidableBase 
+public class PlayerHitArea extends CollidableBase
 {
     /**
      * 
      */
     private static final long serialVersionUID = -3046112050291545127L;
 
+    private static final float INSET = 0.0001f;
     private static final Point2D.Float[][] COLLISION_MAPS = {
-            { 
-                new Point2D.Float(0.00011f, 0.9999f), new Point2D.Float(0.99989f, 0.9999f),
-                new Point2D.Float(0.99989f, 2f),new Point2D.Float(0.00011f, 2f)
-            }, // south
-            { 
-                new Point2D.Float(0.00011f, 0.0001f), new Point2D.Float(0.99989f, 0.0001f),
-                new Point2D.Float(0.99989f, -1f), new Point2D.Float(0.00011f, -1f),
-            }, // north
-            { 
-                new Point2D.Float(0.0001f, 0.0001f), new Point2D.Float(0.0001f, 0.9999f),
-                new Point2D.Float(-1f, 0.9999f), new Point2D.Float(-1f, 0.0001f),
-            }, // west
-            {
-                new Point2D.Float(0.9999f, 0.0001f), new Point2D.Float(0.9999f, 0.9999f),
-                new Point2D.Float(2f, 0.9999f), new Point2D.Float(2f, 0.0001f)
-            }, // east
+        { 
+            new Point2D.Float(2*INSET, 1 - INSET), new Point2D.Float(1 - (2*INSET), 1-INSET),
+            new Point2D.Float(1 - (2*INSET), 2f),new Point2D.Float(2 * INSET, 2f)
+        }, // south
+        { 
+            new Point2D.Float(2*INSET, INSET), new Point2D.Float(1 - (2*INSET), INSET),
+            new Point2D.Float(1-(2*INSET), -1f), new Point2D.Float(2*INSET, -1f),
+        }, // north
+        { 
+            new Point2D.Float(INSET, INSET), new Point2D.Float(INSET, 1-INSET),
+            new Point2D.Float(-1f, 1-INSET), new Point2D.Float(-1f, INSET),
+        }, // west
+        {
+            new Point2D.Float(1-INSET, INSET), new Point2D.Float(2, INSET),
+            new Point2D.Float(2f, 1-INSET), new Point2D.Float(1-INSET, 1-INSET)
+        }, // east
     };
 
     private PlayerPosition                 _hitAreaPosition;
