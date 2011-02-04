@@ -56,6 +56,9 @@ public class ConsoleServer
 
         }
 
+        
+        port=25000;
+        
         //not in port range
         if (!(port > 0 && port <= 65535))
         {
