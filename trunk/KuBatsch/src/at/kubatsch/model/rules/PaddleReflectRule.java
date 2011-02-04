@@ -4,9 +4,15 @@
  * filename: PaddleReflectRule.java
  * project: KuBatsch
  */
-package at.kubatsch.model;
+package at.kubatsch.model.rules;
 
 import java.awt.geom.Point2D;
+
+import at.kubatsch.model.AbstractRule;
+import at.kubatsch.model.Ball;
+import at.kubatsch.model.Color;
+import at.kubatsch.model.ICollidable;
+import at.kubatsch.model.Paddle;
 
 /**
  * This rule reflects a ball if it collides with a panel.

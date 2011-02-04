@@ -4,7 +4,12 @@
  *   filename: BallRule.java
  *   project: KuBatsch
  */
-package at.kubatsch.model;
+package at.kubatsch.model.rules;
+
+import at.kubatsch.model.AbstractRule;
+import at.kubatsch.model.Ball;
+import at.kubatsch.model.ICollidable;
+import at.kubatsch.model.ICollisionRule;
 
 /**
  * This is the base class for creating rules which will be applied to a ball.
@@ -13,7 +18,7 @@ package at.kubatsch.model;
  * @author Daniel Kuschny (dku2375)
  *
  */
-public abstract class BallRule implements ICollisionRule
+public abstract class BallRule extends AbstractRule
 {
 
     /**

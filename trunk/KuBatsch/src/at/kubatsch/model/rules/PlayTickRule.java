@@ -4,9 +4,12 @@
  * filename: PlayTickRule.java
  * project: KuBatsch
  */
-package at.kubatsch.model;
+package at.kubatsch.model.rules;
 
 import at.kubatsch.client.controller.AudioController;
+import at.kubatsch.model.AbstractRule;
+import at.kubatsch.model.ICollidable;
+import at.kubatsch.model.ICollisionRule;
 
 /**
  * A rule which plays a sound if a ball collides with anything

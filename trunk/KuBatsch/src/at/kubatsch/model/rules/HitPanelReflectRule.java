@@ -4,7 +4,14 @@
  *   filename: SimpleReflectRule.java
  *   project: KuBatsch
  */
-package at.kubatsch.model;
+package at.kubatsch.model.rules;
+
+import at.kubatsch.model.AbstractRule;
+import at.kubatsch.model.Ball;
+import at.kubatsch.model.Color;
+import at.kubatsch.model.ICollidable;
+import at.kubatsch.model.ICollisionRule;
+import at.kubatsch.model.PlayerHitArea;
 
 /**
  * This rule describes a simple input-vector -> output-vector translation of a hitarea and a ball. 
