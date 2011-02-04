@@ -10,13 +10,14 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.geom.Point2D;
+import java.util.Random;
 
 import at.kubatsch.uicontrols.KuBatschTheme;
 
 /**
- * This class is the representation of a game ball which 
- * can have a position and a velocity. Additionally it stores the information 
- * how often the ball was hit and which color it currently has. 
+ * This class is the representation of a game ball which can have a position and
+ * a velocity. Additionally it stores the information how often the ball was hit
+ * and which color it currently has.
  * @author Daniel Kuschny (dku2375)
  * 
  */
@@ -25,17 +26,21 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
     /**
      * 
      */
-    private static final long serialVersionUID = 3283765169642426276L;
-    
+    private static final long            serialVersionUID      = 3283765169642426276L;
+
     /**
      * This size will size the ball to 24 pixel on a 800x800 surface
      */
-    private static final float DEFAULT_BALL_SIZE = KuBatschTheme.BALL_SIZE / (float)KuBatschTheme.MAIN_SIZE;
+    private static final float           DEFAULT_BALL_SIZE     = KuBatschTheme.BALL_SIZE
+                                                                       / (float) KuBatschTheme.MAIN_SIZE;
 
+    /**
+     * This collision region for this ball. 
+     */
     private static final Point2D.Float[] BALL_COLLISION_REGION = {
             new Point2D.Float(0.5f, 0.038f), // top
             new Point2D.Float(0.752f, 0.141f), // top-right
-            new Point2D.Float(0.829f, 0.389f), // right
+            new Point2D.Float(0.854f, 0.389f), // right
             new Point2D.Float(0.752f, 0.639f), // right-bottom
             new Point2D.Float(0.5f, 0.741f), // bottom
             new Point2D.Float(0.25f, 0.639f), // bottom-left
@@ -47,7 +52,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
     private Point2D.Float                _velocity;
     private float                        _size;
     private int                          _hitCount;
-    private Color                        _color;
+    private at.kubatsch.model.Color      _color;
 
     /**
      * Initializes a new instance of the {@link Ball} class.
@@ -63,14 +68,14 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
      */
     public Ball(float size)
     {
-        this(size, Color.GRAY);
+        this(size, at.kubatsch.model.Color.GRAY);
     }
 
     /**
      * Initializes a new instance of the {@link Ball} class.
      * @param color the color of the ball
      */
-    public Ball(Color color)
+    public Ball(at.kubatsch.model.Color color)
     {
         this(DEFAULT_BALL_SIZE, color);
     }
@@ -80,7 +85,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
      * @param size the size of the ball.
      * @param color the color of the ball
      */
-    public Ball(float size, Color color)
+    public Ball(float size, at.kubatsch.model.Color color)
     {
         _position = new Point2D.Float();
         _velocity = new Point2D.Float();
@@ -89,10 +94,10 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
     }
 
     /**
-     * Gets the color of the ball. 
+     * Gets the color of the ball.
      * @return the color of the ball.
      */
-    public Color getColor()
+    public at.kubatsch.model.Color getColor()
     {
         return _color;
     }
@@ -101,7 +106,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
      * Sets the color of the ball.
      * @param color the new color.
      */
-    public void setColor(Color color)
+    public void setColor(at.kubatsch.model.Color color)
     {
         _color = color;
     }
@@ -123,7 +128,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
     {
         _position.setLocation(position);
     }
-    
+
     /**
      * Sets the position of the ball within the gameboard.
      * @param x the x position
@@ -135,7 +140,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
     }
 
     /**
-     * Gets the velocity of the ball. 
+     * Gets the velocity of the ball.
      * @return the velocity
      */
     public Point2D.Float getVelocity()
@@ -154,7 +159,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
 
     /**
      * Sets the velocity of the ball.
-     * @param xd the x velocity 
+     * @param xd the x velocity
      * @param yd the y velocity
      */
     public void setVelocity(float xd, float yd)
@@ -182,7 +187,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
     }
 
     /**
-     * Gets the amount of hits the ball had. 
+     * Gets the amount of hits the ball had.
      * @return the amount of hits.
      */
     public int getHitCount()
@@ -191,7 +196,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
     }
 
     /**
-     * Sets the amount of hits the ball had. 
+     * Sets the amount of hits the ball had.
      * @param hitCount the amount of hits.
      */
     public void setHitCount(int hitCount)
@@ -200,25 +205,26 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
     }
 
     /**
-     * @see at.kubatsch.model.IDrawable#paint(java.awt.Graphics, java.awt.Dimension)
+     * @see at.kubatsch.model.IDrawable#paint(java.awt.Graphics,
+     *      java.awt.Dimension)
      */
     @Override
-    public void paint(Graphics g, Dimension bounds)
+    public void paint(Graphics g, Dimension realSize)
     {
         // calculate real bounds
-        int realX = (int) (_position.x * bounds.width);
-        int realY = (int) (_position.y * bounds.height);
-        int realSizeX = (int) (_size * bounds.width);
-        int realSizeY = (int) (_size * bounds.height);
-        
+        int realX = (int) (_position.x * realSize.width);
+        int realY = (int) (_position.y * realSize.height);
+        int realSizeX = (int) (_size * realSize.width);
+        int realSizeY = (int) (_size * realSize.height);
+
         // Draw image
-        Image ballImage = KuBatschTheme.BALLS[_color.getIndex()];
-        g.drawImage(ballImage, realX, realY, realX + realSizeX, realY + realSizeY, 
-                                0,0, KuBatschTheme.BALL_SIZE, KuBatschTheme.BALL_SIZE, null);
+         Image ballImage = KuBatschTheme.BALLS[_color.getIndex()];
+         g.drawImage(ballImage, realX, realY, realX + realSizeX, realY +
+         realSizeY,
+         0,0, KuBatschTheme.BALL_SIZE, KuBatschTheme.BALL_SIZE, null);
     }
 
     /**
-     * Moves the ball to the next timesliceposition
      * @see at.kubatsch.model.IUpdatable#update()
      */
     @Override
@@ -226,5 +232,35 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
     {
         setPosition(getPosition().x + getVelocity().x, getPosition().y
                 + getVelocity().y);
+    }
+
+    /**
+     * creates a ball with a random color, centered and with a random speed.
+     * @return
+     */
+    public static Ball createRandom()
+    {
+        Random rnd = new Random();
+
+        at.kubatsch.model.Color[] colors = at.kubatsch.model.Color.values();
+        at.kubatsch.model.Color rndColor = colors[rnd.nextInt(colors.length)];
+
+        Ball newBall = new Ball(rndColor);
+        newBall.setPosition(0.5f, 0.5f);
+        // random direction with random speed
+        float speedX = (rnd.nextInt(10) + 5) / 1000.0f;
+        if (rnd.nextBoolean())
+        {
+            speedX = -speedX;
+        }
+
+        float speedY = (rnd.nextInt(10) + 5) / 1000.0f;
+        if (rnd.nextBoolean())
+        {
+            speedY = -speedY;
+        }
+
+        newBall.setVelocity(speedX, speedY);
+        return newBall;
     }
 }

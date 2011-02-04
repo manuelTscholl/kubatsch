@@ -29,27 +29,30 @@ public class HitPanelReflectRule extends AbstractRule
         {
             PlayerHitArea hitArea = (PlayerHitArea)toApply;
             Ball ball = (Ball)collidesWith;
-
+            
+            float realBallHeight = ball.getMaxPoint().y - ball.getMinPoint().y;
+            float realBallWidth = ball.getMaxPoint().x - ball.getMinPoint().x;
+            
             float bounceOffset = 0.0002f;
             // TODO: Bounce position is not correct. need to place exactly the nearest collision point 
             switch(hitArea.getHitAreaPosition())
             {
                 case NORTH:
                     ball.setVelocity(ball.getVelocity().x, -ball.getVelocity().y);
-                    ball.setPosition(ball.getPosition().x, hitArea.getMaxPoint().y + bounceOffset);
+                    ball.setPosition(ball.getPosition().x, hitArea.getMaxPoint().y + bounceOffset - ball.getMinPoint().y);
                     break;
                 case SOUTH:
                     ball.setVelocity(ball.getVelocity().x, -ball.getVelocity().y);
-                    ball.setPosition(ball.getPosition().x, hitArea.getMinPoint().y - bounceOffset - ball.getSize());
+                    ball.setPosition(ball.getPosition().x, hitArea.getMinPoint().y - bounceOffset - realBallHeight);
                     break;
                 case EAST:
                     ball.setVelocity(-ball.getVelocity().x, ball.getVelocity().y);
-                    ball.setPosition(hitArea.getMinPoint().x - bounceOffset - ball.getSize(), 
+                    ball.setPosition(hitArea.getMinPoint().x - bounceOffset - realBallWidth, 
                             ball.getPosition().y);
                     break;
                 case WEST:
                     ball.setVelocity(-ball.getVelocity().x, ball.getVelocity().y);
-                    ball.setPosition(hitArea.getMaxPoint().x + bounceOffset,
+                    ball.setPosition(hitArea.getMaxPoint().x + bounceOffset + ball.getMinPoint().x,
                             ball.getPosition().y);
                     break;
             }
