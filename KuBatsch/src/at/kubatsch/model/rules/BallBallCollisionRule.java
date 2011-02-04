@@ -12,7 +12,6 @@ import java.util.Set;
 
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.ICollidable;
-import at.kubatsch.model.ICollisionRule;
 
 /**
  * A collision rule which applies if two balls collide.

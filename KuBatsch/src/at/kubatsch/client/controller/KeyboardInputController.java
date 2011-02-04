@@ -12,8 +12,6 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import javax.swing.SwingUtilities;
-
 import at.kubatsch.client.model.gear.KeyboardConfig;
 import at.kubatsch.util.Event;
 import at.kubatsch.util.EventArgs;

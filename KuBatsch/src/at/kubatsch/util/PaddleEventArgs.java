@@ -15,6 +15,15 @@ import at.kubatsch.model.Paddle;
 public class PaddleEventArgs extends EventArgs
 {
     private Paddle _paddle;
+    
+    /**
+     * Gets the paddle.
+     * @return the paddle
+     */
+    public Paddle getPaddle()
+    {
+        return _paddle;
+    }
 
     /**
      * Initializes a new instance of the {@link PaddleEventArgs} class.

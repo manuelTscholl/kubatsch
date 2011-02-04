@@ -6,19 +6,13 @@
  */
 package at.kubatsch.server.model;
 
-import java.awt.Component.BaselineResizeBehavior;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import at.kubatsch.model.Ball;
 import at.kubatsch.model.GameState;
-import at.kubatsch.model.ICollidable;
 import at.kubatsch.model.Paddle;
 import at.kubatsch.server.controller.NetworkControllerServer;
 import at.kubatsch.util.Event;
@@ -40,6 +34,7 @@ public class NetworkGameClient extends Thread
     private ObjectOutputStream      _objectOutputStream;
     private ObjectInputStream       _objectInputStream;
     private boolean                 _isRunning;
+    @SuppressWarnings("unused")
     private Thread                  _sendingMyPaddle;
     private final int               UPDATE_INTERVAL = 100;
     private Event<EventArgs> _newPaddleArrivedEvent;

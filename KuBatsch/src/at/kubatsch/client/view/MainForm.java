@@ -12,7 +12,6 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
-import at.kubatsch.client.controller.AudioController;
 import at.kubatsch.client.controller.ViewController;
 
 /**

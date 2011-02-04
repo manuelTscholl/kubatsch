@@ -13,6 +13,8 @@ package at.kubatsch.model;
  */
 public abstract class AbstractRule implements ICollisionRule
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * @see at.kubatsch.model.ICollisionRule#reset()
      */
