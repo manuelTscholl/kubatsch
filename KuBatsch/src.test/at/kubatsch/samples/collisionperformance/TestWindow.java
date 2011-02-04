@@ -151,26 +151,6 @@ public class TestWindow extends JFrame
         
         _collidablePanel = new CollidablePanel();
         
-        final HitPanelReflectRule hitAreaRule = new HitPanelReflectRule();
-        PlayerHitArea area;
-        
-        area = new PlayerHitArea(PlayerPosition.SOUTH);
-        area.addCollisionRule(hitAreaRule);
-        _collidablePanel.addCollidable(area);
-        
-        area = new PlayerHitArea(PlayerPosition.NORTH);
-        area.addCollisionRule(hitAreaRule);
-        _collidablePanel.addCollidable(area);
-        
-        area = new PlayerHitArea(PlayerPosition.EAST);
-        area.addCollisionRule(hitAreaRule);
-        _collidablePanel.addCollidable(area);
-        
-        area = new PlayerHitArea(PlayerPosition.WEST);
-        area.addCollisionRule(hitAreaRule);
-        _collidablePanel.addCollidable(area);
-        
-        
         add(_collidablePanel, BorderLayout.CENTER);
         
         pack();
