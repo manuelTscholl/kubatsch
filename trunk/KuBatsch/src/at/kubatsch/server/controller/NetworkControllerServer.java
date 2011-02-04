@@ -15,6 +15,10 @@ import java.util.Map;
 import at.kubatsch.model.GameState;
 import at.kubatsch.model.ICollidable;
 import at.kubatsch.server.model.NetworkGameClient;
+import at.kubatsch.util.Event;
+import at.kubatsch.util.EventArgs;
+import at.kubatsch.util.IEventHandler;
+import at.kubatsch.util.PaddleEventArgs;
 
 /**
  * Handels the communication between server and client. The maximum of connected
@@ -28,11 +32,12 @@ public class NetworkControllerServer
     /**
      * the maximum of Players which connect to the server
      */
-    final int               MAX_PLAYERS = 4;
-    ServerSocket            _serverSocket;
-    List<NetworkGameClient> _networkGameClients;
-    Thread                  _waitForPlayers;
-    boolean                 _isRunning;
+    private final int               MAX_PLAYERS = 4;
+    private ServerSocket            _serverSocket;
+    private List<NetworkGameClient> _networkGameClients;
+    private Thread                  _waitForPlayers;
+    private boolean                 _isRunning;
+    private Event<EventArgs>        _newPaddleArrivedEvent;
 
     /**
      * Initializes a new instance of the {@link NetworkControllerServer} class.
@@ -44,7 +49,7 @@ public class NetworkControllerServer
         super();
         _serverSocket = new ServerSocket(portToListen);
         _networkGameClients = new ArrayList<NetworkGameClient>();
-
+        _newPaddleArrivedEvent = new Event<EventArgs>(this);
         _waitForPlayers = new Thread(new Runnable()
         {
             @Override
@@ -53,9 +58,18 @@ public class NetworkControllerServer
                 connectClient();
             }
         }, "PlayerConnecter");
-        
+
         setRunning(true);
         _waitForPlayers.start();
+    }
+
+    /**
+     * Gets the newPaddleArrivedEvent.
+     * @return the newPaddleArrivedEvent
+     */
+    public void addNewPaddleArrivedHandler(IEventHandler<EventArgs> handler)
+    {
+        _newPaddleArrivedEvent.addHandler(handler);
     }
 
     /**
@@ -73,6 +87,17 @@ public class NetworkControllerServer
                     NetworkGameClient client = new NetworkGameClient(
                             _serverSocket.accept(), this);//
                     _networkGameClients.add(client);
+
+                    client.addNewPaddleArrivedHandler(
+                            new IEventHandler<EventArgs>()
+                            {
+                                @Override
+                                public void fired(Object sender, EventArgs e)
+                                {
+                                    _newPaddleArrivedEvent.fireEvent(e);
+                                }
+                            });
+
                     client.start();// client Thread is started
                 }
                 catch (IOException e)

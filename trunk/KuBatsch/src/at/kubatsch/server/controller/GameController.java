@@ -25,6 +25,7 @@ import at.kubatsch.server.controller.NetworkControllerServer;
 import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.GameControllerBase;
 import at.kubatsch.util.IEventHandler;
+import at.kubatsch.util.PaddleEventArgs;
 
 /**
  * @author Manuel Tscholl (mts3970)
@@ -33,7 +34,7 @@ import at.kubatsch.util.IEventHandler;
 public class GameController extends GameControllerBase
 {
     private NetworkControllerServer _networkServer;
-    
+
     /**
      * 
      * Initializes a new instance of the {@link GameController} class.
@@ -42,17 +43,30 @@ public class GameController extends GameControllerBase
      */
     private GameController(int portToListen) throws IOException
     {
-     super();
-          
+        super();
         _networkServer = new NetworkControllerServer(portToListen);
         _stateUpdated.addHandler(new IEventHandler<EventArgs>()
-        {            
+        {
             @Override
             public void fired(Object sender, EventArgs e)
             {
                 _networkServer.setGameState(getCurrentGameState());
             }
         });
+
+        _networkServer
+                .addNewPaddleArrivedHandler(new IEventHandler<EventArgs>()
+                {
+                    @Override
+                    public void fired(Object sender, EventArgs e)
+                    {
+                        if (e instanceof PaddleEventArgs)
+                        {
+
+                        }
+                    }
+                });
+
     }
 
     /**
@@ -60,15 +74,30 @@ public class GameController extends GameControllerBase
      * @return the existing or the new Instance of MainController
      * @throws IOException
      */
-    public static GameController getInstance(int portToListen) throws IOException
+    public static GameController getInstance(int portToListen)
+            throws IOException
     {
         if (_mainController == null)
         {
             return new GameController(portToListen);
         }
 
-        return (GameController)_mainController;
+        return (GameController) _mainController;
+    }
+
+    public synchronized void updatePaddle(Paddle paddle)
+    {
+        for (Player player : getCurrentGameState().getPlayer())
+        {
+            if (player != null)
+            {
+                if (player.getPaddle().getPaddlePosition() == paddle
+                        .getPaddlePosition())
+                {
+                    player.setPaddle(paddle);
+                }
+            }
+        }
+        _stateUpdated.fireEvent(EventArgs.Empty);
     }
 }
-
-   
