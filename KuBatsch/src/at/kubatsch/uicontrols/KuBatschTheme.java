@@ -80,6 +80,7 @@ public class KuBatschTheme
     public static final Image     PADDLE_BACKGROUND;
     public static final int[]     PADDLE_PARTS;
     public static final Insets    PADDLE_HEALTH_INSETS;
+    public static final Dimension       PADDLE_SIZE;
 
     public static final Image     HEALTH_BACKGROUND;
     public static final Image[]   HEALTH_BALLS;
@@ -146,6 +147,7 @@ public class KuBatschTheme
         PADDLE_BACKGROUND = getImage("paddle/paddle.png");
         PADDLE_PARTS = new int[] { 15, 153 };
         PADDLE_HEALTH_INSETS = new Insets(9, 9, 9, 9);
+        PADDLE_SIZE = new Dimension(168, 31);
 
         // health
         HEALTH_BACKGROUND = getImage("paddle/health.gif");
