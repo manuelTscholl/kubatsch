@@ -4,11 +4,15 @@
  *   filename: BallBallCollision.java
  *   project: KuBatsch
  */
-package at.kubatsch.model;
+package at.kubatsch.model.rules;
 
 import java.awt.geom.Point2D;
 import java.util.HashSet;
 import java.util.Set;
+
+import at.kubatsch.model.Ball;
+import at.kubatsch.model.ICollidable;
+import at.kubatsch.model.ICollisionRule;
 
 /**
  * A collision rule which applies if two balls collide.
@@ -30,7 +34,7 @@ public class BallBallCollisionRule extends BallRule
     private static final long serialVersionUID = 1439429777618587858L;
 
     /**
-     * @see at.kubatsch.model.BallRule#apply(at.kubatsch.model.Ball,
+     * @see at.kubatsch.model.rules.BallRule#apply(at.kubatsch.model.Ball,
      *      at.kubatsch.model.ICollidable)
      */
     @Override
