@@ -12,36 +12,47 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import at.kubatsch.client.model.gear.KeyboardConfig;
-import at.kubatsch.samples.motion.Paddle;
+import at.kubatsch.util.Event;
 import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.IEventHandler;
+import at.kubatsch.util.KuBaTschUtils;
 
 /**
+ * A controller handling the input via keyboard. It allows controlling a
+ * floating point variable ranged between 0-1 via a "Left" and "Right" key,
  * @author Martin Balter
- *
+ * 
  */
-public class GameKeyboardListnerController extends KeyAdapter
+public class KeyboardInputController extends KeyAdapter implements
+        IInputController
 {
-    private Paddle     _paddle;
-    private KeyboardConfig  _config;
-    private boolean    _left;
-    private boolean    _right;
-    private Thread     _keyThread;
-    private KeyAdapter _keyAdapter;
+    /**
+     * The offset used per step.
+     */
+    private static final float OFFSET           = 0.01f;
 
-    private Object     _flagLock = new Object();
+    private float              _currentValue;
+    private KeyboardConfig     _config;
+    private boolean            _left;
+    private boolean            _right;
+    private Thread             _keyThread;
+    private KeyAdapter         _keyAdapter;
+    private AWTEventListener   _globalKeyListener;
+
+    private Object             _flagLock        = new Object();
+    private Event<EventArgs>   _positionChanged = new Event<EventArgs>(this);
 
     /**
-     * Initializes a new instance of the @see GameKeyboardListner class.
+     * Initializes a new instance of the {@link KeyboardInputController} class.
      * @param paddle
      * @param config
      */
-    public GameKeyboardListnerController(Paddle paddle, KeyboardConfig config, JFrame frame)
+    public KeyboardInputController(KeyboardConfig config)
     {
-        _paddle = paddle;
+        _currentValue = 0;
         _config = config;
 
         setLeft(false);
@@ -52,7 +63,7 @@ public class GameKeyboardListnerController extends KeyAdapter
             @Override
             public void run()
             {
-                while (true)
+                while (!isInterrupted())
                 {
                     synchronized (_flagLock)
                     {
@@ -66,25 +77,25 @@ public class GameKeyboardListnerController extends KeyAdapter
                             {
                             }
                         }
-                        
-                        if (isLeft() && isRight() == false)
+
+                        if (isLeft() && !isRight())
                         {
-                            _paddle.movePaddle(-0.001f);
+                            move(-OFFSET);
                         }
-                        else if (isLeft() == false && isRight())
+                        else if (isRight() && !isLeft())
                         {
-                            _paddle.movePaddle(0.001f);
+                            move(OFFSET);
                         }
                         try
                         {
-                            Thread.sleep(5);
+                            Thread.sleep(_config.getRepeateRate());
                         }
                         catch (InterruptedException e)
                         {
+                            interrupt();
                         }
                     }
                 }
-
             }
         };
         _keyThread.start();
@@ -119,26 +130,40 @@ public class GameKeyboardListnerController extends KeyAdapter
             }
         };
 
-        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener()
+        _globalKeyListener = new AWTEventListener()
         {
-            
+
             @Override
             public void eventDispatched(AWTEvent event)
             {
-                boolean isGameRunning = true;
-                if(isGameRunning)
+                if (event.getID() == KeyEvent.KEY_PRESSED)
                 {
-                    if(event.getID() == KeyEvent.KEY_PRESSED)
-                    {
-                        _keyAdapter.keyPressed((KeyEvent)event);
-                    }
-                    else if(event.getID() == KeyEvent.KEY_RELEASED)
-                    {
-                        _keyAdapter.keyReleased((KeyEvent)event);
-                    }
+                    _keyAdapter.keyPressed((KeyEvent) event);
+                }
+                else if (event.getID() == KeyEvent.KEY_RELEASED)
+                {
+                    _keyAdapter.keyReleased((KeyEvent) event);
                 }
             }
-        }, AWTEvent.KEY_EVENT_MASK);
+        };
+    }
+
+    /**
+     * @see java.lang.Object#finalize()
+     */
+    @Override
+    protected void finalize() throws Throwable
+    {
+        _keyThread.interrupt();
+        super.finalize();
+    }
+
+    private void move(float offset)
+    {
+        _currentValue = KuBaTschUtils.getValueBetweenRange(_currentValue
+                + offset, 0f, 1f);
+
+        _positionChanged.fireEvent(EventArgs.Empty);
     }
 
     /**
@@ -156,6 +181,8 @@ public class GameKeyboardListnerController extends KeyAdapter
      */
     private void setLeft(boolean left)
     {
+        if (_left == left)
+            return;
         synchronized (_flagLock)
         {
             _left = left;
@@ -178,6 +205,8 @@ public class GameKeyboardListnerController extends KeyAdapter
      */
     private void setRight(boolean right)
     {
+        if (_right == right)
+            return;
         synchronized (_flagLock)
         {
             _right = right;
@@ -187,22 +216,49 @@ public class GameKeyboardListnerController extends KeyAdapter
 
     /**
      * @param handler
-     * @see at.kubatsch.samples.motion.Paddle#addPaddleMovedListener(at.kubatsch.util.IEventHandler)
+     * @see at.kubatsch.util.Event#addHandler(at.kubatsch.util.IEventHandler)
      */
-    public void addPaddleMovedListener(IEventHandler<EventArgs> handler)
+    public void addPositionChangedListener(IEventHandler<EventArgs> handler)
     {
-        _paddle.addPaddleMovedListener(handler);
+        _positionChanged.addHandler(handler);
     }
 
     /**
      * @param handler
-     * @see at.kubatsch.samples.motion.Paddle#removePaddleMovedListener(at.kubatsch.util.IEventHandler)
+     * @see at.kubatsch.util.Event#removeHandler(at.kubatsch.util.IEventHandler)
      */
-    public void removePaddleMovedListener(IEventHandler<EventArgs> handler)
+    public void removePositionChangedListener(IEventHandler<EventArgs> handler)
     {
-        _paddle.removePaddleMovedListener(handler);
+        _positionChanged.removeHandler(handler);
     }
-    
-    
 
+    /**
+     * @see at.kubatsch.client.controller.IInputController#getCurrentPosition()
+     */
+    @Override
+    public float getCurrentPosition()
+    {
+        return _currentValue;
+    }
+
+    /**
+     * @see at.kubatsch.client.controller.IInputController#enable()
+     */
+    @Override
+    public void enable()
+    {
+        Toolkit.getDefaultToolkit().addAWTEventListener(_globalKeyListener,
+                AWTEvent.KEY_EVENT_MASK);
+    }
+
+    /**
+     * @see at.kubatsch.client.controller.IInputController#disable()
+     */
+    @Override
+    public void disable()
+    {
+        Toolkit.getDefaultToolkit().removeAWTEventListener(_globalKeyListener);
+        setLeft(false);
+        setRight(false);
+    }
 }

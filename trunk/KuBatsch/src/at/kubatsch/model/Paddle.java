@@ -133,7 +133,7 @@ public class Paddle extends CollidableBase implements IDrawable
      * Gets the x.
      * @return the x
      */
-    public float getX()
+    public float getAbsolutePosition()
     {
         return _x;
     }
@@ -195,33 +195,40 @@ public class Paddle extends CollidableBase implements IDrawable
     }
 
     /**
-     * Sets the x.
-     * @param x the x to set
+     * Updates the paddle position to the correct position.
+     * @param x the x position as value from 0-1
      */
-    public void setX(float x)
+    public void setRelativePosition(float x)
     {
+        float minValue = 0;
+        float maxValue = 0;
+        
         // 1 -> paddleSize
         // x -> ?
         if(isHorizontal())
         {
             float w = getMaxPoint().x - getMinPoint().x;
-            _x = KuBaTschUtils.getValueBetweenRange(x, -getMinPoint().x, 1f - w
-                    - getMinPoint().x);
-
+            minValue = -getMinPoint().x;
+            maxValue = 1f - w - getMinPoint().x;
         }
         else
         {
             float w = getMaxPoint().y - getMinPoint().y;
-            _x = KuBaTschUtils.getValueBetweenRange(x, -getMinPoint().y, 1f - w
-                    - getMinPoint().y);
+            minValue = -getMinPoint().y;
+            maxValue = 1f - w - getMinPoint().y;
             
         }
+        
+        // minValue -> 0
+        // maxValue -> 1
+        // x -> ?
+        _x = KuBaTschUtils.getValueBetweenRange((maxValue - minValue) * x + minValue, minValue, maxValue);
         _paddleMoved.fireEvent(EventArgs.Empty);
     }
 
     public void movePaddle(float way)
     {
-        setX(getX() + way);
+        setRelativePosition(getAbsolutePosition() + way);
     }
 
     private Event<EventArgs> _paddleMoved = new Event<EventArgs>(this);
