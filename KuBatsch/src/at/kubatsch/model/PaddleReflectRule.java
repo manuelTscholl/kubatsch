@@ -8,8 +8,6 @@ package at.kubatsch.model;
 
 import java.awt.geom.Point2D;
 
-import at.kubatsch.samples.motion.Paddle;
-
 /**
  * This rule reflects a ball if it collides with a panel.
  * @author Daniel Kuschny (dku2375)
