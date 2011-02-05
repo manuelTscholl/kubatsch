@@ -6,25 +6,38 @@
  */
 package at.kubatsch.model;
 
+import java.io.Serializable;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * This class is used to store all the required information for online servers
  * of KuBatsch.
  * @author Daniel Kuschny (dku2375)
  * 
  */
-public class ServerInfo
+public class ServerInfo implements Serializable
 {
+    private static final long serialVersionUID = 896616323528049864L;
+    
+    @XStreamAlias(value="serverName")
     private String _name;
+    @XStreamAlias(value="port")
     private int    _port;
+    @XStreamAlias(value="serverAddress")
     private String _server;
-    private int    _currentPlayers;
-
+    @XStreamAlias(value="currentPlayers")
+    private int _currentPlayers;
+    
     /**
      * Initializes a new instance of the {@link ServerInfo} class.
+     * @param name
+     * @param server
+     * @param port
      */
-    public ServerInfo()
+    public ServerInfo(String name, String server, int port)
     {
-        super();
+        this(name, server, port, 0);
     }
 
     /**
@@ -33,11 +46,12 @@ public class ServerInfo
      * @param server
      * @param currentPlayers
      */
-    public ServerInfo(String name, String server, int currentPlayers)
+    public ServerInfo(String name, String server, int port, int currentPlayers)
     {
         super();
         _name = name;
         _server = server;
+        _port = port;
         _currentPlayers = currentPlayers;
     }
 
@@ -96,8 +110,8 @@ public class ServerInfo
     }
 
     /**
-     * Gets the count of current players on the server.
-     * @return the count of current players on the server.
+     * Gets the currentPlayers.
+     * @return the currentPlayers
      */
     public int getCurrentPlayers()
     {
@@ -105,8 +119,8 @@ public class ServerInfo
     }
 
     /**
-     * Sets the count of current players on the server.
-     * @param currentPlayers the count of current players on the server.
+     * Sets the currentPlayers.
+     * @param currentPlayers the currentPlayers to set
      */
     public void setCurrentPlayers(int currentPlayers)
     {
