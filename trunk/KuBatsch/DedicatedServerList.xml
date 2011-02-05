@@ -1,0 +1,20 @@
+<list>
+  <at.kubatsch.model.ServerInfo>
+    <serverName>Deadly Death</serverName>
+    <port>25000</port>
+    <serverAddress>localhost</serverAddress>
+    <currentPlayers>0</currentPlayers>
+  </at.kubatsch.model.ServerInfo>
+  <at.kubatsch.model.ServerInfo>
+    <serverName>Blub</serverName>
+    <port>25000</port>
+    <serverAddress>localhost</serverAddress>
+    <currentPlayers>0</currentPlayers>
+  </at.kubatsch.model.ServerInfo>
+  <at.kubatsch.model.ServerInfo>
+    <serverName>Lets Try</serverName>
+    <port>25000</port>
+    <serverAddress>localhost</serverAddress>
+    <currentPlayers>0</currentPlayers>
+  </at.kubatsch.model.ServerInfo>
+</list>

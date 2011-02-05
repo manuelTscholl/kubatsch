@@ -1,0 +1,20 @@
+<at.kubatsch.client.model.ClientConfig>
+  <name>Player</name>
+  <controlType>
+    <at.kubatsch.client.model.gear.KeyboardConfig>
+      <leftKey>37</leftKey>
+      <rightKey>39</rightKey>
+      <repeateRate>5</repeateRate>
+    </at.kubatsch.client.model.gear.KeyboardConfig>
+    <at.kubatsch.client.model.gear.MouseConfig>
+      <sensitivity>1.0</sensitivity>
+    </at.kubatsch.client.model.gear.MouseConfig>
+  </controlType>
+  <north>BLUE</north>
+  <south>RED</south>
+  <west>GOLD</west>
+  <east>GREEN</east>
+  <music>0.0</music>
+  <effects>1.0</effects>
+  <hudAlpha>0.5</hudAlpha>
+</at.kubatsch.client.model.ClientConfig>
