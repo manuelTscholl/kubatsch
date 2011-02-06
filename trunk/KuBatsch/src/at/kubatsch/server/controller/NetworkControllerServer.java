@@ -9,12 +9,13 @@ package at.kubatsch.server.controller;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-import at.kubatsch.model.GameState;
-import at.kubatsch.server.model.NetworkGameClient;
+import at.kubatsch.model.message.INetworkMessage;
 import at.kubatsch.util.Event;
-import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.IEventHandler;
 
 /**
@@ -29,12 +30,17 @@ public class NetworkControllerServer
     /**
      * the maximum of Players which connect to the server
      */
-    private final int               MAX_PLAYERS = 4;
-    private ServerSocket            _serverSocket;
-    private List<NetworkGameClient> _networkGameClients;
-    private Thread                  _waitForPlayers;
-    private boolean                 _isRunning;
-    private Event<EventArgs>        _newPaddleArrivedEvent;
+    private final int                         MAX_PLAYERS             = 4;
+    private ServerSocket                      _serverSocket;
+    private List<NetworkGameClient>           _networkGameClients;
+    private Thread                            _waitForPlayers;
+    private boolean                           _isRunning;
+
+    private Event<NetworkGameClientEventArgs> _clientConnectedEvent;
+    private Event<NetworkMessageEventArgs>    _clientMessageEvent;
+    private Event<NetworkGameClientEventArgs> _clientDisconnectedEvent;
+
+    private Lock                              _networkGameClientsLock = new ReentrantLock();
 
     /**
      * Initializes a new instance of the {@link NetworkControllerServer} class.
@@ -46,7 +52,11 @@ public class NetworkControllerServer
         super();
         _serverSocket = new ServerSocket(portToListen);
         _networkGameClients = new ArrayList<NetworkGameClient>();
-        _newPaddleArrivedEvent = new Event<EventArgs>(this);
+
+        _clientConnectedEvent = new Event<NetworkGameClientEventArgs>(this);
+        _clientMessageEvent = new Event<NetworkMessageEventArgs>(this);
+        _clientDisconnectedEvent = new Event<NetworkGameClientEventArgs>(this);
+
         _waitForPlayers = new Thread(new Runnable()
         {
             @Override
@@ -58,15 +68,6 @@ public class NetworkControllerServer
 
         setRunning(true);
         _waitForPlayers.start();
-    }
-
-    /**
-     * Gets the newPaddleArrivedEvent.
-     * @return the newPaddleArrivedEvent
-     */
-    public void addNewPaddleArrivedHandler(IEventHandler<EventArgs> handler)
-    {
-        _newPaddleArrivedEvent.addHandler(handler);
     }
 
     /**
@@ -83,19 +84,44 @@ public class NetworkControllerServer
                 {// clients connects to the server
                     NetworkGameClient client = new NetworkGameClient(
                             _serverSocket.accept(), this);//
-                    _networkGameClients.add(client);
 
-                    client.addNewPaddleArrivedHandler(
-                            new IEventHandler<EventArgs>()
-                            {
-                                @Override
-                                public void fired(Object sender, EventArgs e)
-                                {
-                                    _newPaddleArrivedEvent.fireEvent(e);
-                                }
-                            });
+                    _networkGameClientsLock.lock();
+                    try
+                    {
+                        _networkGameClients.add(client);
+                    }
+                    finally
+                    {
+                        _networkGameClientsLock.unlock();
+                    }
 
-                    client.start();// client Thread is started
+                    client.addMessageReceivedListener(new IEventHandler<NetworkMessageEventArgs>()
+                    {
+
+                        @Override
+                        public void fired(Object sender,
+                                NetworkMessageEventArgs e)
+                        {
+                            _clientMessageEvent.fireEvent(e);
+                        }
+                    });
+
+                    client.addConnectionLostListener(new IEventHandler<NetworkGameClientEventArgs>()
+                    {
+
+                        @Override
+                        public void fired(Object sender,
+                                NetworkGameClientEventArgs e)
+                        {
+                            clientDisconnected(((NetworkGameClient) sender));
+                        }
+                    });
+
+                    client.startWork();
+
+                    _clientConnectedEvent
+                            .fireEvent(new NetworkGameClientEventArgs(client
+                                    .getClientUid()));
                 }
                 catch (IOException e)
                 {
@@ -121,7 +147,15 @@ public class NetworkControllerServer
      */
     public int countConnectedPlayers()
     {
-        return _networkGameClients.size();
+        _networkGameClientsLock.lock();
+        try
+        {
+            return _networkGameClients.size();
+        }
+        finally
+        {
+            _networkGameClientsLock.unlock();
+        }
     }
 
     /**
@@ -129,15 +163,80 @@ public class NetworkControllerServer
      * @param collidable the new mapping of collidables to update to all clients
      *            (all types will be added/updated)
      */
-    public void setGameState(GameState state)
+    public void sendMessageToClients(INetworkMessage message)
     {
-        synchronized (state)
+        _networkGameClientsLock.lock();
+        try
         {
             for (NetworkGameClient client : _networkGameClients)
             {// updates each client packet
-                client.setDataPacket(state);
+                client.addToMessageStack(message);
             }
         }
+        finally
+        {
+            _networkGameClientsLock.unlock();
+        }
+    }
+
+    /**
+     * @param handler
+     * @see at.kubatsch.util.Event#addHandler(at.kubatsch.util.IEventHandler)
+     */
+    public void addClientConnectedListener(
+            IEventHandler<NetworkGameClientEventArgs> handler)
+    {
+        _clientConnectedEvent.addHandler(handler);
+    }
+
+    /**
+     * @param handler
+     * @see at.kubatsch.util.Event#removeHandler(at.kubatsch.util.IEventHandler)
+     */
+    public void removeClientConnectedListener(
+            IEventHandler<NetworkGameClientEventArgs> handler)
+    {
+        _clientConnectedEvent.removeHandler(handler);
+    }
+
+    /**
+     * @param handler
+     * @see at.kubatsch.util.Event#addHandler(at.kubatsch.util.IEventHandler)
+     */
+    public void addClientDisconnectedListener(
+            IEventHandler<NetworkGameClientEventArgs> handler)
+    {
+        _clientDisconnectedEvent.addHandler(handler);
+    }
+
+    /**
+     * @param handler
+     * @see at.kubatsch.util.Event#removeHandler(at.kubatsch.util.IEventHandler)
+     */
+    public void removedClientDisconnectedListener(
+            IEventHandler<NetworkGameClientEventArgs> handler)
+    {
+        _clientDisconnectedEvent.removeHandler(handler);
+    }
+
+    /**
+     * @param handler
+     * @see at.kubatsch.util.Event#addHandler(at.kubatsch.util.IEventHandler)
+     */
+    public void addClientMessageListener(
+            IEventHandler<NetworkMessageEventArgs> handler)
+    {
+        _clientMessageEvent.addHandler(handler);
+    }
+
+    /**
+     * @param handler
+     * @see at.kubatsch.util.Event#removeHandler(at.kubatsch.util.IEventHandler)
+     */
+    public void removeClientMessageListener(
+            IEventHandler<NetworkMessageEventArgs> handler)
+    {
+        _clientMessageEvent.removeHandler(handler);
     }
 
     /**
@@ -146,9 +245,24 @@ public class NetworkControllerServer
      */
     public void clientDisconnected(NetworkGameClient networkGameClient)
     {
-        networkGameClient.isRunning(false);
-        _networkGameClients.remove(networkGameClient);
-        System.out.println("Client Disconnected");
+        _networkGameClientsLock.lock();
+        try
+        {
+            if (!_networkGameClients.contains(networkGameClient))
+                return;
+            _networkGameClients.remove(networkGameClient);
+        }
+        finally
+        {
+            _networkGameClientsLock.unlock();
+        }
+        
+        System.out.println("Client Disconnect (nwcs)");
+        networkGameClient.setRunning(false);
+        // TODO: cleanup registered listeners for this instance
+        _clientDisconnectedEvent.fireEvent(new NetworkGameClientEventArgs(
+                networkGameClient.getClientUid()));
+
     }
 
     /**

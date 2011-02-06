@@ -4,9 +4,11 @@
  *   filename: ICollisionRule.java
  *   project: KuBatsch
  */
-package at.kubatsch.model;
+package at.kubatsch.model.rules;
 
 import java.io.Serializable;
+
+import at.kubatsch.model.ICollidable;
 
 /**
  * A collision rule will be as soon a {@link ICollidable} collides with another

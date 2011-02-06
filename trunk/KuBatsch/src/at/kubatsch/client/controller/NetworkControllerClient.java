@@ -7,18 +7,19 @@
 package at.kubatsch.client.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import at.kubatsch.model.ICollidable;
-import at.kubatsch.util.Event;
-import at.kubatsch.util.EventArgs;
+import at.kubatsch.server.controller.NetworkControllerServer;
+import at.kubatsch.server.controller.NetworkGameClientEventArgs;
 import at.kubatsch.util.IEventHandler;
+import at.kubatsch.util.NetworkMessageController;
 import at.kubatsch.util.StreamUtils;
 
 /**
@@ -28,166 +29,55 @@ import at.kubatsch.util.StreamUtils;
  * @author Manuel Tscholl (mts3970)
  * 
  */
-public class NetworkControllerClient
+public class NetworkControllerClient extends NetworkMessageController
 {
+    private Socket                         _serverConnection;
 
-    // the maximum of Players which connect to the server
-    Socket                         _clientSocket;
-    Thread                         _updateCollidables;
-    Map<String, List<ICollidable>> _collidables;
-    ObjectInputStream              _objectInputStream;
-    boolean                        _isRunning;
-    private Event<EventArgs>       _stateUpdated = new Event<EventArgs>(this);
-    private Event<EventArgs>       _disconnected = new Event<EventArgs>(this);
-
-    /**
-     * Gets the isRunning.
-     * @return the isRunning
-     */
-    public synchronized boolean isRunning()
-    {
-        return _isRunning;
-    }
-
-    /**
-     * Sets the isRunning.
-     * @param isRunning the isRunning to set
-     */
-    public synchronized void setRunning(boolean isRunning)
-    {
-        _isRunning = isRunning;
-    }
 
     /**
      * Initializes a new instance of the {@link NetworkControllerServer} class.
      * @param portToListen the port to which the Server should listen
      * @throws IOException
-     * @throws UnknownHostException  
+     * @throws UnknownHostException
      */
     public NetworkControllerClient(String host, int port) throws IOException
     {
         super();
-        _clientSocket = new Socket(host, port);
+        _serverConnection = new Socket(host, port);
+
+        OutputStream outputStream = _serverConnection.getOutputStream();
+        setObjectOutputStream(new ObjectOutputStream(outputStream));
+
+        InputStream inputStream = _serverConnection.getInputStream();
+        setObjectInputStream(new ObjectInputStream(inputStream));
         
-        _objectInputStream = new ObjectInputStream(
-                _clientSocket.getInputStream());
-        _collidables = new HashMap<String, List<ICollidable>>();
-        setRunning(true);
-
-        // updating Thread for the colidabals
-        _updateCollidables = new Thread(new Runnable()
+        setInterval(30);
+        
+        addConnectionLostListener(new IEventHandler<NetworkGameClientEventArgs>()
         {
+            
             @Override
-            public void run()
+            public void fired(Object sender, NetworkGameClientEventArgs e)
             {
-                while (isRunning())
+                System.out.println("Client Disconnected");
+                StackTraceElement[] i = Thread.currentThread().getStackTrace();       
+                for (StackTraceElement stackTraceElement : i)
                 {
-                    try
-                    {
-                        // the object which the server sent
-                        Object temp = _objectInputStream.readObject();
-                        if (temp != null)
-                        {
-                            @SuppressWarnings("unchecked")
-                            Map<String, List<ICollidable>> tempCollidables = (Map<String, List<ICollidable>>) temp;
-                            setCollidables(tempCollidables);
-                        }
-                    }
-                    catch (IOException e)
-                    {
-                        setRunning(false);
-
-                    }
-                    catch (ClassNotFoundException e)
-                    {
-                    }
+                    System.out.println(stackTraceElement);
                 }
-                
-                disconnect();
             }
-
-        }, "UpdateCollidables");
-
-        _updateCollidables.start();
-
+        });
     }
-    
+
     /**
      * Disconnects the client from the server
      */
     public void disconnect()
     {
         setRunning(false);
-        if(_clientSocket != null)
+        if (_serverConnection != null)
         {
-            StreamUtils.close(_clientSocket);
+            StreamUtils.close(_serverConnection);
         }
-        _disconnected.fireEvent(EventArgs.Empty);
     }
-
-    /**
-     * 
-     * @param collidable the new mapping of collidables to update (all types
-     *            will be added/updated)
-     */
-    public void setCollidables(Map<String, List<ICollidable>> collidable)
-    {
-
-        // replaces or inserts each type
-        for (Entry<String, List<ICollidable>> tempCollidable : collidable
-                .entrySet())
-        {
-            _collidables
-                    .put(tempCollidable.getKey(), tempCollidable.getValue());
-        }
-        _stateUpdated.fireEvent(EventArgs.Empty);
-    }
-
-    /**
-     * Gets the collidables.
-     * @return the collidables
-     */
-    public synchronized Map<String, List<ICollidable>> getCollidables()
-    {
-        return _collidables;
-    }
-
-    /**
-     * @param handler
-     * @see at.kubatsch.util.Event#addHandler(at.kubatsch.util.IEventHandler)
-     */
-    public void addStateUpdatedHandler(IEventHandler<EventArgs> handler)
-    {
-        _stateUpdated.addHandler(handler);
-    }
-
-    /**
-     * @param handler
-     * @see at.kubatsch.util.Event#removeHandler(at.kubatsch.util.IEventHandler)
-     */
-    public void removeStateUpdatedHandler(IEventHandler<EventArgs> handler)
-    {
-        _stateUpdated.removeHandler(handler);
-    }
-
-    /**
-     * @param handler
-     * @see at.kubatsch.util.Event#addHandler(at.kubatsch.util.IEventHandler)
-     */
-    public void addDisconnectedListener(IEventHandler<EventArgs> handler)
-    {
-        _disconnected.addHandler(handler);
-    }
-
-    /**
-     * @param handler
-     * @see at.kubatsch.util.Event#removeHandler(at.kubatsch.util.IEventHandler)
-     */
-    public void removeDisconnectedListener(IEventHandler<EventArgs> handler)
-    {
-        _disconnected.removeHandler(handler);
-    }
-    
-    
-
 }

@@ -10,6 +10,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.kubatsch.model.rules.ICollisionRule;
 import at.kubatsch.util.CollisionCalculator;
 
 /**
@@ -22,11 +23,7 @@ import at.kubatsch.util.CollisionCalculator;
  */
 public abstract class CollidableBase implements ICollidable 
 {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-    
+    private static final long serialVersionUID = -8881445060206154903L;
     private Point2D.Float _minPoint;
     private Point2D.Float _maxPoint;
 
@@ -113,8 +110,24 @@ public abstract class CollidableBase implements ICollidable
             maxY = Math.max(_collisionMap[i].y, maxY);
         }
         
-        _minPoint = new Point2D.Float(minX, minY);
-        _maxPoint = new Point2D.Float(maxX, maxY);
+        if(minX == Float.MIN_VALUE)
+        {
+            _minPoint = new Point2D.Float(0,0);
+        }
+        else
+        {
+            _minPoint = new Point2D.Float(minX, minY);
+        }
+        
+        if(maxX == Float.MIN_VALUE)
+        {
+            _maxPoint = new Point2D.Float(0,0);
+        }
+        else
+        {
+            _maxPoint = new Point2D.Float(maxX, maxY);
+        }
+        
     }
     
     /**
@@ -126,7 +139,7 @@ public abstract class CollidableBase implements ICollidable
     }
     
     /**
-     * @see at.kubatsch.model.ICollidable#addCollisionRule(at.kubatsch.model.ICollisionRule)
+     * @see at.kubatsch.model.ICollidable#addCollisionRule(at.kubatsch.model.rules.ICollisionRule)
      */
     @Override
     public void addCollisionRule(ICollisionRule rule)
@@ -135,7 +148,7 @@ public abstract class CollidableBase implements ICollidable
     }
     
     /**
-     * @see at.kubatsch.model.ICollidable#removeCollisionRule(at.kubatsch.model.ICollisionRule)
+     * @see at.kubatsch.model.ICollidable#removeCollisionRule(at.kubatsch.model.rules.ICollisionRule)
      */
     @Override
     public void removeCollisionRule(ICollisionRule rule)

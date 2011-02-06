@@ -19,8 +19,8 @@ public class IncreaseBallSpeedRule extends BallRule
      * 
      */
     private static final long serialVersionUID = 2292702591434491876L;
-    private static final float MAX_SPEED = 0.05f;
-    private static final float SPEED_STEP = 1.05f;
+    public static final float MAX_SPEED = 0.0036f;
+    private static final float SPEED_STEP = 0.0003f;
     /**
      * @see at.kubatsch.model.rules.BallRule#apply(at.kubatsch.model.Ball, at.kubatsch.model.ICollidable)
      */
@@ -30,10 +30,18 @@ public class IncreaseBallSpeedRule extends BallRule
         // don't be faster than the max speed
         float speed = (float)Math.sqrt(toApply.getVelocity().x*toApply.getVelocity().x + toApply.getVelocity().y*toApply.getVelocity().y);
         if(speed >= MAX_SPEED) return;
-         
-        toApply.setVelocity(toApply.getVelocity().x*SPEED_STEP,
-                            toApply.getVelocity().y*SPEED_STEP);
         
-        speed = (float)Math.sqrt(toApply.getVelocity().x*toApply.getVelocity().x + toApply.getVelocity().y*toApply.getVelocity().y);
+//        float stepX = SPEED_STEP;
+//        if(toApply.getVelocity().x < 0)
+//            stepX = -stepX;
+//        float stepY = SPEED_STEP;
+//        if(toApply.getVelocity().y < 0)
+//            stepY = -stepY;
+//        
+         
+        toApply.setVelocity(toApply.getVelocity().x*1.1f,
+                            toApply.getVelocity().y*1.1f);
+//        toApply.setVelocity(toApply.getVelocity().x+stepX,
+//                            toApply.getVelocity().y+stepY);
     }
 }

@@ -6,9 +6,7 @@
  */
 package at.kubatsch.model.rules;
 
-import at.kubatsch.model.AbstractRule;
 import at.kubatsch.model.Ball;
-import at.kubatsch.model.Color;
 import at.kubatsch.model.ICollidable;
 import at.kubatsch.model.PlayerHitArea;
 
@@ -18,15 +16,19 @@ import at.kubatsch.model.PlayerHitArea;
  * @author Daniel Kuschny (dku2375)
  * 
  */
-public class HitPanelReflectRule extends AbstractRule
+public class PlayerHitAreaReflectRule extends AbstractRule
 {
+    
+    
     /**
      * 
      */
     private static final long serialVersionUID = 468589354943752426L;
+    
+    private static final float HEALTH_DECREASE = 0.2f;
 
     /**
-     * @see at.kubatsch.model.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
+     * @see at.kubatsch.model.rules.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
      */
     @Override
     public void apply(ICollidable toApply, ICollidable collidesWith)
@@ -39,8 +41,11 @@ public class HitPanelReflectRule extends AbstractRule
             float realBallHeight = ball.getMaxPoint().y - ball.getMinPoint().y;
             float realBallWidth = ball.getMaxPoint().x - ball.getMinPoint().x;
             
-            float bounceOffset = 0.0002f;
+//            if(ball.collidesWith(hitArea.getPlayer().getPaddle())) return;
+            
+            float bounceOffset = 0.001f;
             // TODO: Bounce position is not correct. need to place exactly the nearest collision point 
+            System.out.printf("Reflect from %s to ", ball.getVelocity());
             switch(hitArea.getHitAreaPosition())
             {
                 case NORTH:
@@ -58,12 +63,22 @@ public class HitPanelReflectRule extends AbstractRule
                     break;
                 case WEST:
                     ball.setVelocity(-ball.getVelocity().x, ball.getVelocity().y);
-                    ball.setPosition(hitArea.getMaxPoint().x + bounceOffset + ball.getMinPoint().x,
+                    ball.setPosition(hitArea.getMaxPoint().x + bounceOffset + ball.getMinPoint().x ,
                             ball.getPosition().y);
                     break;
             }
+            System.out.printf("%s%n", ball.getVelocity());
             
-            ball.setColor(Color.getColor(ball.getColor().getIndex() + 1));
+            if(hitArea.getPlayer().isAlive())
+            {
+                // -20 health if speed = MAX_SPEED
+                // x health if speed
+                float speed = (float)Math.sqrt(ball.getVelocity().x*ball.getVelocity().x + ball.getVelocity().y*ball.getVelocity().y);
+                
+                float health = (speed * HEALTH_DECREASE)/IncreaseBallSpeedRule.MAX_SPEED;
+                
+                hitArea.getPlayer().setHealth(hitArea.getPlayer().getHealth() - health);
+            }
         }
     }
 }

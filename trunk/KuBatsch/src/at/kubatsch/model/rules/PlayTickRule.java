@@ -7,7 +7,6 @@
 package at.kubatsch.model.rules;
 
 import at.kubatsch.client.controller.AudioController;
-import at.kubatsch.model.AbstractRule;
 import at.kubatsch.model.ICollidable;
 
 /**
@@ -20,12 +19,11 @@ public class PlayTickRule extends AbstractRule
     private static final long serialVersionUID = 6125514617720936444L;
 
     /**
-     * @see at.kubatsch.model.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
+     * @see at.kubatsch.model.rules.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
      */
     @Override
     public void apply(ICollidable toApply, ICollidable collidesWith)
     {
-        System.out.println("Play Tick");
         AudioController.getInstance().playTick();
     }
 }
