@@ -15,26 +15,45 @@ import java.util.Set;
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.GameState;
 import at.kubatsch.model.ICollidable;
-import at.kubatsch.model.ICollisionRule;
 import at.kubatsch.model.IUpdatable;
 import at.kubatsch.model.SpecialItem;
+import at.kubatsch.model.rules.ICollisionRule;
 
 /**
  * @author Manuel Tscholl (mts3970)
  * 
  */
-public abstract class GameControllerBase
+public abstract class GameControllerBase extends Thread
 {
-    protected static GameControllerBase _mainController         = null;
-    protected static int                UPDATE_INTERVAL = 30;
+    protected static GameControllerBase _mainController = null;
+    protected static int                UPDATE_INTERVAL = 10;
     private GameState                   _currentGameState;
     protected Thread                    _updateGameState;
-    
+
     private boolean                     _isRunning;
     private List<ICollidable>           _collidables;
     protected Event<EventArgs>          _stateUpdated;
-    private Object                      _lastUpdateLock         = new Object();
+    private Object                      _lastUpdateLock = new Object();
     private long                        _lastUpdate;
+    private int                         _stateUpdateInterval;
+
+    /**
+     * Gets the stateUpdateInterval.
+     * @return the stateUpdateInterval
+     */
+    public int getStateUpdateInterval()
+    {
+        return _stateUpdateInterval;
+    }
+
+    /**
+     * Sets the stateUpdateInterval.
+     * @param stateUpdateInterval the stateUpdateInterval to set
+     */
+    public void setStateUpdateInterval(int stateUpdateInterval)
+    {
+        _stateUpdateInterval = stateUpdateInterval;
+    }
 
     public long getLastUpdate()
     {
@@ -58,49 +77,58 @@ public abstract class GameControllerBase
      * @param portToListen
      * @throws IOException
      */
-    protected GameControllerBase() throws IOException
+    protected GameControllerBase()
     {
         _currentGameState = new GameState();
         _collidables = new ArrayList<ICollidable>();
         _stateUpdated = new Event<EventArgs>(this);
 
-        setRunning(true);
-        _updateGameState = new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                long updateTime = getLastUpdate();
-                long startTime = System.currentTimeMillis();
-                updateGameState();
+        startUpdating();
+    }
 
-                // only wait if we have still the same data
-                if (updateTime == getLastUpdate())
+    /**
+     * 
+     */
+    protected void updateLoop()
+    {
+        int count = 0;
+        while (isRunning())
+        {
+            long updateTime = getLastUpdate();
+            long startTime = System.currentTimeMillis();
+            updateGameState();
+            count++;
+
+            if (count >= _stateUpdateInterval)
+            {
+                _stateUpdated.fireEvent(EventArgs.Empty);
+                count = 0;
+            }
+
+            // only wait if we have still the same data
+            if (updateTime == getLastUpdate())
+            {
+                // calculate how many time we need to wait
+                long timeElapsed = System.currentTimeMillis() - startTime;
+                long waitTime = UPDATE_INTERVAL - timeElapsed;
+                if (waitTime > 0)
                 {
-                    // calculate how many time we need to wait
-                    long timeElapsed = System.currentTimeMillis() - startTime;
-                    long waitTime = UPDATE_INTERVAL - timeElapsed;
-                    if (waitTime > 0)
+                    try
                     {
-                        try
-                        {
-                            Thread.sleep(waitTime);
-                        }
-                        catch (InterruptedException e)
-                        {
-                        }
+                        Thread.sleep(waitTime);
+                    }
+                    catch (InterruptedException e)
+                    {
                     }
                 }
-
             }
-        });
-        _updateGameState.setName("updateGameState");
-        _updateGameState.start();
+        }
     }
 
     private void updateGameState()
     {
-
+        if (getCurrentGameState() == null)
+            return;
         ICollidable[] collidables = getCurrentGameState().getAllCollidables()
                 .toArray(new ICollidable[0]);
 
@@ -152,12 +180,10 @@ public abstract class GameControllerBase
         {
             applyAllRules(current[0], current[1]);
         }
-
-        _stateUpdated.fireEvent(EventArgs.Empty);
-
     }
 
-    private void applyAllRules(ICollidable toApply, ICollidable collidesWith)
+    public static void applyAllRules(ICollidable toApply,
+            ICollidable collidesWith)
     {
         for (ICollisionRule rule : toApply.getCollisionRules())
         {
@@ -181,6 +207,7 @@ public abstract class GameControllerBase
     public synchronized void setCurrentGameState(GameState currentGameState)
     {
         _currentGameState = currentGameState;
+        _stateUpdated.fireEvent(EventArgs.Empty);
     }
 
     public void addBall(Ball ballToAdd)
@@ -229,13 +256,73 @@ public abstract class GameControllerBase
     {
         return _collidables;
     }
-    
-    
 
-    // Countdown
-    // Regeln f�r spielrunde
-    // Kollision berechnen
-    // start
-    // stoppen
+    /**
+     * @see java.lang.Thread#run()
+     */
+    @Override
+    public void run()
+    {
+        runGame();
+    }
 
+    protected abstract void runGame();
+
+    /**
+     * @param handler
+     * @see at.kubatsch.util.Event#addHandler(at.kubatsch.util.IEventHandler)
+     */
+    public void addStateUpdatedListener(IEventHandler<EventArgs> handler)
+    {
+        _stateUpdated.addHandler(handler);
+    }
+
+    /**
+     * @param handler
+     * @see at.kubatsch.util.Event#removeHandler(at.kubatsch.util.IEventHandler)
+     */
+    public void removeStateUpdatedListener(IEventHandler<EventArgs> handler)
+    {
+        _stateUpdated.removeHandler(handler);
+    }
+
+    public void startUpdating()
+    {
+        if (_updateGameState != null)
+            return; // already running
+
+        System.out.println("Start Updating");
+        setCurrentGameState(null);
+
+        // initialize
+        setRunning(true);
+
+        _updateGameState = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                updateLoop();
+            }
+        }, "UpdateThread");
+        _updateGameState.start();
+    }
+
+    public void suspendUpdating()
+    {
+        if (_updateGameState == null)
+            return; // not running
+        setRunning(false);
+        System.out.println("Stop updating");
+
+        try
+        {
+            _updateGameState.interrupt();
+            _updateGameState.join();
+        }
+        catch (InterruptedException e)
+        {
+        }
+        _updateGameState = null;
+    }
 }

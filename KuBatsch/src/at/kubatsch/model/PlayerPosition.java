@@ -15,5 +15,22 @@ public enum PlayerPosition
     SOUTH,
     NORTH,
     WEST,
-    EAST
+    EAST;
+    
+    public static PlayerPosition getPositionForIndex(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                return SOUTH;
+            case 1:
+                return NORTH;
+            case 2:
+                return WEST;
+            case 3:
+                return EAST;
+            default:
+                throw new IndexOutOfBoundsException();
+        }
+    }
 }

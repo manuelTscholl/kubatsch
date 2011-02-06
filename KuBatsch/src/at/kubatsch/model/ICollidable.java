@@ -9,6 +9,8 @@ package at.kubatsch.model;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
 
+import at.kubatsch.model.rules.ICollisionRule;
+
 /**
  * This class is a main part of the game logic implementation.
  * {@link ICollidable}s represent objects which can collide with any other

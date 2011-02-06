@@ -8,6 +8,8 @@ package at.kubatsch.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,48 +18,45 @@ import java.util.List;
  */
 public class GameState implements Serializable
 {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 7550857821770022559L;
-
+    private static final long serialVersionUID = 4261251295591534186L;
+  
     private List<Ball>        _balls;
     private List<SpecialItem> _specialItems;
     private Player[]          _player;
-
-    /**
-     * Initializes a new instance of the {@link GameState} class.
-     * @param balls
-     * @param specialItems
-     * @param player
-     */
-    public GameState(List<Ball> balls, List<SpecialItem> specialItems,
-            Player[] player)
-    {
-        super();
-
-        _balls = balls;
-        _specialItems = specialItems;
-        _player = player;
-    }
+    private StatusLabel       _statusLbl;
 
     /**
      * Initializes a new instance of the {@link GameState} class.
      */
     public GameState()
     {
-        super();
-
-        _balls = new ArrayList<Ball>();
-        _specialItems = new ArrayList<SpecialItem>();
+        _balls = Collections.synchronizedList(new ArrayList<Ball>());
+        _specialItems = Collections
+                .synchronizedList(new ArrayList<SpecialItem>());
         _player = new Player[4];
+        
+        for (int i = 0; i < _player.length; i++)
+        {
+            _player[i] = new Player(PlayerPosition.getPositionForIndex(i));
+        }
+        
+        _statusLbl = new StatusLabel();
+    }
+
+    /**
+     * Gets the statusLbl.
+     * @return the statusLbl
+     */
+    public StatusLabel getStatusLbl()
+    {
+        return _statusLbl;
     }
 
     /**
      * Gets the balls.
      * @return the balls
      */
-    public synchronized List<Ball> getBalls()
+    public List<Ball> getBalls()
     {
         return _balls;
     }
@@ -66,7 +65,7 @@ public class GameState implements Serializable
      * Sets the balls.
      * @param balls the balls to set
      */
-    public synchronized void setBalls(List<Ball> balls)
+    public void setBalls(List<Ball> balls)
     {
         _balls = balls;
     }
@@ -75,7 +74,7 @@ public class GameState implements Serializable
      * Gets the specialItems.
      * @return the specialItems
      */
-    public synchronized List<SpecialItem> getSpecialItems()
+    public List<SpecialItem> getSpecialItems()
     {
         return _specialItems;
     }
@@ -84,7 +83,7 @@ public class GameState implements Serializable
      * Sets the specialItems.
      * @param specialItems the specialItems to set
      */
-    public synchronized void setSpecialItems(List<SpecialItem> specialItems)
+    public void setSpecialItems(List<SpecialItem> specialItems)
     {
         _specialItems = specialItems;
     }
@@ -93,7 +92,7 @@ public class GameState implements Serializable
      * Gets the player.
      * @return the player
      */
-    public synchronized Player[] getPlayer()
+    public Player[] getPlayer()
     {
         return _player;
     }
@@ -102,26 +101,67 @@ public class GameState implements Serializable
      * Sets the player.
      * @param player the player to set
      */
-    public synchronized void setPlayer(Player[] player)
+    public void setPlayer(Player[] player)
     {
         _player = player;
     }
 
     public List<ICollidable> getAllCollidables()
     {
+        // TODO: Try some caching of this data
         ArrayList<ICollidable> collidables = new ArrayList<ICollidable>();
         collidables.addAll(getBalls());
         collidables.addAll(getSpecialItems());
         for (Player player : getPlayer())
         {
-            if (player != null)
+            collidables.add(player.getPaddle());
+            collidables.add(player.getWall());
+            collidables.add(player.getPlayerHitArea());
+        }
+        collidables.add(_statusLbl);
+        return collidables;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+        return String
+                .format("GameState [_balls=%s, _specialItems=%s, _player=%s, _statusLbl=%s]",
+                        _balls, _specialItems, Arrays.toString(_player),
+                        _statusLbl);
+    }
+
+    /**
+     * @return
+     */
+    public int getPlayerCount()
+    {
+        int count = 0;
+        for (Player player : _player)
+        {
+            if (player.getUid() >= 0)
+                count++;
+        }
+        return count;
+    }
+
+    /**
+     * @param clientUid
+     * @return
+     */
+    public int getPlayerIndex(int clientUid)
+    {
+        for (int i = 0; i < getPlayer().length; i++)
+        {
+            if (getPlayer()[i].getUid() == clientUid)
             {
-                collidables.add(player.getPaddle());
-                collidables.add(player.getWall());
-                collidables.add(player.getPlayerHitArea());
+                return i;
             }
         }
-        return collidables;
+        return -1;
     }
 
 }

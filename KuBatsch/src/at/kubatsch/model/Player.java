@@ -7,10 +7,14 @@
 package at.kubatsch.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import at.kubatsch.uicontrols.HealthBarPainter;
 
 /**
  * @author Manuel Tscholl (mts3970)
- *
+ * 
  */
 public class Player implements Serializable
 {
@@ -19,109 +23,46 @@ public class Player implements Serializable
      * 
      */
     private static final long serialVersionUID = -7405085160073165238L;
-    
-    private String _name;
-    private String _uid;
-    private float _paddlePos;
-    private float _health;
-    private int _wins;
-    private String[] _meta;
-    
-    private Paddle _paddle;
-    private PlayerHitArea _playerHitArea;
-    private Wall _wall;
+
+    private String            _name;
+    private int               _uid;                                    // uid
+                                                                        // -1
+                                                                        // means
+                                                                        // there
+                                                                        // is no
+                                                                        // player
+                                                                        // on
+                                                                        // this
+                                                                        // position
+    private int               _wins;
+
+    private PlayerPosition    _position;
+    private Paddle            _paddle;
+    private float             _health;
+    private float             _paddlePosition;
+    private PlayerHitArea     _playerHitArea;
+    private Wall              _wall;
+
+    private Set<String>       _meta;
+
     /**
      * Initializes a new instance of the {@link Player} class.
-     * @param name
-     * @param uid
-     * @param paddlePos
-     * @param health
-     * @param wins
-     * @param meta
-     * @param paddle
-     * @param playerHitArea
-     * @param wall
      */
-    public Player(String name, String uid, float paddlePos, float health,
-            int wins, String[] meta, Paddle paddle,
-            PlayerHitArea playerHitArea, Wall wall)
+    public Player(PlayerPosition position)
     {
-        super();
-        _name = name;
-        _uid = uid;
-        _paddlePos = paddlePos;
-        _health = health;
-        _wins = wins;
-        _meta = meta;
-        _paddle = paddle;
-        _playerHitArea = playerHitArea;
-        _wall = wall;
+        reset(position);
     }
     
-    public Player(){
-        
-        
-    }
-
-    /**
-     * Gets the name.
-     * @return the name
-     */
-    public synchronized String getName()
+    public boolean isAlive()
     {
-        return _name;
-    }
-
-    /**
-     * Sets the name.
-     * @param name the name to set
-     */
-    public synchronized void setName(String name)
-    {
-        _name = name;
-    }
-
-    /**
-     * Gets the uid.
-     * @return the uid
-     */
-    public synchronized String getUid()
-    {
-        return _uid;
-    }
-
-    /**
-     * Sets the uid.
-     * @param uid the uid to set
-     */
-    public synchronized void setUid(String uid)
-    {
-        _uid = uid;
-    }
-
-    /**
-     * Gets the paddlePos.
-     * @return the paddlePos
-     */
-    public synchronized float getPaddlePos()
-    {
-        return _paddlePos;
-    }
-
-    /**
-     * Sets the paddlePos.
-     * @param paddlePos the paddlePos to set
-     */
-    public synchronized void setPaddlePos(float paddlePos)
-    {
-        _paddlePos = paddlePos;
+        return _health > 0;
     }
 
     /**
      * Gets the health.
      * @return the health
      */
-    public synchronized float getHealth()
+    public float getHealth()
     {
         return _health;
     }
@@ -130,16 +71,80 @@ public class Player implements Serializable
      * Sets the health.
      * @param health the health to set
      */
-    public synchronized void setHealth(float health)
+    public void setHealth(float health)
     {
         _health = health;
+    }
+
+    /**
+     * Gets the meta.
+     * @return the meta
+     */
+    public Set<String> getMeta()
+    {
+        return _meta;
+    }
+
+    /**
+     * Gets the paddlePosition.
+     * @return the paddlePosition
+     */
+    public float getPaddlePosition()
+    {
+        return _paddlePosition;
+    }
+
+    /**
+     * Sets the paddlePosition.
+     * @param paddlePosition the paddlePosition to set
+     */
+    public void setPaddlePosition(float paddlePosition)
+    {
+        _paddlePosition = paddlePosition;
+        _paddle.setRelativePosition(_paddlePosition);
+    }
+
+    /**
+     * Gets the name.
+     * @return the name
+     */
+    public String getName()
+    {
+        return _name;
+    }
+
+    /**
+     * Sets the name.
+     * @param name the name to set
+     */
+    public void setName(String name)
+    {
+        _name = name;
+    }
+
+    /**
+     * Gets the uid.
+     * @return the uid
+     */
+    public int getUid()
+    {
+        return _uid;
+    }
+
+    /**
+     * Sets the uid.
+     * @param uid the uid to set
+     */
+    public void setUid(int uid)
+    {
+        _uid = uid;
     }
 
     /**
      * Gets the wins.
      * @return the wins
      */
-    public synchronized int getWins()
+    public int getWins()
     {
         return _wins;
     }
@@ -148,82 +153,79 @@ public class Player implements Serializable
      * Sets the wins.
      * @param wins the wins to set
      */
-    public synchronized void setWins(int wins)
+    public void setWins(int wins)
     {
         _wins = wins;
     }
 
     /**
-     * Gets the meta.
-     * @return the meta
+     * Gets the position.
+     * @return the position
      */
-    public synchronized String[] getMeta()
+    public PlayerPosition getPosition()
     {
-        return _meta;
+        return _position;
     }
 
     /**
-     * Sets the meta.
-     * @param meta the meta to set
+     * Sets the position.
+     * @param position the position to set
      */
-    public synchronized void setMeta(String[] meta)
+    public void setPosition(PlayerPosition position)
     {
-        _meta = meta;
+        _position = position;
+        _paddle.updateCollisionMap();
+        _playerHitArea.updateCollisionMap();
+        _wall.updateCollisionMap();
     }
+    
+
+    public boolean isHorizontal()
+    {
+        return _position == PlayerPosition.NORTH
+                || _position == PlayerPosition.SOUTH;
+    }
+
 
     /**
      * Gets the paddle.
      * @return the paddle
      */
-    public synchronized Paddle getPaddle()
+    public Paddle getPaddle()
     {
         return _paddle;
-    }
-
-    /**
-     * Sets the paddle.
-     * @param paddle the paddle to set
-     */
-    public synchronized void setPaddle(Paddle paddle)
-    {
-        _paddle = paddle;
     }
 
     /**
      * Gets the playerHitArea.
      * @return the playerHitArea
      */
-    public synchronized PlayerHitArea getPlayerHitArea()
+    public PlayerHitArea getPlayerHitArea()
     {
         return _playerHitArea;
-    }
-
-    /**
-     * Sets the playerHitArea.
-     * @param playerHitArea the playerHitArea to set
-     */
-    public synchronized void setPlayerHitArea(PlayerHitArea playerHitArea)
-    {
-        _playerHitArea = playerHitArea;
     }
 
     /**
      * Gets the wall.
      * @return the wall
      */
-    public synchronized Wall getWall()
+    public Wall getWall()
     {
         return _wall;
     }
 
     /**
-     * Sets the wall.
-     * @param wall the wall to set
+     * 
      */
-    public synchronized void setWall(Wall wall)
+    public void reset(PlayerPosition position)
     {
-        _wall = wall;
+        _uid = -1;
+        _position = position;
+        _paddle = new Paddle(this);
+        _health = 1;
+        _playerHitArea = new PlayerHitArea(this);
+        _meta = new HashSet<String>();
+        //_paddlePosition = 0.5f;
+        _wall = new Wall(this);
     }
-    
-
 }

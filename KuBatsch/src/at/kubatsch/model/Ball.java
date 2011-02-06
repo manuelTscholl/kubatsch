@@ -12,6 +12,10 @@ import java.awt.Image;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
+import at.kubatsch.client.controller.ClientConfigController;
+import at.kubatsch.client.controller.ClientGameController;
+import at.kubatsch.client.controller.ViewController;
+import at.kubatsch.model.rules.PaddleReflectRule;
 import at.kubatsch.uicontrols.KuBatschTheme;
 
 /**
@@ -35,7 +39,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
                                                                        / (float) KuBatschTheme.MAIN_SIZE;
 
     /**
-     * This collision region for this ball. 
+     * This collision region for this ball.
      */
     private static final Point2D.Float[] BALL_COLLISION_REGION = {
             new Point2D.Float(0.5f, 0.038f), // top
@@ -51,8 +55,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
     private Point2D.Float                _position;
     private Point2D.Float                _velocity;
     private float                        _size;
-    private int                          _hitCount;
-    private at.kubatsch.model.Color      _color;
+    private int                          _lastHitBy;
 
     /**
      * Initializes a new instance of the {@link Ball} class.
@@ -89,26 +92,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
     {
         _position = new Point2D.Float();
         _velocity = new Point2D.Float();
-        _color = color;
         setSize(size);
-    }
-
-    /**
-     * Gets the color of the ball.
-     * @return the color of the ball.
-     */
-    public at.kubatsch.model.Color getColor()
-    {
-        return _color;
-    }
-
-    /**
-     * Sets the color of the ball.
-     * @param color the new color.
-     */
-    public void setColor(at.kubatsch.model.Color color)
-    {
-        _color = color;
     }
 
     /**
@@ -185,23 +169,23 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
         _size = size;
         updateCollisionMap(BALL_COLLISION_REGION, _size, _size);
     }
-
+    
     /**
-     * Gets the amount of hits the ball had.
-     * @return the amount of hits.
+     * Gets the lastHitBy.
+     * @return the lastHitBy
      */
-    public int getHitCount()
+    public int getLastHitBy()
     {
-        return _hitCount;
+        return _lastHitBy;
     }
 
     /**
-     * Sets the amount of hits the ball had.
-     * @param hitCount the amount of hits.
+     * Sets the lastHitBy.
+     * @param lastHitBy the lastHitBy to set
      */
-    public void setHitCount(int hitCount)
+    public void setLastHitBy(int lastHitBy)
     {
-        _hitCount = hitCount;
+        _lastHitBy = lastHitBy;
     }
 
     /**
@@ -216,12 +200,37 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
         int realY = (int) (_position.y * realSize.height);
         int realSizeX = (int) (_size * realSize.width);
         int realSizeY = (int) (_size * realSize.height);
+        
+        Color ballColor = Color.GRAY;
+        if(_lastHitBy >= 0)
+        {
+            int index = ClientGameController.getInstance().getCurrentGameState().getPlayerIndex(_lastHitBy);
+            if(index > 0)
+            {
+                PlayerPosition position = PlayerPosition.getPositionForIndex(index);
+                switch (position)
+                {
+                    case NORTH:
+                        ballColor = ClientConfigController.getInstance().getConfig().getNorthColor();
+                        break;
+                    case SOUTH:
+                        ballColor = ClientConfigController.getInstance().getConfig().getSouthColor();
+                        break;
+                    case EAST:
+                        ballColor = ClientConfigController.getInstance().getConfig().getEastColor();
+                        break;
+                    case WEST:
+                        ballColor = ClientConfigController.getInstance().getConfig().getWestColor();
+                        break;
+                }
+            }
+        }
 
         // Draw image
-         Image ballImage = KuBatschTheme.BALLS[_color.getIndex()];
-         g.drawImage(ballImage, realX, realY, realX + realSizeX, realY +
-         realSizeY,
-         0,0, KuBatschTheme.BALL_SIZE, KuBatschTheme.BALL_SIZE, null);
+        Image ballImage = KuBatschTheme.BALLS[ballColor.getIndex()];
+        g.drawImage(ballImage, realX, realY, realX + realSizeX, realY
+                + realSizeY, 0, 0, KuBatschTheme.BALL_SIZE,
+                KuBatschTheme.BALL_SIZE, null);
     }
 
     /**
@@ -233,6 +242,8 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
         setPosition(getPosition().x + getVelocity().x, getPosition().y
                 + getVelocity().y);
     }
+    
+    
 
     /**
      * creates a ball with a random color, centered and with a random speed.
@@ -248,17 +259,13 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
         Ball newBall = new Ball(rndColor);
         newBall.setPosition(0.5f, 0.5f);
         // random direction with random speed
-        float speedX = (rnd.nextInt(10) + 5) / 1000.0f;
-        if (rnd.nextBoolean())
-        {
-            speedX = -speedX;
-        }
-
-        float speedY = (rnd.nextInt(10) + 5) / 1000.0f;
-        if (rnd.nextBoolean())
-        {
-            speedY = -speedY;
-        }
+        
+        // 
+        float speed = 0.001f;
+        int angle = rnd.nextInt(360);
+        
+        float speedY = (float)Math.sin(angle*PaddleReflectRule.GRAD_RAD_FACTOR) * speed;
+        float speedX = (float)Math.cos(angle*PaddleReflectRule.GRAD_RAD_FACTOR) * speed;
 
         newBall.setVelocity(speedX, speedY);
         return newBall;

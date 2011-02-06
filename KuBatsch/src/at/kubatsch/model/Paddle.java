@@ -13,28 +13,26 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
+import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.model.CollidableBase;
 import at.kubatsch.model.Color;
 import at.kubatsch.model.IDrawable;
 import at.kubatsch.model.PlayerPosition;
 import at.kubatsch.uicontrols.KuBatschTheme;
 import at.kubatsch.uicontrols.PaddlePainter;
-import at.kubatsch.util.Event;
-import at.kubatsch.util.EventArgs;
-import at.kubatsch.util.IEventHandler;
 import at.kubatsch.util.KuBaTschUtils;
 
 /**
- * This class represents a paddle which is used for the gameplay. 
- * A player can controll a paddle to reflect the ball. 
- * @author Martin Balter 
+ * This class represents a paddle which is used for the gameplay. A player can
+ * controll a paddle to reflect the ball.
+ * @author Martin Balter
  */
 public class Paddle extends CollidableBase implements IDrawable
 {
     /**
      * 
      */
-    private static final long serialVersionUID = 918808265954156583L;
+    private static final long            serialVersionUID                   = 918808265954156583L;
     /**
      * This size will size the paddlewidth to 168 pixel on a 800x800 surface
      */
@@ -56,7 +54,10 @@ public class Paddle extends CollidableBase implements IDrawable
             new Point2D.Float(0.953f, 0.662f), // right-bottom rounding
             new Point2D.Float(0.923f, 0.807f), // right-bottom
             new Point2D.Float(0.072f, 0.807f), // left-bottom
-            new Point2D.Float(0.048f, 0.662f)}; // left-bottom rounding                                        // left-bottom
+            new Point2D.Float(0.048f, 0.662f)                              };                                        // left-bottom
+                                                                                                                       // rounding
+                                                                                                                       // //
+                                                                                                                       // left-bottom
                                                                                                                        // rounding
 
     private static final Point2D.Float[] PADDLE_COLLISION_REGION_VERTICAL   = {
@@ -69,20 +70,44 @@ public class Paddle extends CollidableBase implements IDrawable
             new Point2D.Float(0.338f, 0.953f), // bottom-left rounding
             new Point2D.Float(0.194f, 0.923f), // bottom-left
             new Point2D.Float(0.194f, 0.072f), // top-left
-            new Point2D.Float(0.338f, 0.048f) // top-left rounding
-        };                                       
-                                                                                                                       // rounding
+            new Point2D.Float(0.338f, 0.048f)                              // top-left
+                                                                            // rounding
+                                                                            };
+    // rounding
 
     private float                        _x                                 = 0.5f;
-    private PlayerPosition               _paddlePosition;
+    private Player                       _player;
 
     /**
      * Initializes a new instance of the {@link Paddle} class.
      */
-    public Paddle()
+    public Paddle(Player player)
     {
-        setPaddlePosition(PlayerPosition.SOUTH);
+        _player = player;
+        updateCollisionMap();
     }
+    
+    /**
+     * @see at.kubatsch.model.CollidableBase#collidesWith(at.kubatsch.model.ICollidable)
+     */
+    @Override
+    public boolean collidesWith(ICollidable other)
+    {
+        if(_player.getUid() < 0) return false;
+        return super.collidesWith(other);
+    }
+    
+
+    /**
+     * Gets the player.
+     * @return the player
+     */
+    public Player getPlayer()
+    {
+        return _player;
+    }
+
+
 
     /**
      * Gets the paddlePosition.
@@ -90,31 +115,15 @@ public class Paddle extends CollidableBase implements IDrawable
      */
     public PlayerPosition getPaddlePosition()
     {
-        return _paddlePosition;
+        return _player.getPosition();
     }
 
-    public boolean isHorizontal()
-    {
-        return _paddlePosition == PlayerPosition.NORTH || _paddlePosition == PlayerPosition.SOUTH;
-    }
-    
-    /**
-     * Sets the paddlePosition.
-     * @param paddlePosition the paddlePosition to set
-     */
-    public void setPaddlePosition(PlayerPosition paddlePosition)
-    {
-        _paddlePosition = paddlePosition;
-        updateCollisionMap();
-    }
-
-    private void updateCollisionMap()
+    public void updateCollisionMap()
     {
         Point2D.Float[] map;
         float xSize;
         float ySize;
-        if (_paddlePosition == PlayerPosition.EAST
-                || _paddlePosition == PlayerPosition.WEST)
+        if (!_player.isHorizontal())
         {
             map = PADDLE_COLLISION_REGION_VERTICAL;
             ySize = DEFAULT_PADDLE_WIDTH;
@@ -130,15 +139,6 @@ public class Paddle extends CollidableBase implements IDrawable
     }
 
     /**
-     * Gets the x.
-     * @return the x
-     */
-    public float getAbsolutePosition()
-    {
-        return _x;
-    }
-
-    /**
      * @see at.kubatsch.model.CollidableBase#getPosition()
      */
     @Override
@@ -146,8 +146,8 @@ public class Paddle extends CollidableBase implements IDrawable
     {
         float x = 0;
         float y = 0;
-        
-        switch (_paddlePosition)
+
+        switch (getPaddlePosition())
         {
             case NORTH:
                 x = 1 - _x - DEFAULT_PADDLE_WIDTH;
@@ -159,24 +159,24 @@ public class Paddle extends CollidableBase implements IDrawable
                 break;
 
             case WEST:
-                x = - getMinPoint().x;
+                x = -getMinPoint().x;
                 y = _x;
                 break;
             case EAST:
                 x = 1 - getMaxPoint().x;
-                y =1 - _x - DEFAULT_PADDLE_WIDTH;
+                y = 1 - _x - DEFAULT_PADDLE_WIDTH;
                 break;
         }
 
         return new Point2D.Float(x, y);
     }
-    
+
     public Point2D.Float getPaintPosition()
     {
         float x = 0;
         float y = 0;
-        
-        switch (_paddlePosition)
+
+        switch (getPaddlePosition())
         {
             case NORTH:
             case SOUTH:
@@ -202,10 +202,10 @@ public class Paddle extends CollidableBase implements IDrawable
     {
         float minValue = 0;
         float maxValue = 0;
-        
+
         // 1 -> paddleSize
         // x -> ?
-        if(isHorizontal())
+        if (_player.isHorizontal())
         {
             float w = getMaxPoint().x - getMinPoint().x;
             minValue = -getMinPoint().x;
@@ -216,39 +216,19 @@ public class Paddle extends CollidableBase implements IDrawable
             float w = getMaxPoint().y - getMinPoint().y;
             minValue = -getMinPoint().y;
             maxValue = 1f - w - getMinPoint().y;
-            
+
         }
-        
+
         // minValue -> 0
         // maxValue -> 1
         // x -> ?
-        _x = KuBaTschUtils.getValueBetweenRange((maxValue - minValue) * x + minValue, minValue, maxValue);
-        _paddleMoved.fireEvent(EventArgs.Empty);
+        _x = KuBaTschUtils.getValueBetweenRange((maxValue - minValue) * x
+                + minValue, minValue, maxValue);
     }
 
     public void movePaddle(float way)
     {
-        setRelativePosition(getAbsolutePosition() + way);
-    }
-
-    private Event<EventArgs> _paddleMoved = new Event<EventArgs>(this);
-
-    /**
-     * @param handler
-     * @see at.kubatsch.util.Event#addHandler(at.kubatsch.util.IEventHandler)
-     */
-    public void addPaddleMovedListener(IEventHandler<EventArgs> handler)
-    {
-        _paddleMoved.addHandler(handler);
-    }
-
-    /**
-     * @param handler
-     * @see at.kubatsch.util.Event#removeHandler(at.kubatsch.util.IEventHandler)
-     */
-    public void removePaddleMovedListener(IEventHandler<EventArgs> handler)
-    {
-        _paddleMoved.removeHandler(handler);
+        setRelativePosition(_player.getPaddlePosition() + way);
     }
 
     /**
@@ -262,13 +242,12 @@ public class Paddle extends CollidableBase implements IDrawable
         Point2D.Float pos = getPaintPosition();
         int x = (int) (realSize.width * pos.x);
         int y = (int) (realSize.height * pos.y);
-        
-        AffineTransform t = ((Graphics2D) g).getTransform();
 
+        AffineTransform t = ((Graphics2D) g).getTransform();
 
         int rotation = 0;
 
-        switch (_paddlePosition)
+        switch (getPaddlePosition())
         {
             case NORTH:
                 rotation = 180;
@@ -283,15 +262,35 @@ public class Paddle extends CollidableBase implements IDrawable
 
         if (rotation > 0)
         {
-            ((Graphics2D) g).transform(AffineTransform
-                    .getRotateInstance((double) (rotation * Math.PI) / 180, 
-                            realSize.width/2, realSize.height/2));
+            ((Graphics2D) g).transform(AffineTransform.getRotateInstance(
+                    (double) (rotation * Math.PI) / 180, realSize.width / 2,
+                    realSize.height / 2));
+        }
+        
+        Color paddleColor = Color.GRAY;
+        
+        switch (getPaddlePosition())
+        {
+            case NORTH:
+                paddleColor = ClientConfigController.getInstance().getConfig().getNorthColor();
+                break;
+            case SOUTH:
+                paddleColor = ClientConfigController.getInstance().getConfig().getSouthColor();
+                break;
+            case EAST:
+                paddleColor = ClientConfigController.getInstance().getConfig().getEastColor();
+                break;
+            case WEST:
+                paddleColor = ClientConfigController.getInstance().getConfig().getWestColor();
+                break;
         }
 
-        PaddlePainter.paint(g, new Rectangle(x,y, 
+        PaddlePainter.paint(g, new Rectangle(x, y,
                 (int) (realSize.width * DEFAULT_PADDLE_WIDTH),
-                (int) (realSize.height * DEFAULT_PADDLE_HEIGHT)), Color.RED,
-                0.7f);
+                (int) (realSize.height * DEFAULT_PADDLE_HEIGHT)), paddleColor,
+                _player.getHealth());
+        
+        
 
         ((Graphics2D) g).setTransform(t);
     }

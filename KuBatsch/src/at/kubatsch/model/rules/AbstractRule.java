@@ -4,7 +4,9 @@
  * filename: AbstractRule.java
  * project: KuBatsch
  */
-package at.kubatsch.model;
+package at.kubatsch.model.rules;
+
+import at.kubatsch.model.ICollidable;
 
 /**
  * An empty rule implementation.
@@ -13,10 +15,10 @@ package at.kubatsch.model;
  */
 public abstract class AbstractRule implements ICollisionRule
 {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2226125330938730864L;
 
     /**
-     * @see at.kubatsch.model.ICollisionRule#reset()
+     * @see at.kubatsch.model.rules.ICollisionRule#reset()
      */
     @Override
     public void reset()
@@ -24,7 +26,7 @@ public abstract class AbstractRule implements ICollisionRule
     }
 
     /**
-     * @see at.kubatsch.model.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
+     * @see at.kubatsch.model.rules.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
      */
     @Override
     public void apply(ICollidable toApply, ICollidable collidesWith)

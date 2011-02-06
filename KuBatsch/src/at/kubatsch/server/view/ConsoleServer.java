@@ -14,7 +14,7 @@ import java.util.List;
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.Color;
 import at.kubatsch.model.GameState;
-import at.kubatsch.server.controller.GameController;
+import at.kubatsch.server.controller.ServerGameController;
 import at.kubatsch.server.model.ServerConfig;
 import at.kubatsch.util.ConfigManager;
 
@@ -75,17 +75,13 @@ public class ConsoleServer
 
         }
 
-        List<Ball> balls = new ArrayList<Ball>();
-        balls.add(new Ball(10, Color.BLUE));
-        balls.add(new Ball(15, Color.RED));
-        
         GameState start= new GameState();
-        start.setBalls(balls);
         
         try
         {
-            GameController game = GameController.getInstance(port);
+            ServerGameController game = ServerGameController.getInstance(port);
             game.setCurrentGameState(start);
+            game.start();
         }
         catch (IOException e)
         {

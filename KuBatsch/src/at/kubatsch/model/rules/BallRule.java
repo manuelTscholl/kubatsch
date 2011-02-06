@@ -6,7 +6,6 @@
  */
 package at.kubatsch.model.rules;
 
-import at.kubatsch.model.AbstractRule;
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.ICollidable;
 
@@ -26,7 +25,7 @@ public abstract class BallRule extends AbstractRule
     private static final long serialVersionUID = -5499704803685187836L;
 
     /**
-     * @see at.kubatsch.model.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
+     * @see at.kubatsch.model.rules.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
      */
     @Override
     public void apply(ICollidable toApply, ICollidable collidesWith)

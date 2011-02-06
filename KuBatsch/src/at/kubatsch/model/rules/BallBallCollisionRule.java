@@ -70,7 +70,7 @@ public class BallBallCollisionRule extends BallRule
     }
 
     /**
-     * @see at.kubatsch.model.ICollisionRule#reset()
+     * @see at.kubatsch.model.rules.ICollisionRule#reset()
      */
     @Override
     public void reset()

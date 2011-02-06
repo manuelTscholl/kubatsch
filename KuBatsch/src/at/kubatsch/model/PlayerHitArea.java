@@ -8,84 +8,74 @@ package at.kubatsch.model;
 
 import java.awt.geom.Point2D;
 
-
 /**
- * This area represents the outer borders of the gameboard. 
+ * This area represents the outer borders of the gameboard.
  * @author Daniel Kuschny (dku2375)
  * 
  */
-public class PlayerHitArea extends CollidableBase
+public class PlayerHitArea extends CollidableBase 
 {
     /**
      * 
      */
-    private static final long serialVersionUID = -3046112050291545127L;
+    private static final long              serialVersionUID = -3046112050291545127L;
 
-    private static final float INSET = 0.0001f;
-    private static final Point2D.Float[][] COLLISION_MAPS = {
-        { 
-            new Point2D.Float(2*INSET, 1 - INSET), new Point2D.Float(1 - (2*INSET), 1-INSET),
-            new Point2D.Float(1 - (2*INSET), 2f),new Point2D.Float(2 * INSET, 2f)
-        }, // south
-        { 
-            new Point2D.Float(2*INSET, INSET), new Point2D.Float(1 - (2*INSET), INSET),
-            new Point2D.Float(1-(2*INSET), -1f), new Point2D.Float(2*INSET, -1f),
-        }, // north
-        { 
-            new Point2D.Float(INSET, INSET), new Point2D.Float(INSET, 1-INSET),
-            new Point2D.Float(-1f, 1-INSET), new Point2D.Float(-1f, INSET),
-        }, // west
-        {
-            new Point2D.Float(1-INSET, INSET), new Point2D.Float(2, INSET),
-            new Point2D.Float(2f, 1-INSET), new Point2D.Float(1-INSET, 1-INSET)
-        }, // east
-    };
+    private static final float             INSET            = 0.0001f;
+    private static final Point2D.Float[][] COLLISION_MAPS   = {
+            { new Point2D.Float(2 * INSET, 1 - INSET),
+            new Point2D.Float(1 - (2 * INSET), 1 - INSET),
+            new Point2D.Float(1 - (2 * INSET), 2f),
+            new Point2D.Float(2 * INSET, 2f) }, // south
+            { new Point2D.Float(2 * INSET, INSET),
+            new Point2D.Float(1 - (2 * INSET), INSET),
+            new Point2D.Float(1 - (2 * INSET), -1f),
+            new Point2D.Float(2 * INSET, -1f), }, // north
+            { new Point2D.Float(INSET, INSET),
+            new Point2D.Float(INSET, 1 - INSET),
+            new Point2D.Float(-1f, 1 - INSET), new Point2D.Float(-1f, INSET), }, // west
+            { new Point2D.Float(1 - INSET, INSET), new Point2D.Float(2, INSET),
+            new Point2D.Float(2f, 1 - INSET),
+            new Point2D.Float(1 - INSET, 1 - INSET) }, // east
+                                                            };
 
-    private PlayerPosition                 _hitAreaPosition;
-    
+    private Player                         _player;
+
     /**
      * Initializes a new instance of the {@link PlayerHitArea} class.
      */
-    public PlayerHitArea()
+    public PlayerHitArea(Player player)
     {
-        this(PlayerPosition.SOUTH);
+        _player = player;
+        updateCollisionMap();
     }
-    
+
     /**
-     * Initializes a new instance of the {@link PlayerHitArea} class.
-     * @param position the location of the area. 
+     * Gets the player.
+     * @return the player
      */
-    public PlayerHitArea(PlayerPosition position)
+    public Player getPlayer()
     {
-        setHitAreaPosition(position);
+        return _player;
     }
-    
+
+
     /**
      * Gets the position of the area.
      * @return the position of the area.
      */
     public PlayerPosition getHitAreaPosition()
     {
-        return _hitAreaPosition;
+        return _player.getPosition();
     }
 
-    /**
-     * Sets the position of the area.
-     * @param position the position of the area.
-     */
-    public void setHitAreaPosition(PlayerPosition position)
-    {
-        _hitAreaPosition = position;
-        updateCollisionMap();
-    }
 
     /**
-     * Updates the collision map according to the current position. 
+     * Updates the collision map according to the current position.
      */
-    private void updateCollisionMap()
+    public void updateCollisionMap()
     {
         int i = 0;
-        switch (_hitAreaPosition)
+        switch (getHitAreaPosition())
         {
             case SOUTH:
                 i = 0;
@@ -100,7 +90,7 @@ public class PlayerHitArea extends CollidableBase
                 i = 3;
                 break;
         }
-        
+
         updateCollisionMap(COLLISION_MAPS[i], 1, 1);
     }
 }

@@ -8,7 +8,6 @@ package at.kubatsch.model.rules;
 
 import java.awt.geom.Point2D;
 
-import at.kubatsch.model.AbstractRule;
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.Color;
 import at.kubatsch.model.ICollidable;
@@ -23,7 +22,7 @@ public class PaddleReflectRule extends AbstractRule
 {
     private static final float LEFT_EDGE_ANGLE  = 145;
     private static final float RIGHT_EDGE_ANGLE = 25;
-    private static final float GRAD_RAD_FACTOR  = (float) Math.PI / 180;
+    public static final float GRAD_RAD_FACTOR  = (float) Math.PI / 180;
 
     /**
      * 
@@ -31,7 +30,7 @@ public class PaddleReflectRule extends AbstractRule
     private static final long  serialVersionUID = 8671041808905399550L;
 
     /**
-     * @see at.kubatsch.model.AbstractRule#apply(at.kubatsch.model.ICollidable,
+     * @see at.kubatsch.model.rules.AbstractRule#apply(at.kubatsch.model.ICollidable,
      *      at.kubatsch.model.ICollidable)
      */
     @Override
@@ -165,8 +164,7 @@ public class PaddleReflectRule extends AbstractRule
 
                     break;
             }
-
-            ball.setColor(Color.getColor(ball.getColor().getIndex() + 1));
+            ball.setLastHitBy(paddle.getPlayer().getUid());
         }
     }
 

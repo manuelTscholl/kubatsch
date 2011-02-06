@@ -124,8 +124,6 @@ public class MouseInputController implements IInputController
     }
 
 
-
-
     /**
      * @see at.kubatsch.client.controller.IInputController#enable()
      */
