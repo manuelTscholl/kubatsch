@@ -6,16 +6,15 @@
  */
 package at.kubatsch.util;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import at.kubatsch.client.controller.ClientConfigController;
+import at.kubatsch.client.model.ClientConfig;
 import at.kubatsch.model.Config;
+import at.kubatsch.server.model.ServerConfig;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;

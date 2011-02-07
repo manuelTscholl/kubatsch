@@ -1,24 +1,29 @@
 /**
  * This file is part of KuBatsch.
- *   created on: 24.01.2011
- *   filename: CollisionCalculator.java
- *   project: KuBatsch
+ * created on: 24.01.2011
+ * filename: CollisionCalculator.java
+ * project: KuBatsch
  */
 package at.kubatsch.util;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Float;
 
 import at.kubatsch.model.ICollidable;
 
 /**
+ * Calulator to detect Collisions from to different Collidables.
  * @author Daniel Kuschny (dku2375)
- * 
  */
 public class CollisionCalculator
 {
+    /**
+     * Checks if two Collidables collides
+     * @param c1 first Collidable
+     * @param c2 secound Collidable
+     * @return
+     */
     public static boolean isColliding(ICollidable c1, ICollidable c2)
     {
         Rectangle2D.Float c1Bounds = getBounds(c1);
@@ -79,6 +84,14 @@ public class CollisionCalculator
         return false;
     }
 
+    /**
+     * Checks if two lines are Colliding. The line gepends of two Points
+     * @param firstEdgeStart first edge for the first line
+     * @param firstEdgeEnd secound edge for the first line
+     * @param secondEdgeStart first edge for the secound line
+     * @param secondEdgeEnd secound edge for the secound line
+     * @return if the to line collide
+     */
     private static boolean doLinesCross(Point2D.Float firstEdgeStart,
             Point2D.Float firstEdgeEnd, Point2D.Float secondEdgeStart,
             Point2D.Float secondEdgeEnd)
@@ -90,7 +103,13 @@ public class CollisionCalculator
                 secondEdgeEnd.getY());
     }
 
-    private static Float getBounds(ICollidable c)
+    /**
+     * The bounds of the Collidable. This is the first thing which will be 
+     * checked if two collidables collide
+     * @param c the collidable which you want the bounds
+     * @return bounds of the collidable
+     */
+    private static Rectangle2D.Float getBounds(ICollidable c)
     {
         float left = c.getPosition().x + c.getMinPoint().x;
         float top = c.getPosition().y + c.getMinPoint().y;

@@ -90,7 +90,7 @@ public class ViewController
      */
     public void switchToView(String viewId)
     {
-        if(_currentView == viewId) return;
+        if(_currentView.equalsIgnoreCase(viewId)) return;
         JComponent current = _views.get(_currentView);
         JComponent newView = _views.get(viewId);
         if (newView == null)

@@ -9,7 +9,6 @@ package at.kubatsch.server.controller;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -25,12 +24,12 @@ import at.kubatsch.util.IEventHandler;
  * @author Manuel Tscholl (mts3970)
  * 
  */
-public class NetworkControllerServer
+public final class NetworkControllerServer
 {
     /**
      * the maximum of Players which connect to the server
      */
-    private final int                         MAX_PLAYERS             = 4;
+    private static final int                  MAX_PLAYERS             = 4;
     private ServerSocket                      _serverSocket;
     private List<NetworkGameClient>           _networkGameClients;
     private Thread                            _waitForPlayers;
@@ -99,8 +98,7 @@ public class NetworkControllerServer
                     {
 
                         @Override
-                        public void fired(Object sender,
-                                NetworkMessageEventArgs e)
+                        public void fired(Object sender, NetworkMessageEventArgs e)
                         {
                             _clientMessageEvent.fireEvent(e);
                         }
@@ -110,8 +108,7 @@ public class NetworkControllerServer
                     {
 
                         @Override
-                        public void fired(Object sender,
-                                NetworkGameClientEventArgs e)
+                        public void fired(Object sender, NetworkGameClientEventArgs e)
                         {
                             clientDisconnected(((NetworkGameClient) sender));
                         }
@@ -119,9 +116,8 @@ public class NetworkControllerServer
 
                     client.startWork();
 
-                    _clientConnectedEvent
-                            .fireEvent(new NetworkGameClientEventArgs(client
-                                    .getClientUid()));
+                    _clientConnectedEvent.fireEvent(new NetworkGameClientEventArgs(client
+                            .getClientUid()));
                 }
                 catch (IOException e)
                 {
@@ -223,8 +219,7 @@ public class NetworkControllerServer
      * @param handler
      * @see at.kubatsch.util.Event#addHandler(at.kubatsch.util.IEventHandler)
      */
-    public void addClientMessageListener(
-            IEventHandler<NetworkMessageEventArgs> handler)
+    public void addClientMessageListener(IEventHandler<NetworkMessageEventArgs> handler)
     {
         _clientMessageEvent.addHandler(handler);
     }
@@ -233,8 +228,7 @@ public class NetworkControllerServer
      * @param handler
      * @see at.kubatsch.util.Event#removeHandler(at.kubatsch.util.IEventHandler)
      */
-    public void removeClientMessageListener(
-            IEventHandler<NetworkMessageEventArgs> handler)
+    public void removeClientMessageListener(IEventHandler<NetworkMessageEventArgs> handler)
     {
         _clientMessageEvent.removeHandler(handler);
     }
@@ -256,7 +250,7 @@ public class NetworkControllerServer
         {
             _networkGameClientsLock.unlock();
         }
-        
+
         System.out.println("Client Disconnect (nwcs)");
         networkGameClient.setRunning(false);
         // TODO: cleanup registered listeners for this instance

@@ -22,7 +22,7 @@ public class ClientGameController extends GameControllerBase
 {
     private static ClientGameController _instance;
 
-    public static ClientGameController getInstance()
+    public synchronized static ClientGameController getInstance()
     {
         if (_instance == null)
             _instance = new ClientGameController();

@@ -163,14 +163,14 @@ public class BloodIntTextfield extends BloodTextfield
      */
     public void setValue(int value)
     {
-        setText(new Integer(value).toString());
+        setText(Integer.valueOf(value).toString());
     }
 
     /**
      * A textdocument which validates inserted text for numbers.
      * @author Daniel Kuschny (dku2375)
      */
-    class IntTextDocument extends PlainDocument
+    static class IntTextDocument extends PlainDocument
     {
         /**
          * 
