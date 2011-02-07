@@ -183,6 +183,7 @@ public abstract class GameControllerBase extends Thread
         // apply all rules
         for (ICollidable[] current : toApply)
         {
+            System.out.printf("%s collides with %s%n", current[0], current[1]);
             applyAllRules(current[0], current[1]);
         }
     }

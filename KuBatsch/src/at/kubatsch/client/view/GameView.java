@@ -8,7 +8,6 @@ package at.kubatsch.client.view;
 
 import java.awt.AWTException;
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -22,8 +21,6 @@ import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
-
-import sun.java2d.loops.CustomComponent;
 
 import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.client.controller.ClientGameController;
@@ -68,14 +65,23 @@ public class GameView extends BloodPanel implements INotifiableView
 
     private NetworkControllerClient _networkController;
     private MouseInputController    _inputController;
+    
+    /**
+     * @see at.kubatsch.uicontrols.BloodPanel#getBloodOpacity()
+     */
+    @Override
+    public float getBloodOpacity()
+    {
+        Player p = ClientGameController.getInstance().getCurrentPlayer();
+        if(p == null) return 1;
+        return 1 - p.getHealth();
+    }
 
     /**
      * Initializes a new instance of the {@link GameView} class.
      */
     public GameView()
     {
-        setBloodOpacity(1);
-
         MouseConfig c = (MouseConfig) ClientConfigController.getInstance()
                 .getConfig().getControlType()[1];
         try
@@ -211,7 +217,8 @@ public class GameView extends BloodPanel implements INotifiableView
         GameState s = ClientGameController.getInstance().getCurrentGameState();
 
         // rotate the gameboard so we see us on bottom
-        int index = s.getPlayerIndex(_networkController.getClientUid());
+        int index = s.getPlayerIndex(ClientGameController.getInstance().getClientUid());
+        if(index < 0) return;
         PlayerPosition position = PlayerPosition.getPositionForIndex(index);
 
         AffineTransform t = ((Graphics2D) g).getTransform();
@@ -276,11 +283,15 @@ public class GameView extends BloodPanel implements INotifiableView
             Dimension pointsSize = SmallCapsUtility.calculateSize(this,
                     points, KuBatschTheme.MAIN_FONT,
                     KuBatschTheme.SMALL_FONT);
+            
+            Image deadPlayerImage = KuBatschTheme.DEAD_PLAYER;
 
             int nameX = (getSize().width - nameSize.width) / 2;
             int nameY = 0;
             int pointsX = (getSize().width - pointsSize.width) / 2;
             int pointsY = 0;
+            int bloodX = (getSize().width - deadPlayerImage.getWidth(this)) / 2;
+            int bloodY = 0;
             
             
             switch (ClientGameController.getInstance().getPositionMappings()[i])
@@ -290,6 +301,7 @@ public class GameView extends BloodPanel implements INotifiableView
                 case NORTH:
                     nameY = 270;
                     pointsY = 325;
+                    bloodY = 235;
                     // rotate 180° to draw hud
                     ((Graphics2D) g).transform(AffineTransform.getRotateInstance(
                             (double) (180 * Math.PI) / 180, getSize().width / 2,
@@ -298,15 +310,20 @@ public class GameView extends BloodPanel implements INotifiableView
                 case SOUTH:
                     nameY = 495;
                     pointsY = 440;
+                    bloodY = 455;
                     break;
             }
 
-           
             Graphics2D g2d = (Graphics2D) g;
             Composite c = g2d.getComposite();
             AlphaComposite alphaComposite = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, (float)ClientConfigController.getInstance().getConfig().getHudAlpha());
             g2d.setComposite(alphaComposite);
+            
+            if(!player.isAlive())
+            {
+                g.drawImage(deadPlayerImage, bloodX, bloodY, null);
+            }
             
             g.setColor(ClientGameController.getInstance().getColorForIndex(i).getAwtColor());
             SmallCapsUtility.render(g, this, player.getName(),
@@ -315,6 +332,8 @@ public class GameView extends BloodPanel implements INotifiableView
                     KuBatschTheme.MAIN_FONT, KuBatschTheme.SMALL_FONT, pointsX, pointsY);
 
             g2d.setComposite(c);
+            
+            
 
             ((Graphics2D) g).setTransform(t2);
         }

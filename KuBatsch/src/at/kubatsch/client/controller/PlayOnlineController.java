@@ -152,7 +152,7 @@ public class PlayOnlineController
         final ServerInfo serverInfoTemp = serverInfo;
         try
         {
-            _networkController = new NetworkControllerClient(serverInfo.getHost(),serverInfo.getPort());
+            _networkController = new NetworkControllerClient(serverInfo.getServer(),serverInfo.getPort());
         }
         catch (IOException e1)
         {
