@@ -23,7 +23,6 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
-import sun.java2d.loops.CustomComponent;
 
 import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.client.controller.ClientGameController;
