@@ -36,11 +36,11 @@ public class ClientConfig extends Config
     @XStreamAlias(value = "east")
     private Color              _eastColor;
     @XStreamAlias(value = "music")
-    private double             _music;
+    private float             _music;
     @XStreamAlias(value = "effects")
-    private double             _effects;
+    private float             _effects;
     @XStreamAlias(value = "hudAlpha")
-    private double             _hudAlpha;
+    private float             _hudAlpha;
 
     /**
      * Initializes a new instance of the @see ClientConfig class.
@@ -59,7 +59,7 @@ public class ClientConfig extends Config
         setEastColor(Color.GREEN);
         setSouthColor(Color.RED);
         setWestColor(Color.GOLD);
-        setHudAlpha(0.5d);
+        setHudAlpha(0.5f);
     }
 
     /**
@@ -176,7 +176,7 @@ public class ClientConfig extends Config
      * Gets the background music volume.
      * @return the backgroudn music volume
      */
-    public double getMusic()
+    public float getMusic()
     {
         return _music;
     }
@@ -185,16 +185,16 @@ public class ClientConfig extends Config
      * Sets the background music volume.
      * @param music the background music volume to set
      */
-    public void setMusic(double music)
+    public void setMusic(float music)
     {
-        _music = KuBaTschUtils.getValueBetweenRange(music, 0d, 1d);
+        _music = KuBaTschUtils.getValueBetweenRange(music, 0f, 1f);
     }
 
     /**
      * Gets the background music effects volume.
      * @return the background effects volume
      */
-    public double getEffects()
+    public float getEffects()
     {
         return _effects;
     }
@@ -203,9 +203,9 @@ public class ClientConfig extends Config
      * Sets the background music effects volume.
      * @param effects the background music effects volume to set
      */
-    public void setEffects(double effects)
+    public void setEffects(float effects)
     {
-        _effects = KuBaTschUtils.getValueBetweenRange(effects, 0d, 1d);
+        _effects = KuBaTschUtils.getValueBetweenRange(effects, 0f, 1f);
     }
 
     /**
@@ -221,9 +221,9 @@ public class ClientConfig extends Config
      * Sets the hud alpha.
      * @param hudAlpha the hud alpha to set
      */
-    public void setHudAlpha(double hudAlpha)
+    public void setHudAlpha(float hudAlpha)
     {
-        _hudAlpha = KuBaTschUtils.getValueBetweenRange(hudAlpha, 0d, 1d);
+        _hudAlpha = KuBaTschUtils.getValueBetweenRange(hudAlpha, 0f, 1f);
     }
 
     @Override

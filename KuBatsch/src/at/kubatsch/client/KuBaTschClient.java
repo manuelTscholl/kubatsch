@@ -39,12 +39,8 @@ public class KuBaTschClient
         form.setVisible(true);
         // start audio player using correct volume
         AudioController.getInstance().setAudioEnabled(true);
-        AudioController.getInstance().setBackgroundVolume(
-                (float) ClientConfigController.getInstance().getConfig()
-                        .getMusic());
-        AudioController.getInstance().setEffectsVolume(
-                (float) ClientConfigController.getInstance().getConfig()
-                        .getEffects());
+        AudioController.getInstance();
+        AudioController.getInstance();
         AudioController.getInstance().start();
 
     }
