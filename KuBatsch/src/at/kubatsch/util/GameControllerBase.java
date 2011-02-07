@@ -98,10 +98,10 @@ public abstract class GameControllerBase extends Thread
         {
             long updateTime = getLastUpdate();
             long startTime = System.currentTimeMillis();
-            updateGameState();
+            boolean anyRuleApplied = updateGameState();
             count++;
 
-            if (count >= _stateUpdateInterval && getCurrentGameState() != null)
+            if (anyRuleApplied || (count >= _stateUpdateInterval && getCurrentGameState() != null))
             {
                 _stateUpdated.fireEvent(EventArgs.Empty);
                 count = 0;
@@ -129,11 +129,12 @@ public abstract class GameControllerBase extends Thread
 
     /**
      * Update the Gamestate
+     * @return true if any collision was applied, otherwise false. 
      */
-    private void updateGameState()
+    private boolean updateGameState()
     {
         if (getCurrentGameState() == null)
-            return;
+            return false;
         ICollidable[] collidables = getCurrentGameState().getAllCollidables()
                 .toArray(new ICollidable[0]);
 
@@ -181,11 +182,13 @@ public abstract class GameControllerBase extends Thread
         }
 
         // apply all rules
+        boolean anyRuleApplied = false;
         for (ICollidable[] current : toApply)
         {
-            System.out.printf("%s collides with %s%n", current[0], current[1]);
-            applyAllRules(current[0], current[1]);
+            if(applyAllRules(current[0], current[1]))
+                anyRuleApplied = true;
         }
+        return anyRuleApplied;
     }
 
     /**
@@ -193,13 +196,16 @@ public abstract class GameControllerBase extends Thread
      * @param toApply which you want to apply the rule
      * @param collidesWith which collides with the Collidable
      */
-    public static void applyAllRules(ICollidable toApply,
+    public static boolean applyAllRules(ICollidable toApply,
             ICollidable collidesWith)
     {
+        boolean anyRuleApplied = false;
         for (ICollisionRule rule : toApply.getCollisionRules())
         {
-            rule.apply(toApply, collidesWith);
+            if(rule.apply(toApply, collidesWith))
+                anyRuleApplied = true;
         }
+        return anyRuleApplied;
     }
 
     /**

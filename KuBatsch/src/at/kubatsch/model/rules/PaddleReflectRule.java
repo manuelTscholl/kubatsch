@@ -9,7 +9,6 @@ package at.kubatsch.model.rules;
 import java.awt.geom.Point2D;
 
 import at.kubatsch.model.Ball;
-import at.kubatsch.model.Color;
 import at.kubatsch.model.ICollidable;
 import at.kubatsch.model.Paddle;
 
@@ -34,7 +33,7 @@ public class PaddleReflectRule extends AbstractRule
      *      at.kubatsch.model.ICollidable)
      */
     @Override
-    public void apply(ICollidable toApply, ICollidable collidesWith)
+    public boolean apply(ICollidable toApply, ICollidable collidesWith)
     {
         if ((collidesWith instanceof Ball) && (toApply instanceof Paddle))
         {
@@ -165,7 +164,9 @@ public class PaddleReflectRule extends AbstractRule
                     break;
             }
             ball.setLastHitBy(paddle.getPlayer().getUid());
+            return true;
         }
+        return false;
     }
 
 }

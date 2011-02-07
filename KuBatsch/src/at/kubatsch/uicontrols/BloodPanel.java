@@ -7,6 +7,7 @@
 package at.kubatsch.uicontrols;
 
 import java.awt.AlphaComposite;
+import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -109,13 +110,17 @@ public class BloodPanel extends KuBaTschPane
                 KuBatschTheme.MAIN_SIZE, this);
 
         // draw blood overlay
-        if (_bloodOpacity > 0)
+        float blood = getBloodOpacity();
+        if (blood > 0)
         {
+            blood = Math.min(blood, 1);
             Graphics2D g2d = (Graphics2D) g;
+            Composite c = g2d.getComposite();
             AlphaComposite alphaComposite = AlphaComposite.getInstance(
-                    AlphaComposite.SRC_OVER, _bloodOpacity);
+                    AlphaComposite.SRC_OVER, blood);
             g2d.setComposite(alphaComposite);
             g2d.drawImage(BLOOD_ALPHA, null, 0, 0);
+            g2d.setComposite(c);
         }
         
         paintComponents(g);

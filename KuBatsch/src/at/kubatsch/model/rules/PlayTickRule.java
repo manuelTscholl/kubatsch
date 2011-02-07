@@ -22,8 +22,9 @@ public class PlayTickRule extends AbstractRule
      * @see at.kubatsch.model.rules.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
      */
     @Override
-    public void apply(ICollidable toApply, ICollidable collidesWith)
+    public boolean apply(ICollidable toApply, ICollidable collidesWith)
     {
         AudioController.getInstance().playTick();
+        return false; // no direct change. 
     }
 }

@@ -48,7 +48,7 @@ public class ServerGameController extends GameControllerBase
         _roundRules = new ArrayList<IGameRule>();
         _roundRules.add(new OnePlayerSurvivingRule());
         
-        setStateUpdateInterval(5);
+        setStateUpdateInterval(50);
 
         _networkServer = new NetworkControllerServer(portToListen);
         // if we are on the next timeslice we need to update all clients
