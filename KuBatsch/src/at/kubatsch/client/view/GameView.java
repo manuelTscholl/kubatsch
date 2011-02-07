@@ -23,6 +23,7 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
+import sun.java2d.loops.CustomComponent;
 
 import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.client.controller.ClientGameController;
@@ -207,14 +208,13 @@ public class GameView extends BloodPanel implements INotifiableView
         ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
-        AffineTransform t = ((Graphics2D) g).getTransform();
-
         GameState s = ClientGameController.getInstance().getCurrentGameState();
 
         // rotate the gameboard so we see us on bottom
         int index = s.getPlayerIndex(_networkController.getClientUid());
         PlayerPosition position = PlayerPosition.getPositionForIndex(index);
 
+        AffineTransform t = ((Graphics2D) g).getTransform();
         int rotation = PlayerPosition.getRotationForPosition(position);
         if (rotation > 0)
         {
@@ -223,14 +223,27 @@ public class GameView extends BloodPanel implements INotifiableView
                     getSize().width / 2, getSize().height / 2));
         }
 
+        
         // draw players
-        for (int i = 0; i < s.getPlayer().length; i++)
+        for (int i = 0; i < s.getPlayer().length; i++) 
         {
             AffineTransform t2 = ((Graphics2D) g).getTransform();
             Player player = s.getPlayer()[i];
-
-            rotation = PlayerPosition.getRotationForPosition(player
-                    .getPosition());
+            
+            
+            rotation = 0;
+            switch (player.getPosition())
+            {
+                case NORTH:
+                    rotation = 180;
+                    break;
+                case WEST:
+                    rotation = 90;
+                    break;
+                case EAST:
+                    rotation = 270;
+                    break;
+            }
             if (rotation > 0)
             {
                 ((Graphics2D) g).transform(AffineTransform.getRotateInstance(

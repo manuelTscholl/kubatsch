@@ -224,9 +224,10 @@ public class Player implements Serializable
         _position = position;
         _paddle = new Paddle(this);
         _health = 1;
+        _wins = 0;
         _playerHitArea = new PlayerHitArea(this);
         _meta = new HashSet<String>();
-        //_paddlePosition = 0.5f;
+        _paddlePosition = 0.5f;
         _wall = new Wall(this);
     }
 }
