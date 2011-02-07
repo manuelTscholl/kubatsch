@@ -18,7 +18,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
-import java.util.Date;
 
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
@@ -96,6 +95,8 @@ public class GameView extends BloodPanel implements INotifiableView
                         @Override
                         public void fired(Object sender, EventArgs e)
                         {
+                            System.out.println("adding paddle moved message");
+                            if(_networkController!=null)
                             _networkController
                                     .addToMessageStack(new PaddleMovedMessage(
                                             _inputController
@@ -172,6 +173,12 @@ public class GameView extends BloodPanel implements INotifiableView
         _networkController.startWork();
     }
 
+    /**
+     * @param message
+     */
+    /**
+     * @param message
+     */
     protected void handleMessage(INetworkMessage message)
     {
         if (message.getMessageId().equalsIgnoreCase(
@@ -186,16 +193,10 @@ public class GameView extends BloodPanel implements INotifiableView
                 UpdateGameStateMessage.MESSAGE_ID))
         {
             UpdateGameStateMessage updateMessage = (UpdateGameStateMessage) message;
+
             GameState s = updateMessage.getGameState();
             ClientGameController.getInstance().setCurrentGameState(s);
         }
-        else if (message.getMessageId().equalsIgnoreCase(
-                PaddleMovedMessage.MESSAGE_ID))
-        {
-            PaddleMovedMessage paddleMovedMessage = (PaddleMovedMessage) message;
-            ClientGameController.getInstance().updatePaddlePosition(paddleMovedMessage.getClientId(), paddleMovedMessage.getNewPosition());
-        }
-            
     }
 
     /**
@@ -209,7 +210,7 @@ public class GameView extends BloodPanel implements INotifiableView
         super.paint(g);
         if (ClientGameController.getInstance().getCurrentGameState() == null)
             return;
-        if (_networkController.getClientUid() == 0)
+        if (_networkController==null || _networkController.getClientUid() == 0)
             return; // do not know who am I
         ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);

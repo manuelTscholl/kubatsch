@@ -356,8 +356,11 @@ public abstract class GameControllerBase extends Thread
 
         try
         {
+            if(_updateGameState!=null)
+            {
             _updateGameState.interrupt();
             _updateGameState.join();
+            }
         }
         catch (InterruptedException e)
         {
