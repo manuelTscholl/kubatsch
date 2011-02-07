@@ -44,6 +44,9 @@ public class Paddle extends CollidableBase implements IDrawable
      */
     private static final float           DEFAULT_PADDLE_HEIGHT              = KuBatschTheme.PADDLE_SIZE.height
                                                                                     / (float) KuBatschTheme.MAIN_SIZE;
+    
+    private static final float           PADDLE_OFFSET = 0.001f;
+
 
     private static final Point2D.Float[] PADDLE_COLLISION_REGION_HORIZONTAL = {
             new Point2D.Float(0.03f, 0.5f), // left
@@ -147,24 +150,24 @@ public class Paddle extends CollidableBase implements IDrawable
     {
         float x = 0;
         float y = 0;
-
+        
         switch (getPaddlePosition())
         {
             case NORTH:
                 x = 1 - _x - DEFAULT_PADDLE_WIDTH;
-                y = -getMinPoint().y;
+                y = -getMinPoint().y + PADDLE_OFFSET;
                 break;
             case SOUTH:
                 x = _x;
-                y = 1 - getMaxPoint().y;
+                y = 1 - getMaxPoint().y - PADDLE_OFFSET;
                 break;
 
             case WEST:
-                x = -getMinPoint().x;
+                x = -getMinPoint().x + PADDLE_OFFSET;
                 y = _x;
                 break;
             case EAST:
-                x = 1 - getMaxPoint().x;
+                x = 1 - getMaxPoint().x - PADDLE_OFFSET;
                 y = 1 - _x - DEFAULT_PADDLE_WIDTH;
                 break;
         }
@@ -209,14 +212,14 @@ public class Paddle extends CollidableBase implements IDrawable
         if (_player.isHorizontal())
         {
             float w = getMaxPoint().x - getMinPoint().x;
-            minValue = -getMinPoint().x;
-            maxValue = 1f - w - getMinPoint().x;
+            minValue = -getMinPoint().x  + PADDLE_OFFSET;
+            maxValue = 1f - w - getMinPoint().x - PADDLE_OFFSET;
         }
         else
         {
             float w = getMaxPoint().y - getMinPoint().y;
-            minValue = -getMinPoint().y;
-            maxValue = 1f - w - getMinPoint().y;
+            minValue = -getMinPoint().y + PADDLE_OFFSET;
+            maxValue = 1f - w - getMinPoint().y - PADDLE_OFFSET;
 
         }
 

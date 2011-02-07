@@ -96,6 +96,8 @@ public class KuBatschTheme
 
     public static final Image     HUD_IMAGE;
 
+    public static final Image DEAD_PLAYER;
+
     static
     {
         // general
@@ -105,6 +107,7 @@ public class KuBatschTheme
         KUBATSCH_LOGO = getImage("logo.png");
         CONTROL_SETTINGS = getImage("control-settings.png");
         HUD_IMAGE = getImage("hud.png");
+        DEAD_PLAYER= getImage("dead-player.png");
         
         Font mainFont;
         try
