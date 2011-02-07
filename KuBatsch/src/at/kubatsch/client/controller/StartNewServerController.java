@@ -7,6 +7,7 @@
 package at.kubatsch.client.controller;
 
 import at.kubatsch.client.view.MenuView;
+import at.kubatsch.server.view.ConsoleServer;
 
 /**
  * Controller to start a new game server on the local maschine.
@@ -41,12 +42,7 @@ public class StartNewServerController
      */
     public void startServer(int port) throws StartServerException
     {
-        // TODO: Start new Server
-        if (true)
-        {
-            throw new StartServerException("Not yet implemented");
-        }
-        // back to menu
+        ConsoleServer.main(new String[]{"-p ",Integer.toString(port)});
         ViewController.getInstance().switchToView(MenuView.PANEL_ID);
     }
 
