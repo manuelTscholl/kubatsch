@@ -158,7 +158,8 @@ public class ServerGameController extends GameControllerBase
 
                 p.setPaddlePosition(paddleMsg.getNewPosition());
 
-                _stateUpdated.fireEvent(EventArgs.Empty);
+                _networkServer.sendMessageToClients(new PaddleMovedMessage(clientUid, paddleMsg.getNewPosition()));
+//                _stateUpdated.fireEvent(EventArgs.Empty);
             }
         }
     }

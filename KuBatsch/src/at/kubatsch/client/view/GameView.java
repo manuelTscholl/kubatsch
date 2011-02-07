@@ -172,12 +172,6 @@ public class GameView extends BloodPanel implements INotifiableView
         _networkController.startWork();
     }
 
-    /**
-     * @param message
-     */
-    /**
-     * @param message
-     */
     protected void handleMessage(INetworkMessage message)
     {
         if (message.getMessageId().equalsIgnoreCase(
@@ -191,12 +185,17 @@ public class GameView extends BloodPanel implements INotifiableView
         else if (message.getMessageId().equalsIgnoreCase(
                 UpdateGameStateMessage.MESSAGE_ID))
         {
-            System.out.println(new Date().toString() + ": New GameState received");
             UpdateGameStateMessage updateMessage = (UpdateGameStateMessage) message;
-
             GameState s = updateMessage.getGameState();
             ClientGameController.getInstance().setCurrentGameState(s);
         }
+        else if (message.getMessageId().equalsIgnoreCase(
+                PaddleMovedMessage.MESSAGE_ID))
+        {
+            PaddleMovedMessage paddleMovedMessage = (PaddleMovedMessage) message;
+            ClientGameController.getInstance().updatePaddlePosition(paddleMovedMessage.getClientId(), paddleMovedMessage.getNewPosition());
+        }
+            
     }
 
     /**

@@ -7,7 +7,9 @@
 package at.kubatsch.util;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
 
 /**
@@ -47,10 +49,19 @@ public class KuBaTschUtils
 	/**
      * Get the Path of the directory where the Class lies
      * @return the Path of the directory where the class lies
+	 * @throws UnsupportedEncodingException 
      */
-    public static final String getJarLocation(Class<?> test)
+    public static final String getJarLocation(Class<?> test) 
     {
-        return new File(test.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
+        String s = new File(test.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
+        try
+        {
+            return URLDecoder.decode(s, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            return s;
+        }
     }
     
     /**

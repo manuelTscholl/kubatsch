@@ -8,6 +8,7 @@ package at.kubatsch.client.controller;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import at.kubatsch.client.model.ClientConfig;
 import at.kubatsch.util.ConfigManager;
@@ -87,10 +88,11 @@ public class ClientConfigController
      * @return the {@link ClientConfig}
      * @throws FileNotFoundException if the {@link ConfigManager} cant find the ConfigFile
      * @throws ClassCastException if the ConfigFile is not a {@link ClientConfig} 
+     * @throws URISyntaxException 
      * @see ClientConfigController#getInstance()
      * @see ClientConfigController#getInstance(String)
      */
-    public ClientConfig loadConfig() throws FileNotFoundException, ClassCastException
+    public ClientConfig loadConfig() throws FileNotFoundException, ClassCastException, URISyntaxException
     {
         _config = _manager.loadConfig();
 

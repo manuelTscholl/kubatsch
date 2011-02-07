@@ -34,13 +34,13 @@ public class ConsoleServer
         String configName = "";
         for (int i = 0; i < args.length; i++)
         {
-            if (args[i] == "-p")
+            if (args[i].equalsIgnoreCase("-p"))
             {
                 if (i + 1 < args.length)
                     port = Integer.parseInt(args[i + 1]);
 
             }
-            else if (args[i] == "-c")
+            else if (args[i].equalsIgnoreCase("-c"))
             {
                 if (i + 1 < args.length)
                     configName = args[i + 1];
@@ -48,8 +48,10 @@ public class ConsoleServer
 
         }
 
-        
-        port=1233;
+        if(port == Integer.MIN_VALUE)
+        {
+            port = 25000;
+        }
         
         //not in port range
         if (!(port > 0 && port <= 65535))

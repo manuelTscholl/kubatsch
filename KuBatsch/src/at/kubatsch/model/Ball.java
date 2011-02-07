@@ -267,9 +267,7 @@ public class Ball extends CollidableBase implements IDrawable, IUpdatable
 
         Ball newBall = new Ball(rndColor);
         newBall.setPosition(0.5f, 0.5f);
-        // random direction with random speed
-
-        //
+        
         float speed = 0.003f;
         int angle = rnd.nextInt(360);
 

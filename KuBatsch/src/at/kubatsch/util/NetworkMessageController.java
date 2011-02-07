@@ -213,16 +213,12 @@ public abstract class NetworkMessageController
                 _messageReceived.fireEvent(new NetworkMessageEventArgs(
                         getClientUid(), msg));
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                 // on connection error fire event
                 _connectionLost.fireEvent(new NetworkGameClientEventArgs(
                         getClientUid()));
                 setRunning(false);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
             }
         }
     }
