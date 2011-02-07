@@ -26,6 +26,16 @@ public class PaddleMovedMessage implements INetworkMessage
     }
     
     private float _newPosition;
+    private int _clientId;
+    
+    /**
+     * Gets the clientId.
+     * @return the clientId
+     */
+    public int getClientId()
+    {
+        return _clientId;
+    }   
 
     /**
      * Gets the newPosition.
@@ -34,6 +44,16 @@ public class PaddleMovedMessage implements INetworkMessage
     public float getNewPosition()
     {
         return _newPosition;
+    }
+    
+    /**
+     * Initializes a new instance of the {@link PaddleMovedMessage} class.
+     * @param newPosition
+     */
+    public PaddleMovedMessage(int clientId, float newPosition)
+    {
+        _clientId = clientId;
+        _newPosition = newPosition;
     }
 
     /**

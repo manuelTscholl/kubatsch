@@ -16,6 +16,7 @@ import java.util.Random;
 
 import at.kubatsch.model.ServerInfo;
 import at.kubatsch.model.message.ServerInfoMessage;
+import at.kubatsch.server.controller.NetworkGameClientEventArgs;
 import at.kubatsch.server.controller.NetworkMessageEventArgs;
 import at.kubatsch.util.Event;
 import at.kubatsch.util.EventArgs;
@@ -30,9 +31,8 @@ public class PlayOnlineController
 {
     private static PlayOnlineController _instance;
     private static URL                  _url;
-    private static String _urlS = "http://kubatsch.googlecode.com/svn/trunk/KuBatsch/DedicatedServerList.xml";
-    NetworkControllerClient _networkController;
-    private  List<ServerInfo> _servers;
+    private static String               _urlS = "http://kubatsch.googlecode.com/svn/trunk/KuBatsch/DedicatedServerList.xml";
+    private List<ServerInfo>            _servers;
 
     /**
      * Returns a new instance of this class or the first initialized one
@@ -40,7 +40,7 @@ public class PlayOnlineController
      * @return
      */
     public static PlayOnlineController getInstance(URL url)
-    {        
+    {
         setUrl(url);
         return getInstance();
     }
@@ -85,8 +85,6 @@ public class PlayOnlineController
         _url = url;
     }
 
-
-
     /**
      * Gets the servers.
      * @return the servers
@@ -129,13 +127,13 @@ public class PlayOnlineController
 
             for (ServerInfo serverInfo : infos)
             {// gets active Players of the Server
-                if(!getServers().contains(serverInfo))
+                if (!getServers().contains(serverInfo))
                 {
-                getServers().add(serverInfo);
+                    getServers().add(serverInfo);
                 }
-                
+
                 getPlayersOf(serverInfo);
-                
+
                 serverInfo.setCurrentPlayers(serverInfo.getCurrentPlayers());
             }
             setServers(infos);
@@ -146,36 +144,52 @@ public class PlayOnlineController
             e.printStackTrace();
         }
     }
-    
+
     private void getPlayersOf(ServerInfo serverInfo)
     {
         final ServerInfo serverInfoTemp = serverInfo;
         try
         {
-            _networkController = new NetworkControllerClient(serverInfo.getServer(),serverInfo.getPort());
+            final NetworkControllerClient networkController = new NetworkControllerClient(
+                    serverInfo.getServer(), serverInfo.getPort());
+            networkController
+                    .addMessageReceivedListener(new IEventHandler<NetworkMessageEventArgs>()
+                    {
+                        @Override
+                        public void fired(Object sender,
+                                NetworkMessageEventArgs e)
+                        {
+                            if (e.getMessage().getMessageId()
+                                    .equals(ServerInfoMessage.MESSAGE_ID))
+                            {// gets the serverStatusMessage
+                                ServerInfoMessage infoMessage = (ServerInfoMessage) e
+                                        .getMessage();
+                                serverInfoTemp.setCurrentPlayers(infoMessage
+                                        .getPlayers());
+                                networkController.setRunning(false);
+                            }
+                        }
+                    });
+            networkController.addConnectionLostListener(new IEventHandler<NetworkGameClientEventArgs>()
+            {
+                
+                @Override
+                public void fired(Object sender, NetworkGameClientEventArgs e)
+                {
+                    serverInfoTemp.setCurrentPlayers(-1);
+                    networkController.setRunning(false);
+                }
+            });
+            // the object which bill be sent back with the serverinformation
+            networkController.addToMessageStack(new ServerInfoMessage());
+            networkController.startWork();// asycron work
         }
         catch (IOException e1)
         {
-            e1.printStackTrace();
+            serverInfo.setCurrentPlayers(-1);
+            // e1.printStackTrace();
         }
 
-        _networkController.addMessageReceivedListener(new IEventHandler<NetworkMessageEventArgs>()
-        {            
-            @Override
-            public void fired(Object sender, NetworkMessageEventArgs e)
-            {
-                if(e.getMessage().getMessageId().equals(ServerInfoMessage.MESSAGE_ID))
-                {//gets the serverStatusMessage
-                    ServerInfoMessage infoMessage= (ServerInfoMessage)e.getMessage();
-                    serverInfoTemp.setCurrentPlayers(infoMessage.getPlayers());
-                    _networkController.setRunning(false);
-                }                
-            }
-        });
-        //the object which bill be sent back with the serverinformation
-        _networkController.addToMessageStack(new ServerInfoMessage());
-        _networkController.startWork();//asycron work
-   
     }
 
     private Event<EventArgs> _serversUpdated = new Event<EventArgs>(this);

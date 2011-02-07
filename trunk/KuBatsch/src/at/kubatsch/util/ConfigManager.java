@@ -6,10 +6,13 @@
  */
 package at.kubatsch.util;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.model.Config;

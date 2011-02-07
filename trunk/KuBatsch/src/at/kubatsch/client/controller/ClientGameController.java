@@ -6,6 +6,8 @@
  */
 package at.kubatsch.client.controller;
 
+import java.util.Date;
+
 import at.kubatsch.model.Color;
 import at.kubatsch.model.GameState;
 import at.kubatsch.model.Player;
@@ -70,6 +72,7 @@ public class ClientGameController extends GameControllerBase
         super.setCurrentGameState(currentGameState);
         if(currentGameState == null) return;
         // search index of myself.
+        System.out.println(new Date().toString() + ": new gamestate");
         int index = currentGameState.getPlayerIndex(_clientUid);
 
         // server stores 0->south, 1->north, 2->east, 3->west
@@ -164,6 +167,22 @@ public class ClientGameController extends GameControllerBase
                         .getConfig().getWestColor();
         }
         return Color.GRAY;
+    }
+
+    /**
+     * @param clientId
+     * @param newPosition
+     */
+    public void updatePaddlePosition(int clientId, float newPosition)
+    {
+        if(clientId == _clientUid) return;
+        
+        int index = getCurrentGameState().getPlayerIndex(clientId);
+        if(index >= 0)
+        {
+            getCurrentGameState().getPlayer()[index].setPaddlePosition(newPosition);
+        }
+        
     }
 
 }
