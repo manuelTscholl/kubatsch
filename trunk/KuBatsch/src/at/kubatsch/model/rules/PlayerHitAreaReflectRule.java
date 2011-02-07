@@ -31,7 +31,7 @@ public class PlayerHitAreaReflectRule extends AbstractRule
      * @see at.kubatsch.model.rules.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
      */
     @Override
-    public void apply(ICollidable toApply, ICollidable collidesWith)
+    public boolean apply(ICollidable toApply, ICollidable collidesWith)
     {
         if((collidesWith instanceof Ball) && (toApply instanceof PlayerHitArea))
         {
@@ -41,11 +41,9 @@ public class PlayerHitAreaReflectRule extends AbstractRule
             float realBallHeight = ball.getMaxPoint().y - ball.getMinPoint().y;
             float realBallWidth = ball.getMaxPoint().x - ball.getMinPoint().x;
             
-//            if(ball.collidesWith(hitArea.getPlayer().getPaddle())) return;
+            if(ball.collidesWith(hitArea.getPlayer().getPaddle())) return false;
             
             float bounceOffset = 0.005f;
-            // TODO: Bounce position is not correct. need to place exactly the nearest collision point 
-            System.out.printf("Reflect from %s to ", ball.getVelocity());
             switch(hitArea.getHitAreaPosition())
             {
                 case NORTH:
@@ -67,7 +65,6 @@ public class PlayerHitAreaReflectRule extends AbstractRule
                             ball.getPosition().y);
                     break;
             }
-            System.out.printf("%s%n", ball.getVelocity());
             
             if(hitArea.getPlayer().isAlive())
             {
@@ -79,6 +76,8 @@ public class PlayerHitAreaReflectRule extends AbstractRule
                 
                 hitArea.getPlayer().setHealth(hitArea.getPlayer().getHealth() - health);
             }
+            return true;
         }
+        return false;
     }
 }

@@ -37,10 +37,10 @@ public class BallBallCollisionRule extends BallRule
      *      at.kubatsch.model.ICollidable)
      */
     @Override
-    protected void apply(Ball toApply, ICollidable collidesWith)
+    protected boolean apply(Ball toApply, ICollidable collidesWith)
     {
         // don't apply rule to ball, if ball already got reflected by other rule
-        if(_appliedBalls.contains(toApply)) return; 
+        if(_appliedBalls.contains(toApply)) return false; 
         
         if (collidesWith instanceof Ball) // collides with another ball?
         {
@@ -66,7 +66,9 @@ public class BallBallCollisionRule extends BallRule
             otherBall.update();
             _appliedBalls.add(toApply);
             _appliedBalls.add(otherBall);
+            return true;
         }
+        return false;
     }
 
     /**

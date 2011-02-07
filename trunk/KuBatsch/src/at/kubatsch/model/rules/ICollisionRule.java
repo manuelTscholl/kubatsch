@@ -29,6 +29,7 @@ public interface ICollisionRule extends Serializable
      * Called as soon the rule needs to be applied. 
      * @param toApply The element which the rule is assigned to. 
      * @param collidesWith The element which the first element collided with. 
+     * @return true if the rule was applied, otherwise false.
      */
-    public void apply(ICollidable toApply, ICollidable collidesWith);
+    public boolean apply(ICollidable toApply, ICollidable collidesWith);
 }

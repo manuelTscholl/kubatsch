@@ -25,14 +25,13 @@ public class IncreaseBallSpeedRule extends BallRule
      * @see at.kubatsch.model.rules.BallRule#apply(at.kubatsch.model.Ball, at.kubatsch.model.ICollidable)
      */
     @Override
-    protected void apply(Ball toApply, ICollidable collidesWith)
+    protected boolean apply(Ball toApply, ICollidable collidesWith)
     {
         // don't be faster than the max speed
         float speed = (float)Math.sqrt(toApply.getVelocity().x*toApply.getVelocity().x + toApply.getVelocity().y*toApply.getVelocity().y);
         if(speed >= MAX_SPEED) 
         {
-            System.out.println("Max speed");
-            return;
+            return false;
         }
         
         float stepX = SPEED_STEP;
@@ -43,5 +42,6 @@ public class IncreaseBallSpeedRule extends BallRule
             stepY = -stepY;
         toApply.setVelocity(toApply.getVelocity().x+stepX,
                             toApply.getVelocity().y+stepY);
+        return true;
     }
 }

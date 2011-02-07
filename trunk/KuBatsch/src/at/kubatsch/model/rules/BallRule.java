@@ -28,12 +28,13 @@ public abstract class BallRule extends AbstractRule
      * @see at.kubatsch.model.rules.ICollisionRule#apply(at.kubatsch.model.ICollidable, at.kubatsch.model.ICollidable)
      */
     @Override
-    public void apply(ICollidable toApply, ICollidable collidesWith)
+    public boolean apply(ICollidable toApply, ICollidable collidesWith)
     {
         if(toApply instanceof Ball)
         {
-            apply((Ball)toApply, collidesWith);
+            return apply((Ball)toApply, collidesWith);
         }
+        return false;
     }
     
     /**
@@ -42,5 +43,5 @@ public abstract class BallRule extends AbstractRule
      * @param toApply The ball which collided with a {@link ICollidable}.
      * @param collidesWith the {@link ICollidable} the ball colided with. 
      */
-    protected abstract void apply(Ball toApply, ICollidable collidesWith);
+    protected abstract boolean apply(Ball toApply, ICollidable collidesWith);
 }

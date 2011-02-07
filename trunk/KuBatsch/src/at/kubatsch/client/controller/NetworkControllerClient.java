@@ -52,7 +52,7 @@ public class NetworkControllerClient extends NetworkMessageController
         setObjectInputStream(new ObjectInputStream(inputStream));
         
         // TODO constante
-        setInterval(30);
+        setInterval(60);
         
         addConnectionLostListener(new IEventHandler<NetworkGameClientEventArgs>()
         {

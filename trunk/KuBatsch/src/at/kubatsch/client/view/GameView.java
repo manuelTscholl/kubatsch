@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
+import java.util.Date;
 
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
@@ -95,7 +96,6 @@ public class GameView extends BloodPanel implements INotifiableView
                         @Override
                         public void fired(Object sender, EventArgs e)
                         {
-                            System.out.println("adding paddle moved message");
                             _networkController
                                     .addToMessageStack(new PaddleMovedMessage(
                                             _inputController
@@ -191,6 +191,7 @@ public class GameView extends BloodPanel implements INotifiableView
         else if (message.getMessageId().equalsIgnoreCase(
                 UpdateGameStateMessage.MESSAGE_ID))
         {
+            System.out.println(new Date().toString() + ": New GameState received");
             UpdateGameStateMessage updateMessage = (UpdateGameStateMessage) message;
 
             GameState s = updateMessage.getGameState();
