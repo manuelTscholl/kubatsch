@@ -215,7 +215,7 @@ public class SettingsView extends NotGameView
 
                     config.setMusic(volume);
 
-                    AudioController.getInstance().setBackgroundVolume(volume);
+                    AudioController.getInstance().updateBackgroundVolume();
                 }
             });
             controlGrid.add(bgMusicSlider, CustomGridPosition.MiddleLeft);
@@ -237,7 +237,7 @@ public class SettingsView extends NotGameView
 
                     config.setEffects(volume);
 
-                    AudioController.getInstance().setEffectsVolume(volume);
+                    AudioController.getInstance();
                 }
             });
             controlGrid.add(effectsSlider, CustomGridPosition.MiddleLeft);
