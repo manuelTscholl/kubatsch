@@ -10,7 +10,6 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import at.kubatsch.client.controller.StartNewServerController;
 import at.kubatsch.client.controller.StartServerException;
 import at.kubatsch.client.controller.ViewController;
 import at.kubatsch.uicontrols.BloodTextfield;
@@ -23,6 +22,7 @@ import at.kubatsch.uicontrols.SmallCapsLabel;
 import at.kubatsch.uicontrols.layout.CustomGridLayout.CustomGridPosition;
 import at.kubatsch.uicontrols.KuBatschTheme.TextBoxSize;
 import at.kubatsch.util.KuBaTschUtils;
+import at.kubatsch.util.StartNewServerController;
 
 /**
  * This view displays UI elements for configuring and starting a new server.
@@ -97,7 +97,7 @@ public class StartNewServerView extends NotGameView implements INotifiableView
                 try
                 {
                     StartNewServerController.getInstance()
-                            .startServer(portBox.getValue());
+                            .startServer(portBox.getValue(),"");
                     ViewController.getInstance().switchToView(MenuView.PANEL_ID);
                 }
                 catch (StartServerException ex)
