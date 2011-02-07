@@ -10,9 +10,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import at.kubatsch.model.ServerInfo;
 import at.kubatsch.model.message.ServerInfoMessage;
@@ -50,7 +48,7 @@ public class PlayOnlineController
      * @param url
      * @return
      */
-    public static PlayOnlineController getInstance()
+    public synchronized static PlayOnlineController getInstance()
     {
         if (_instance == null)
         {

@@ -23,7 +23,7 @@ import at.kubatsch.util.KuBaTschUtils;
  * floating point variable ranged between 0-1 via a "Left" and "Right" key,
  * @author Martin Balter
  */
-public class KeyboardInputController extends KeyAdapter implements
+public final class KeyboardInputController extends KeyAdapter implements
         IInputController
 {
     /**

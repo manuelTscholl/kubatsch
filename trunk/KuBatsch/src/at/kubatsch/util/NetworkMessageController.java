@@ -23,7 +23,7 @@ import at.kubatsch.server.controller.NetworkMessageEventArgs;
  */
 public abstract class NetworkMessageController
 {
-    private final int                         UPDATE_INTERVAL  = 100;
+    private static final int                         UPDATE_INTERVAL  = 100;
 
     private ObjectOutputStream                _objectOutputStream;
     private ObjectInputStream                 _objectInputStream;

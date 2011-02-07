@@ -51,7 +51,7 @@ import at.kubatsch.util.IEventHandler;
  * @author Daniel Kuschny (dku2375)
  * 
  */
-public class GameView extends BloodPanel implements INotifiableView
+public final class GameView extends BloodPanel implements INotifiableView
 {
     /**
      * The view-id used by this panel
@@ -65,7 +65,7 @@ public class GameView extends BloodPanel implements INotifiableView
 
     private NetworkControllerClient _networkController;
     private MouseInputController    _inputController;
-    
+
     /**
      * @see at.kubatsch.uicontrols.BloodPanel#getBloodOpacity()
      */
@@ -73,7 +73,8 @@ public class GameView extends BloodPanel implements INotifiableView
     public float getBloodOpacity()
     {
         Player p = ClientGameController.getInstance().getCurrentPlayer();
-        if(p == null) return 1;
+        if (p == null)
+            return 1;
         return 1 - p.getHealth();
     }
 
@@ -82,15 +83,13 @@ public class GameView extends BloodPanel implements INotifiableView
      */
     public GameView()
     {
-        MouseConfig c = (MouseConfig) ClientConfigController.getInstance()
-                .getConfig().getControlType()[1];
+        MouseConfig c = (MouseConfig) ClientConfigController.getInstance().getConfig()
+                .getControlType()[1];
         try
         {
-            _inputController = new MouseInputController(
-                    (float) c.getSensitivity(), this);
-            _inputController
-                    .addPositionChangedListener(new IEventHandler<EventArgs>()
-                    {
+            _inputController = new MouseInputController((float) c.getSensitivity(), this);
+            _inputController.addPositionChangedListener(new IEventHandler<EventArgs>()
+            {
 
                         @Override
                         public void fired(Object sender, EventArgs e)
@@ -123,8 +122,7 @@ public class GameView extends BloodPanel implements INotifiableView
             }
         });
 
-        ClientGameController gameController = ClientGameController
-                .getInstance();
+        ClientGameController gameController = ClientGameController.getInstance();
         gameController.addStateUpdatedListener(new IEventHandler<EventArgs>()
         {
             @Override
@@ -158,12 +156,10 @@ public class GameView extends BloodPanel implements INotifiableView
                 .addConnectionLostListener(new IEventHandler<NetworkGameClientEventArgs>()
                 {
                     @Override
-                    public void fired(Object sender,
-                            NetworkGameClientEventArgs e)
+                    public void fired(Object sender, NetworkGameClientEventArgs e)
                     {
                         ClientGameController.getInstance().suspendUpdating();
-                        ViewController.getInstance().switchToView(
-                                MenuView.PANEL_ID);
+                        ViewController.getInstance().switchToView(MenuView.PANEL_ID);
                     }
                 });
         // will be sent after connect message
@@ -181,13 +177,12 @@ public class GameView extends BloodPanel implements INotifiableView
      */
     protected void handleMessage(INetworkMessage message)
     {
-        if (message.getMessageId().equalsIgnoreCase(
-                SetUniqueIdMessage.MESSAGE_ID))
+        if (message.getMessageId().equalsIgnoreCase(SetUniqueIdMessage.MESSAGE_ID))
         {
             SetUniqueIdMessage uniqueIdMessage = (SetUniqueIdMessage) message;
             _networkController.setClientUid(uniqueIdMessage.getUniqueId());
-            ClientGameController.getInstance().setClientUid(
-                    uniqueIdMessage.getUniqueId());
+            ClientGameController.getInstance()
+                    .setClientUid(uniqueIdMessage.getUniqueId());
         }
         else if (message.getMessageId().equalsIgnoreCase(
                 UpdateGameStateMessage.MESSAGE_ID))
@@ -255,8 +250,7 @@ public class GameView extends BloodPanel implements INotifiableView
             if (rotation > 0)
             {
                 ((Graphics2D) g).transform(AffineTransform.getRotateInstance(
-                        (double) (rotation * Math.PI) / 180,
-                        getSize().width / 2, getSize().height / 2));
+                        (rotation * PaddleReflectRule.GRAD_RAD_FACTOR)));
             }
 
             if (player.getUid() == -1 || !player.isAlive()) // no player,
@@ -305,8 +299,7 @@ public class GameView extends BloodPanel implements INotifiableView
                     bloodY = 235;
                     // rotate 180° to draw hud
                     ((Graphics2D) g).transform(AffineTransform.getRotateInstance(
-                            (double) (180 * Math.PI) / 180, getSize().width / 2,
-                            getSize().height / 2));
+                            (180 * PaddleReflectRule.GRAD_RAD_FACTOR)));
                     break;
                 case SOUTH:
                     nameY = 495;
@@ -414,7 +407,6 @@ public class GameView extends BloodPanel implements INotifiableView
      */
     public int getClientId()
     {
-        return _networkController == null ? -1 : _networkController
-                .getClientUid();
+        return _networkController == null ? -1 : _networkController.getClientUid();
     }
 }

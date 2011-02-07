@@ -8,17 +8,10 @@ package at.kubatsch.model;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
-import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.client.controller.ClientGameController;
-import at.kubatsch.model.CollidableBase;
-import at.kubatsch.model.Color;
-import at.kubatsch.model.IDrawable;
-import at.kubatsch.model.PlayerPosition;
 import at.kubatsch.uicontrols.KuBatschTheme;
 import at.kubatsch.uicontrols.PaddlePainter;
 import at.kubatsch.util.KuBaTschUtils;

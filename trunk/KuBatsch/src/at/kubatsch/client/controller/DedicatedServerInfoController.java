@@ -65,24 +65,34 @@ public class DedicatedServerInfoController
     {
         URLConnection connection = _url.openConnection();
         connection.setConnectTimeout(3000); // 3 seconds timeout
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-                connection.getInputStream()));
+        BufferedReader reader = null;
         ArrayList<ServerInfo> serverInfos = null;
 
-        if (reader != null)
+        try
         {
-            StringBuilder sb = new StringBuilder();
-            serverInfos = new ArrayList<ServerInfo>();
-            String line;
-
-            // Read Lines from Connection
-            while ((line = reader.readLine()) != null)
+            reader = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream()));
+            
+            if (reader != null)
             {
-                sb.append(line);
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                // Read Lines from Connection
+                while ((line = reader.readLine()) != null)
+                {
+                    sb.append(line);
+                }
+                // Parse XML to ServerInfo List
+                serverInfos = (ArrayList<ServerInfo>) _stream.fromXML(sb.toString());
             }
-            // Parse XML to ServerInfo List
-            serverInfos = (ArrayList<ServerInfo>) _stream.fromXML(sb.toString());
         }
+        finally
+        {
+            reader.close();
+        }
+
+        
 
         return serverInfos;
     }
