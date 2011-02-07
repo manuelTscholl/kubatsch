@@ -11,12 +11,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.kubatsch.client.controller.StartServerException;
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.Color;
 import at.kubatsch.model.GameState;
 import at.kubatsch.server.controller.ServerGameController;
 import at.kubatsch.server.model.ServerConfig;
 import at.kubatsch.util.ConfigManager;
+import at.kubatsch.util.StartNewServerController;
 
 /**
  * @author Manuel Tscholl (mts3970)
@@ -24,6 +26,7 @@ import at.kubatsch.util.ConfigManager;
  */
 public class ConsoleServer
 {
+    
 
     /**
      * @param args
@@ -46,46 +49,14 @@ public class ConsoleServer
                     configName = args[i + 1];
             }
         }
-
-        
-        //not in port range
-        if (!(port > 0 && port <= 65535))
-        {
-            ConfigManager configManager = ConfigManager.getInstance(configName);
-            ServerConfig serverConfig = null;
-
-            try
-            {
-                serverConfig = configManager.loadConfig();
-
-            }
-            catch (FileNotFoundException e)
-            {
-                serverConfig = new ServerConfig();
-            }
-            catch (ClassCastException e)
-            {
-                e.printStackTrace();
-            }
-
-            port = serverConfig.getPort();
-
-        }
-
-        GameState start= new GameState();
-        
         try
         {
-            ServerGameController game = ServerGameController.getInstance(port);
-            game.setCurrentGameState(start);
-            game.start();
+            StartNewServerController.getInstance().startServer(port, configName);
         }
-        catch (IOException e)
+        catch (StartServerException e)
         {
             e.printStackTrace();
         }
-
-        System.out.println("Server started!");
     }
 
 }
