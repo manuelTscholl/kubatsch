@@ -6,6 +6,9 @@
  */
 package at.kubatsch.client.controller;
 
+import at.kubatsch.model.Color;
+import at.kubatsch.model.GameState;
+import at.kubatsch.model.PlayerPosition;
 import at.kubatsch.util.GameControllerBase;
 
 /**
@@ -15,10 +18,89 @@ import at.kubatsch.util.GameControllerBase;
 public class ClientGameController extends GameControllerBase
 {
     private static ClientGameController _instance;
+
     public static ClientGameController getInstance()
     {
-        if(_instance == null) _instance = new ClientGameController();
+        if (_instance == null)
+            _instance = new ClientGameController();
         return _instance;
+    }
+
+    private PlayerPosition[] _positionMappings;
+
+    public synchronized PlayerPosition[] getPositionMappings()
+    {
+        return _positionMappings;
+    }
+
+    private synchronized void setPositionMappings(
+            PlayerPosition[] positionMappings)
+    {
+        _positionMappings = positionMappings;
+    }
+
+    private int _clientUid;
+
+    public int getClientUid()
+    {
+        return _clientUid;
+    }
+
+    public void setClientUid(int clientUid)
+    {
+        _clientUid = clientUid;
+    }
+
+    /**
+     * @see at.kubatsch.util.GameControllerBase#setCurrentGameState(at.kubatsch.model.GameState)
+     */
+    @Override
+    public synchronized void setCurrentGameState(GameState currentGameState)
+    {
+        super.setCurrentGameState(currentGameState);
+        if(currentGameState == null) return;
+        // search index of myself.
+        int index = currentGameState.getPlayerIndex(_clientUid);
+
+        // server stores 0->south, 1->north, 2->east, 3->west
+        // we need to rotate this map to determine the correct colors
+
+        PlayerPosition[] position = new PlayerPosition[currentGameState.getPlayer().length];
+
+        if (index == 0) // south
+        { // no rotation
+            position[0] = PlayerPosition.SOUTH;
+            position[1] = PlayerPosition.NORTH;
+            position[2] = PlayerPosition.WEST;
+            position[3] = PlayerPosition.EAST;
+        }
+        else if (index == 1) // north
+        {
+            // rotate 180°
+            position[0] = PlayerPosition.NORTH;
+            position[1] = PlayerPosition.SOUTH;
+            position[2] = PlayerPosition.EAST;
+            position[3] = PlayerPosition.WEST;
+        }
+        else if (index == 2) // west
+        {
+            // rotate 270°
+            position[0] = PlayerPosition.EAST;
+            position[1] = PlayerPosition.WEST;
+            position[2] = PlayerPosition.SOUTH;
+            position[3] = PlayerPosition.NORTH;
+        }
+        else
+        // east
+        {
+            // rotate 90°
+            position[0] = PlayerPosition.WEST;
+            position[1] = PlayerPosition.EAST;
+            position[2] = PlayerPosition.NORTH;
+            position[3] = PlayerPosition.SOUTH;
+        }
+
+        setPositionMappings(position);
     }
 
     private ClientGameController()
@@ -34,6 +116,44 @@ public class ClientGameController extends GameControllerBase
     {
         // simply let the controller interpolate the
         // gamestate
+    }
+
+    /**
+     * @param clientId
+     * @return
+     */
+    public Color getColorForPlayer(int clientId)
+    {
+        // get client index
+        int index = getCurrentGameState().getPlayerIndex(clientId);
+        return getColorForIndex(index);
+    }
+
+    /**
+     * @param i
+     * @return
+     */
+    public Color getColorForIndex(int index)
+    {
+        if(index < 0) return Color.GRAY;
+        
+        PlayerPosition position = getPositionMappings()[index];
+        switch (position)
+        {
+            case NORTH:
+                return ClientConfigController.getInstance()
+                        .getConfig().getNorthColor();
+            case SOUTH:
+                return ClientConfigController.getInstance()
+                        .getConfig().getSouthColor();
+            case EAST:
+                return  ClientConfigController.getInstance()
+                        .getConfig().getEastColor();
+            case WEST:
+                return  ClientConfigController.getInstance()
+                        .getConfig().getWestColor();
+        }
+        return Color.GRAY;
     }
 
 }

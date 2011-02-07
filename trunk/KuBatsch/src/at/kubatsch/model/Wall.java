@@ -114,33 +114,8 @@ public class Wall extends  CollidableBase implements IDrawable
         Rectangle bounds = new Rectangle((int)(pos.x * realSize.width),(int)(pos.y * realSize.height), 
                             w,h);
         
-        AffineTransform t = ((Graphics2D) g).getTransform();
-
-        int rotation = 0;
-
-        switch (getWallPosition())
-        {
-            case NORTH:
-                rotation = 180;
-                break;
-            case WEST:
-                rotation = 90;
-                break;
-            case EAST:
-                rotation = 270;
-                break;
-        }
-
-        if (rotation > 0)
-        {
-            ((Graphics2D) g).transform(AffineTransform.getRotateInstance(
-                    (double) (rotation * Math.PI) / 180, realSize.width / 2,
-                    realSize.height / 2));
-        }
 
         HealthBarPainter.paint(g, bounds, at.kubatsch.model.Color.GRAY, 1f);
-        ((Graphics2D) g).setTransform(t);
-
     }
 
 }

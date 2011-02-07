@@ -6,6 +6,11 @@
  */
 package at.kubatsch.model;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,5 +159,25 @@ public abstract class CollidableBase implements ICollidable
     public void removeCollisionRule(ICollisionRule rule)
     {
         _rules.remove(rule);
+    }
+    
+    public static void paintHitArea(Graphics g, ICollidable coll, Dimension bounds)
+    {
+        Point2D.Float position = coll.getPosition();
+        // calculate real bounds
+        int realX = (int) (position.x * bounds.width);
+        int realY = (int) (position.y * bounds.height);
+
+        g.setColor(Color.red);
+        
+        int smallX = 1;
+        int smallY = 1;
+        for (Point2D.Float point : coll.getCollisionMap())
+        {
+            realX = (int) ((position.x + point.x) * bounds.width);
+            realY = (int) ((position.y + point.y)* bounds.height);
+
+            g.fillRect((int)(realX - smallX/2), (int)(realY - smallY/2), (int)smallX, (int)smallY);
+        }
     }
 }

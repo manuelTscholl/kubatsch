@@ -33,4 +33,22 @@ public enum PlayerPosition
                 throw new IndexOutOfBoundsException();
         }
     }
+    
+    public static int getRotationForPosition(PlayerPosition position)
+    {
+        switch (position)
+        {
+            case NORTH:
+                return 180;
+            case SOUTH:
+                return 0;
+            case WEST:
+                return 270;
+            case EAST:
+                return 90;
+            default:
+                return 0;
+        }
+    }
+    
 }

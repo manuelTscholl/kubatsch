@@ -17,7 +17,7 @@ import at.kubatsch.uicontrols.HealthBarPainter;
  * 
  */
 public class Player implements Serializable
-{
+{ 
 
     /**
      * 
@@ -55,7 +55,7 @@ public class Player implements Serializable
     
     public boolean isAlive()
     {
-        return _health > 0;
+        return _health > 0 && getUid() >= 0;
     }
 
     /**
@@ -113,7 +113,7 @@ public class Player implements Serializable
         return _name;
     }
 
-    /**
+    /**   
      * Sets the name.
      * @param name the name to set
      */
@@ -219,6 +219,7 @@ public class Player implements Serializable
      */
     public void reset(PlayerPosition position)
     {
+        _name = "---";
         _uid = -1;
         _position = position;
         _paddle = new Paddle(this);

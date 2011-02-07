@@ -43,7 +43,7 @@ public class PlayerHitAreaReflectRule extends AbstractRule
             
 //            if(ball.collidesWith(hitArea.getPlayer().getPaddle())) return;
             
-            float bounceOffset = 0.001f;
+            float bounceOffset = 0.005f;
             // TODO: Bounce position is not correct. need to place exactly the nearest collision point 
             System.out.printf("Reflect from %s to ", ball.getVelocity());
             switch(hitArea.getHitAreaPosition())
@@ -63,7 +63,7 @@ public class PlayerHitAreaReflectRule extends AbstractRule
                     break;
                 case WEST:
                     ball.setVelocity(-ball.getVelocity().x, ball.getVelocity().y);
-                    ball.setPosition(hitArea.getMaxPoint().x + bounceOffset + ball.getMinPoint().x ,
+                    ball.setPosition(hitArea.getMaxPoint().x + bounceOffset - ball.getMinPoint().x ,
                             ball.getPosition().y);
                     break;
             }

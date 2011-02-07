@@ -65,7 +65,7 @@ public class StatusLabel implements IDrawable
     @Override
     public Point2D.Float getPosition()
     {
-        return new Point2D.Float(0.5f, 0.6f);
+        return new Point2D.Float(0.5f, 0.75f);
     }
 
     /**

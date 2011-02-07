@@ -14,6 +14,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
 import at.kubatsch.client.controller.ClientConfigController;
+import at.kubatsch.client.controller.ClientGameController;
 import at.kubatsch.model.CollidableBase;
 import at.kubatsch.model.Color;
 import at.kubatsch.model.IDrawable;
@@ -243,55 +244,11 @@ public class Paddle extends CollidableBase implements IDrawable
         int x = (int) (realSize.width * pos.x);
         int y = (int) (realSize.height * pos.y);
 
-        AffineTransform t = ((Graphics2D) g).getTransform();
-
-        int rotation = 0;
-
-        switch (getPaddlePosition())
-        {
-            case NORTH:
-                rotation = 180;
-                break;
-            case WEST:
-                rotation = 90;
-                break;
-            case EAST:
-                rotation = 270;
-                break;
-        }
-
-        if (rotation > 0)
-        {
-            ((Graphics2D) g).transform(AffineTransform.getRotateInstance(
-                    (double) (rotation * Math.PI) / 180, realSize.width / 2,
-                    realSize.height / 2));
-        }
-        
-        Color paddleColor = Color.GRAY;
-        
-        switch (getPaddlePosition())
-        {
-            case NORTH:
-                paddleColor = ClientConfigController.getInstance().getConfig().getNorthColor();
-                break;
-            case SOUTH:
-                paddleColor = ClientConfigController.getInstance().getConfig().getSouthColor();
-                break;
-            case EAST:
-                paddleColor = ClientConfigController.getInstance().getConfig().getEastColor();
-                break;
-            case WEST:
-                paddleColor = ClientConfigController.getInstance().getConfig().getWestColor();
-                break;
-        }
+        Color paddleColor = ClientGameController.getInstance().getColorForPlayer(_player.getUid());
 
         PaddlePainter.paint(g, new Rectangle(x, y,
                 (int) (realSize.width * DEFAULT_PADDLE_WIDTH),
                 (int) (realSize.height * DEFAULT_PADDLE_HEIGHT)), paddleColor,
                 _player.getHealth());
-        
-        
-
-        ((Graphics2D) g).setTransform(t);
     }
 }
