@@ -250,7 +250,8 @@ public final class GameView extends BloodPanel implements INotifiableView
             if (rotation > 0)
             {
                 ((Graphics2D) g).transform(AffineTransform.getRotateInstance(
-                        (rotation * PaddleReflectRule.GRAD_RAD_FACTOR)));
+                        (rotation * PaddleReflectRule.GRAD_RAD_FACTOR),
+                        getSize().width / 2, getSize().height / 2));
             }
 
             if (player.getUid() == -1 || !player.isAlive()) // no player,
@@ -299,7 +300,8 @@ public final class GameView extends BloodPanel implements INotifiableView
                     bloodY = 235;
                     // rotate 180° to draw hud
                     ((Graphics2D) g).transform(AffineTransform.getRotateInstance(
-                            (180 * PaddleReflectRule.GRAD_RAD_FACTOR)));
+                            (180 * PaddleReflectRule.GRAD_RAD_FACTOR),
+                            getSize().width / 2, getSize().height / 2));
                     break;
                 case SOUTH:
                     nameY = 495;
