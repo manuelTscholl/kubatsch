@@ -1,8 +1,8 @@
 /**
  * This file is part of KuBatsch.
- *   created on: 24.01.2011
- *   filename: IDrawable.java
- *   project: KuBatsch
+ * created on: 24.01.2011
+ * filename: IDrawable.java
+ * project: KuBatsch
  */
 package at.kubatsch.model;
 
@@ -14,7 +14,6 @@ import java.awt.Graphics;
  * This class is used to enable drawing of classes like {@link Ball} or
  * {@link Paddle}
  * @author Daniel Kuschny (dku2375)
- * 
  */
 public interface IDrawable extends ICollidable
 {

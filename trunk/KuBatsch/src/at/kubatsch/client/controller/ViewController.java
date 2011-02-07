@@ -33,7 +33,7 @@ public class ViewController
     /**
      * Gets the globally registered instance.
      * @see ViewController#createGlobalInstance(Container)
-     * @return
+     * @return {@link ViewController} instance
      */
     public static ViewController getInstance()
     {
@@ -41,7 +41,7 @@ public class ViewController
     }
 
     /**
-     * Initializes
+     * Initializes a GlobalInstance of the {@link ViewController}
      * @param container
      */
     public static void createGlobalInstance(Container container)
@@ -51,7 +51,7 @@ public class ViewController
 
     /**
      * Initializes a new instance of the {@link ViewController} class.
-     * @param container
+     * @param container for the {@link ViewController}
      */
     private ViewController(Container container)
     {

@@ -24,7 +24,6 @@ import at.kubatsch.uicontrols.layout.CustomGridLayout.CustomGridPosition;
  * This view allows the user to configure the mouse
  * input settings. 
  * @author Daniel Kuschny (dku2375)
- *
  */
 public class MouseSettingsView extends NotGameView
 {

@@ -11,15 +11,13 @@ import at.kubatsch.model.Config;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
+ * Configuration for the Keyboardgear
  * @author Martin Balter
- *Configuration for the Keyboard
  */
 public class MouseConfig extends Config implements ControlType
 {
-    
     private static final long serialVersionUID = -3167263316021675648L;
     public static final String CONFIG_ID = "mouseconfig";
-    
     
     @XStreamAlias(value = "sensitivity")
     private double _sensitivity;
@@ -73,7 +71,10 @@ public class MouseConfig extends Config implements ControlType
         return super.toString();
     }
 
-
+    /**
+     * Returns the the typename as a "mouseconfig" ({@link MouseConfig#CONFIG_ID});
+     * @see at.kubatsch.model.Config#getConfigType()
+     */
     @Override
     public String getConfigType()
     {

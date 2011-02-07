@@ -11,13 +11,9 @@ import java.awt.geom.Point2D;
 /**
  * This area represents the outer borders of the gameboard.
  * @author Daniel Kuschny (dku2375)
- * 
  */
 public class PlayerHitArea extends CollidableBase 
 {
-    /**
-     * 
-     */
     private static final long              serialVersionUID = -3046112050291545127L;
 
     private static final float             INSET            = 0.0001f;

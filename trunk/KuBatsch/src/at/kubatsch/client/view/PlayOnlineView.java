@@ -31,7 +31,6 @@ import at.kubatsch.util.IEventHandler;
 /**
  * This view lists the online servers.
  * @author Daniel Kuschny (dku2375)
- * 
  */
 public class PlayOnlineView extends NotGameView implements INotifiableView
 {
@@ -44,9 +43,9 @@ public class PlayOnlineView extends NotGameView implements INotifiableView
      * The view-id used by this panel
      */
     public static final String PANEL_ID         = "play-online";
-    
-    private SmallCapsLabel _errorLbl;
-    private JList _serverList;
+
+    private SmallCapsLabel     _errorLbl;
+    private JList              _serverList;
 
     /**
      * Initializes a new instance of the {@link PlayOnlineView} class.
@@ -63,15 +62,15 @@ public class PlayOnlineView extends NotGameView implements INotifiableView
 
         BloodScrollPane listContainer = new BloodScrollPane(_serverList);
         add(listContainer);
-        
+
         _errorLbl = KuBatschTheme.getLabel("");
         _errorLbl.setVisible(false);
         add(_errorLbl);
-        
+
         // Buttons
         KuBaTschPane buttonPane = new KuBaTschPane();
         buttonPane.setLayout(new FlowLayout());
-        
+
         MenuButton startButton = new MenuButton("Join", true);
         startButton.setGlowEnabled(true);
         startButton.setTheme(KuBatschTheme.BUTTON_THEMES[3]);
@@ -93,12 +92,12 @@ public class PlayOnlineView extends NotGameView implements INotifiableView
             }
         });
         buttonPane.add(startButton);
-        
+
         MenuButton backButton = new MenuButton("Back", false);
         backButton.setTheme(KuBatschTheme.BUTTON_THEMES[4]);
         backButton.addMouseListener(new ChangeViewClickListener(MenuView.PANEL_ID));
         buttonPane.add(backButton);
-        
+
         add(buttonPane);
 
         MenuButton refreshButton = new MenuButton("Refesh", false);
@@ -115,28 +114,38 @@ public class PlayOnlineView extends NotGameView implements INotifiableView
         });
         refreshButton.setTheme(KuBatschTheme.BUTTON_THEMES[0]);
         add(refreshButton);
-        
-        PlayOnlineController.getInstance().addUpdatedListeners(new IEventHandler<EventArgs>()
-        {
-            @Override
-            public void fired(Object sender, EventArgs e)
-            {
-                final List<ServerInfo> data = PlayOnlineController.getInstance().getServers();
-                _serverList.setModel(new AbstractListModel() {
-                    private static final long serialVersionUID = 1L;
-                    public int getSize() { return data.size(); }
-                    public Object getElementAt(int i) { return data.get(i); }
-                });
-                
-                if(_serverList.getModel().getSize() > 0)
+
+        PlayOnlineController.getInstance().addUpdatedListeners(
+                new IEventHandler<EventArgs>()
                 {
-                    _serverList.setSelectedIndex(0);
-                }
-            }
-        });
+                    @Override
+                    public void fired(Object sender, EventArgs e)
+                    {
+                        final List<ServerInfo> data = PlayOnlineController.getInstance()
+                                .getServers();
+                        _serverList.setModel(new AbstractListModel()
+                        {
+                            private static final long serialVersionUID = 1L;
+
+                            public int getSize()
+                            {
+                                return data.size();
+                            }
+
+                            public Object getElementAt(int i)
+                            {
+                                return data.get(i);
+                            }
+                        });
+
+                        if (_serverList.getModel().getSize() > 0)
+                        {
+                            _serverList.setSelectedIndex(0);
+                        }
+                    }
+                });
     }
-    
-    
+
     /**
      * @see at.kubatsch.client.view.INotifiableView#viewDisplaying()
      */
@@ -147,13 +156,11 @@ public class PlayOnlineView extends NotGameView implements INotifiableView
         _errorLbl.setVisible(false);
     }
 
-
     /**
      * @see at.kubatsch.client.view.INotifiableView#viewHidding()
      */
     @Override
     public void viewHidding()
-    {
-    }
-    
+    {}
+
 }

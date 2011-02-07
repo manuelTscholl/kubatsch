@@ -47,7 +47,6 @@ public class ClientConfigController
     }
 
     /**
-     * 
      * Initializes a new instance of the @see ClientConfigController class without a 
      * parameter. The default name of the config is the {@link ClientConfig#CONFIG_ID}
      */

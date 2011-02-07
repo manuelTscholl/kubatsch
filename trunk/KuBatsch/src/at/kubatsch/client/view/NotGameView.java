@@ -24,9 +24,9 @@ public abstract class NotGameView extends BloodPanel
      * A unique serialization id. 
      */
     private static final long serialVersionUID = -469718004597041533L;
-    
-    private SmallCapsLabel _viewLabel;
-    
+
+    private SmallCapsLabel    _viewLabel;
+
     /**
      * Initializes a new instance of the {@link NotGameView} class.
      */
@@ -35,22 +35,21 @@ public abstract class NotGameView extends BloodPanel
         setBloodOpacity(1);
         setLayout(new VerticalLayout());
 
-        add(new Separator(1, 88));       
+        add(new Separator(1, 88));
 
         // KuBaTsch logo
-        ImageBox kubatschLogo = new ImageBox(
-                KuBatschTheme.KUBATSCH_LOGO);
+        ImageBox kubatschLogo = new ImageBox(KuBatschTheme.KUBATSCH_LOGO);
         add(kubatschLogo);
-        
+
         add(new Separator(1, 23));
 
         // Text
         _viewLabel = KuBatschTheme.getLabel("Will You Survive?");
         add(_viewLabel);
-        
+
         add(new Separator(1, 40));
     }
-    
+
     /**
      * Sets the text displayed on the top of the view. 
      * @param text the text.

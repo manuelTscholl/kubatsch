@@ -29,7 +29,6 @@ import at.kubatsch.uicontrols.layout.CustomGridLayout.CustomGridPosition;
 /**
  * This view displays elements for configuring the keyboard input settings.
  * @author Daniel Kuschny (dku2375)
- * 
  */
 public class KeySettingsView extends NotGameView
 {
@@ -51,13 +50,13 @@ public class KeySettingsView extends NotGameView
         ClientConfigController configController = ClientConfigController.getInstance();
         ClientConfig config = configController.getConfig();
         final KeyboardConfig keyConfig = (KeyboardConfig) config.getControlType()[0];
-        
+
         setViewText("Keyboard-Settings");
 
         KuBaTschPane controlGrid = new KuBaTschPane();
         add(controlGrid);
-        controlGrid.setLayout(new CustomGridLayout(new int[] { 245, 500 },
-                new int[] { 50, 60 }, 0, 10));
+        controlGrid.setLayout(new CustomGridLayout(new int[] { 245, 500 }, new int[] {
+                50, 60 }, 0, 10));
 
         // Keys
         {
@@ -68,8 +67,7 @@ public class KeySettingsView extends NotGameView
             keysPane.setLayout(new FlowLayout());
             controlGrid.add(keysPane, CustomGridPosition.MiddleLeft);
 
-            final BloodTextfield leftKey = KuBatschTheme
-                    .getTextBox(TextBoxSize.SMALL);
+            final BloodTextfield leftKey = KuBatschTheme.getTextBox(TextBoxSize.SMALL);
             leftKey.addKeyListener(new KeyAdapter()
             {
                 @Override
@@ -84,8 +82,7 @@ public class KeySettingsView extends NotGameView
             leftKey.setText(KeyEvent.getKeyText(keyConfig.getLeftKey()));
             keysPane.add(leftKey);
 
-            final BloodTextfield rightKey = KuBatschTheme
-                    .getTextBox(TextBoxSize.SMALL);
+            final BloodTextfield rightKey = KuBatschTheme.getTextBox(TextBoxSize.SMALL);
             rightKey.addKeyListener(new KeyAdapter()
             {
                 @Override
@@ -103,12 +100,13 @@ public class KeySettingsView extends NotGameView
 
         // Sensitivity
         {
-            SmallCapsLabel sensitivityLbl = KuBatschTheme
-                    .getLabel("Sensitivity");
+            SmallCapsLabel sensitivityLbl = KuBatschTheme.getLabel("Sensitivity");
             controlGrid.add(sensitivityLbl, CustomGridPosition.MiddleCenter);
 
-            // it is not allowed that the user uses the hole time with the keyboard
-            final BloodSlider sensitivity = new BloodSlider(3, 103, keyConfig.getRepeateRate());
+            // it is not allowed that the user uses the hole time with the
+            // keyboard
+            final BloodSlider sensitivity = new BloodSlider(3, 103,
+                    keyConfig.getRepeateRate());
             sensitivity.addChangeListener(new ChangeListener()
             {
                 @Override

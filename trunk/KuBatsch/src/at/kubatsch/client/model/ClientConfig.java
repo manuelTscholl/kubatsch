@@ -6,6 +6,7 @@
  */
 package at.kubatsch.client.model;
 
+import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.client.model.gear.KeyboardConfig;
 import at.kubatsch.client.model.gear.MouseConfig;
 import at.kubatsch.model.Color;
@@ -15,8 +16,8 @@ import at.kubatsch.util.KuBaTschUtils;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
+ * Configuration for the Client. Is used by the {@link ClientConfigController}
  * @author Martin Balter
- * Configuration for the Client.
  */
 public class ClientConfig extends Config
 {
@@ -44,6 +45,7 @@ public class ClientConfig extends Config
 
     /**
      * Initializes a new instance of the @see ClientConfig class.
+     * Is also used to create a standard {@link ClientConfig}.
      */
     public ClientConfig()
     {
@@ -63,7 +65,7 @@ public class ClientConfig extends Config
     }
 
     /**
-     * Gets the name.
+     * Gets the nickname of the player.
      * @return the name
      */
     public String getName()
@@ -72,7 +74,7 @@ public class ClientConfig extends Config
     }
 
     /**
-     * Sets the name.
+     * Sets the nickname of the player.
      * @param name the name to set
      */
     public void setName(String name)
@@ -82,8 +84,8 @@ public class ClientConfig extends Config
 
     /**
      * Gets the controlTypes.
-     * At the first position [0] is the KeyBoardConfig
-     * At the secound position [1] is the MouseConfig
+     * <p>At the first position [0] is the {@link KeyboardConfig}<br>
+     * At the secound position [1] is the {@link MouseConfig}
      * @return the controlTypes
      */
     public Config[] getControlType()
@@ -93,6 +95,8 @@ public class ClientConfig extends Config
 
     /**
      * Sets the controlType.
+     * <p>At the first position [0] is the {@link KeyboardConfig}<br>
+     * At the secound position [1] is the {@link MouseConfig}
      * @param controlType the controlType to set
      */
     public void setControlType(Config[] controlType)
@@ -273,7 +277,7 @@ public class ClientConfig extends Config
     }
 
     /**
-     * Returns the the Config is a "CLIENT_CONFIG";
+     * Returns the the typename as a "clientconfig" ({@link ClientConfig#CONFIG_ID});
      * @see at.kubatsch.model.Config#getConfigType()
      */
     @Override

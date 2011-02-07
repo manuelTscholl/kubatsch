@@ -22,7 +22,6 @@ import at.kubatsch.util.KuBaTschUtils;
  * A controller handling the input via keyboard. It allows controlling a
  * floating point variable ranged between 0-1 via a "Left" and "Right" key,
  * @author Martin Balter
- * 
  */
 public class KeyboardInputController extends KeyAdapter implements
         IInputController
@@ -45,8 +44,7 @@ public class KeyboardInputController extends KeyAdapter implements
 
     /**
      * Initializes a new instance of the {@link KeyboardInputController} class.
-     * @param paddle
-     * @param config
+     * @param config with the different parameters
      */
     public KeyboardInputController(KeyboardConfig config)
     {
@@ -98,6 +96,7 @@ public class KeyboardInputController extends KeyAdapter implements
         };
         _keyThread.start();
 
+        // Adapter to look when a Key is pressed
         _keyAdapter = new KeyAdapter()
         {
             @Override
@@ -128,6 +127,7 @@ public class KeyboardInputController extends KeyAdapter implements
             }
         };
 
+        // Listner to get the global KeyEvents
         _globalKeyListener = new AWTEventListener()
         {
 
@@ -156,6 +156,10 @@ public class KeyboardInputController extends KeyAdapter implements
         super.finalize();
     }
 
+    /**
+     * Move the Paddle with the offset
+     * @param offset
+     */
     private void move(float offset)
     {
         _currentValue = KuBaTschUtils.getValueBetweenRange(_currentValue

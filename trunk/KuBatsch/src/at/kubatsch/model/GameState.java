@@ -13,8 +13,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Represents the current state of the game. It is used to send the information
+ * which the server sends
  * @author Manuel Tscholl (mts3970)
- * 
  */
 public class GameState implements Serializable
 {
@@ -105,6 +106,9 @@ public class GameState implements Serializable
         _player = player;
     }
 
+    /**
+     * @return returns alle the Collidables of the game
+     */
     public List<ICollidable> getAllCollidables()
     {
         // TODO: Try some caching of this data
@@ -134,7 +138,7 @@ public class GameState implements Serializable
     }
 
     /**
-     * @return
+     * @return the Players which are on the server
      */
     public int getPlayerCount()
     {
@@ -148,8 +152,9 @@ public class GameState implements Serializable
     }
 
     /**
-     * @param clientUid
-     * @return
+     * Get a specific playerId with the uniqueId of the Player
+     * @param clientUid which you want the index
+     * @return index of the player
      */
     public int getPlayerIndex(int clientUid)
     {

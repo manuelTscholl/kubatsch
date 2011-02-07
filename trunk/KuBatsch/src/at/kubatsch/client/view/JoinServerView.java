@@ -26,33 +26,33 @@ import at.kubatsch.uicontrols.layout.CustomGridLayout.CustomGridPosition;
  * This view displays UI elements for joining a server
  * using a IP-address. 
  * @author Daniel Kuschny (dku2375)
- *
  */
 public class JoinServerView extends NotGameView implements INotifiableView
 {
     /**
      * A unique serialization ID
      */
-    private static final long serialVersionUID = -9178940078212275715L;
-    
+    private static final long  serialVersionUID = -9178940078212275715L;
+
     /**
      * The view-id used by this panel 
      */
-    public static final String PANEL_ID = "join-server";
-    
-    private SmallCapsLabel _errorLbl;
-    
+    public static final String PANEL_ID         = "join-server";
+
+    private SmallCapsLabel     _errorLbl;
+
     /**
      * Initializes a new instance of the {@link JoinServerView} class.
      */
     public JoinServerView()
     {
         setViewText("Join Server");
-        
-        KuBaTschPane controlGrid = new KuBaTschPane();
-        controlGrid.setLayout(new CustomGridLayout(new int[]{245,450},new int[]{44}, 0, 25));
 
-        // Connection String 
+        KuBaTschPane controlGrid = new KuBaTschPane();
+        controlGrid.setLayout(new CustomGridLayout(new int[] { 245, 450 },
+                new int[] { 44 }, 0, 25));
+
+        // Connection String
         SmallCapsLabel portLbl = KuBatschTheme.getLabel("Host:Port");
         portLbl.setAutoSize(false);
         controlGrid.add(portLbl, CustomGridPosition.MiddleCenter);
@@ -60,11 +60,11 @@ public class JoinServerView extends NotGameView implements INotifiableView
         final BloodTextfield serverAdressBox = KuBatschTheme.getTextBox(TextBoxSize.HUGE);
         controlGrid.add(serverAdressBox, CustomGridPosition.MiddleLeft);
         add(controlGrid);
-        
+
         // Buttons
         KuBaTschPane buttonPane = new KuBaTschPane();
         buttonPane.setLayout(new FlowLayout());
-        
+
         MenuButton startButton = new MenuButton("Join", true);
         startButton.setGlowEnabled(true);
         startButton.setTheme(KuBatschTheme.BUTTON_THEMES[3]);
@@ -75,31 +75,32 @@ public class JoinServerView extends NotGameView implements INotifiableView
             {
                 try
                 {
-                    JoinServerController.getInstance().joinServer(serverAdressBox.getText());
+                    JoinServerController.getInstance().joinServer(
+                            serverAdressBox.getText());
                 }
                 catch (JoinServerException ex)
-                { 
+                {
                     _errorLbl.setText(ex.getMessage());
                     _errorLbl.setVisible(true);
                 }
             }
         });
         buttonPane.add(startButton);
-        
+
         MenuButton backButton = new MenuButton("Back", false);
         backButton.setTheme(KuBatschTheme.BUTTON_THEMES[4]);
         backButton.addMouseListener(new ChangeViewClickListener(MenuView.PANEL_ID));
         buttonPane.add(backButton);
-        
+
         add(new Separator(1, 15));
-        
+
         _errorLbl = KuBatschTheme.getLabel("");
         _errorLbl.setVisible(false);
         add(_errorLbl);
-        
+
         add(buttonPane);
     }
-    
+
     /**
      * @see at.kubatsch.client.view.INotifiableView#viewDisplaying()
      */
@@ -114,8 +115,6 @@ public class JoinServerView extends NotGameView implements INotifiableView
      */
     @Override
     public void viewHidding()
-    {
-    }
-    
-    
+    {}
+
 }

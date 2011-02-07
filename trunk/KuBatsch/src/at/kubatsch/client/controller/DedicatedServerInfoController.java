@@ -75,10 +75,12 @@ public class DedicatedServerInfoController
             serverInfos = new ArrayList<ServerInfo>();
             String line;
 
+            // Read Lines from Connection
             while ((line = reader.readLine()) != null)
             {
                 sb.append(line);
             }
+            // Parse XML to ServerInfo List
             serverInfos = (ArrayList<ServerInfo>) _stream.fromXML(sb.toString());
         }
 

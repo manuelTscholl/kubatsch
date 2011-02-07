@@ -15,12 +15,11 @@ import at.kubatsch.uicontrols.MenuButton;
  * Used by menu's to set one button as selected.
  * Buttons get selected on mouse enter. 
  * @author Daniel Kuschny (dku2375)
- *
  */
 public class MenuButtonSelectionMouseAdapter extends MouseAdapter
 {
     private MenuButton[] _buttons;
-    
+
     /**
      * Initializes a new instance of the {@link MenuButtonSelectionMouseAdapter} class.
      * @param buttons

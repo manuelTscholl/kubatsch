@@ -7,8 +7,8 @@
 package at.kubatsch.client.controller;
 
 /**
+ * Exception für the {@link JoinServerController}. Has standard static messages
  * @author Daniel Kuschny (dku2375)
- *
  */
 public class JoinServerException extends Exception
 {
@@ -17,10 +17,8 @@ public class JoinServerException extends Exception
     public static final String HOST_NOT_FOUND = "Host Not Found";
     public static final String REFUSED = "Connection Refused";
     public static final String SERVER_FULL = "Server is Full";
+    public static final String SERVER_INFO_NULL = "The ServerInfo is null";
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -6640577586075667104L;
 
     /**
