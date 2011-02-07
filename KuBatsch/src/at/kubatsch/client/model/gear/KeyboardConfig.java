@@ -13,8 +13,8 @@ import at.kubatsch.model.Config;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
+ * Configuration for the KeyboardGear
  * @author Martin Balter
- * Configuration for the Keyboard
  */
 public class KeyboardConfig extends Config implements ControlType
 {
@@ -106,6 +106,10 @@ public class KeyboardConfig extends Config implements ControlType
         return super.toString();
     }
 
+    /**
+     * Returns the the typename as a "keyboardconfig" ({@link KeyboardConfig#CONFIG_ID});
+     * @see at.kubatsch.model.Config#getConfigType()
+     */
     @Override
     public String getConfigType()
     {

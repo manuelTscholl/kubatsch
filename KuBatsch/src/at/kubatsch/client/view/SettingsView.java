@@ -18,6 +18,8 @@ import java.io.IOException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.apache.log4j.Logger;
+
 import at.kubatsch.client.controller.AudioController;
 import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.client.model.ClientConfig;
@@ -39,7 +41,6 @@ import at.kubatsch.util.IEventHandler;
 /**
  * This panel shows the user settings.
  * @author Daniel Kuschny (dku2375)
- * 
  */
 public class SettingsView extends NotGameView
 {
@@ -47,6 +48,8 @@ public class SettingsView extends NotGameView
      * A unique serialization id.
      */
     private static final long  serialVersionUID = 1811617151694922276L;
+
+    private static Logger      LOGGER           = Logger.getLogger(SettingsView.class);
 
     /**
      * The view-id used by this panel
@@ -59,7 +62,8 @@ public class SettingsView extends NotGameView
     public SettingsView()
     {
         // Config
-        final ClientConfigController configController = ClientConfigController.getInstance();
+        final ClientConfigController configController = ClientConfigController
+                .getInstance();
         final ClientConfig config = configController.getConfig();
 
         setViewText("Settings");
@@ -82,7 +86,7 @@ public class SettingsView extends NotGameView
                 {
                     config.setName(tNickname.getText());
                 }
-                
+
                 @Override
                 public void keyReleased(KeyEvent e)
                 {
@@ -169,7 +173,7 @@ public class SettingsView extends NotGameView
                     config.setNorthColor(north.getSelectedColor());
                 }
             });
-                    
+
             paddleChooserPane.add(north);
 
             final PaddleChooser east = new PaddleChooser("East");
@@ -278,12 +282,12 @@ public class SettingsView extends NotGameView
                 {
                     try
                     {
-                        //Save the changes in the configfile
+                        // Save the changes in the configfile
                         configController.writeConfig();
                     }
                     catch (IOException e1)
                     {
-                        //TODO Loggen
+                        LOGGER.error(e1);
                     }
                 }
             }
@@ -308,7 +312,7 @@ public class SettingsView extends NotGameView
                     }
                     catch (Exception e1)
                     {
-                        //TODO Loggen oder standartconfig Laden
+                        LOGGER.error(e1);
                     }
                 }
             }

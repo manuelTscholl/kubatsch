@@ -8,7 +8,6 @@ package at.kubatsch.client.controller;
 
 /**
  * @author Daniel Kuschny (dku2375)
- *
  */
 public class StartServerException extends Exception
 {

@@ -1,8 +1,8 @@
 /**
  * This file is part of KuBatsch.
- *   created on: 17.01.2011
- *   filename: StartNewServerPanel.java
- *   project: KuBatsch
+ * created on: 17.01.2011
+ * filename: StartNewServerPanel.java
+ * project: KuBatsch
  */
 package at.kubatsch.client.view;
 
@@ -27,11 +27,10 @@ import at.kubatsch.util.KuBaTschUtils;
 /**
  * This view displays UI elements for configuring and starting a new server.
  * @author Daniel Kuschny (dku2375)
- * 
  */
 public class StartNewServerView extends NotGameView implements INotifiableView
 {
-    private static final int PORT_MAX = 65535;
+    private static final int   PORT_MAX         = 65535;
     /**
      * A unique serialization id.
      */
@@ -42,8 +41,8 @@ public class StartNewServerView extends NotGameView implements INotifiableView
      */
     public static final String PANEL_ID         = "start-server";
 
-    private SmallCapsLabel _errorLbl;
-    
+    private SmallCapsLabel     _errorLbl;
+
     /**
      * Initializes a new instance of the {@link StartNewServerView} class.
      */
@@ -52,38 +51,39 @@ public class StartNewServerView extends NotGameView implements INotifiableView
         setViewText("Start New Server");
 
         KuBaTschPane controlGrid = new KuBaTschPane();
-        controlGrid.setLayout(new CustomGridLayout(new int[]{245,445},new int[]{45,45}, 0, 25));
+        controlGrid.setLayout(new CustomGridLayout(new int[] { 245, 445 }, new int[] {
+                45, 45 }, 0, 25));
 
-        // Port 
+        // Port
         SmallCapsLabel portLbl = KuBatschTheme.getLabel("Port");
         portLbl.setAutoSize(false);
         controlGrid.add(portLbl, CustomGridPosition.MiddleCenter);
 
-        final BloodIntTextfield portBox = KuBatschTheme.getNumericalTextBox(TextBoxSize.SMALL, 0, PORT_MAX);
+        final BloodIntTextfield portBox = KuBatschTheme.getNumericalTextBox(
+                TextBoxSize.SMALL, 0, PORT_MAX);
         portBox.setValue(KuBaTschUtils.DEFAULT_SERVER_PORT);
-        controlGrid.add( portBox, CustomGridPosition.MiddleLeft);
-         
-        // IP 
+        controlGrid.add(portBox, CustomGridPosition.MiddleLeft);
+
+        // IP
         SmallCapsLabel ipLbl = KuBatschTheme.getLabel("IP");
         ipLbl.setAutoSize(false);
         controlGrid.add(ipLbl, CustomGridPosition.MiddleCenter);
-        
-        
+
         BloodTextfield ipBox = KuBatschTheme.getTextBox(TextBoxSize.NORMAL);
         ipBox.setText(KuBaTschUtils.getLocalIp());
         ipBox.setEditable(false);
         controlGrid.add(ipBox, CustomGridPosition.MiddleLeft);
         add(controlGrid);
-        
+
         // error label
         _errorLbl = KuBatschTheme.getLabel("");
         _errorLbl.setVisible(false);
         add(_errorLbl);
-        
+
         // Buttons
         KuBaTschPane buttonPane = new KuBaTschPane();
         buttonPane.setLayout(new FlowLayout());
-        
+
         final MenuButton backButton = new MenuButton("Back", false);
 
         MenuButton startButton = new MenuButton("Start", true);
@@ -96,7 +96,8 @@ public class StartNewServerView extends NotGameView implements INotifiableView
             {
                 try
                 {
-                    StartNewServerController.getInstance().startServer(portBox.getValue());
+                    StartNewServerController.getInstance()
+                            .startServer(portBox.getValue());
                     ViewController.getInstance().switchToView(MenuView.PANEL_ID);
                 }
                 catch (StartServerException ex)
@@ -107,11 +108,11 @@ public class StartNewServerView extends NotGameView implements INotifiableView
             }
         });
         buttonPane.add(startButton);
-        
+
         backButton.setTheme(KuBatschTheme.BUTTON_THEMES[3]);
         backButton.addMouseListener(new ChangeViewClickListener(MenuView.PANEL_ID));
         buttonPane.add(backButton);
-        
+
         add(buttonPane);
     }
 
@@ -129,8 +130,6 @@ public class StartNewServerView extends NotGameView implements INotifiableView
      */
     @Override
     public void viewHidding()
-    {
-    }
-    
-    
+    {}
+
 }

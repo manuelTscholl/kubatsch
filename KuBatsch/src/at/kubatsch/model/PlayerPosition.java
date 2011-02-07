@@ -1,8 +1,8 @@
 /**
  * This file is part of KuBatsch.
- *   created on: 24.01.2011
- *   filename: PlayerPosition.java
- *   project: KuBatsch
+ * created on: 24.01.2011
+ * filename: PlayerPosition.java
+ * project: KuBatsch
  */
 package at.kubatsch.model;
 
@@ -12,11 +12,13 @@ package at.kubatsch.model;
  */
 public enum PlayerPosition
 {
-    SOUTH,
-    NORTH,
-    WEST,
-    EAST;
-    
+    SOUTH, NORTH, WEST, EAST;
+
+    /**
+     * Get the PlayerPosition by index
+     * @param index
+     * @return PlayerPosition by index
+     */
     public static PlayerPosition getPositionForIndex(int index)
     {
         switch (index)
@@ -33,7 +35,12 @@ public enum PlayerPosition
                 throw new IndexOutOfBoundsException();
         }
     }
-    
+
+    /**
+     * Get the rotation from the PlayerPosition
+     * @param position of the player
+     * @return Rotation (Grad) of the PlayerPosition
+     */
     public static int getRotationForPosition(PlayerPosition position)
     {
         switch (position)
@@ -50,5 +57,5 @@ public enum PlayerPosition
                 return 0;
         }
     }
-    
+
 }

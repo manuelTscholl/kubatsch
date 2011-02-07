@@ -12,7 +12,6 @@ import at.kubatsch.uicontrols.MenuButton;
 /**
  * This panel displays the menu.
  * @author Daniel Kuschny (dku2375)
- * 
  */
 public class MenuView extends NotGameView
 {

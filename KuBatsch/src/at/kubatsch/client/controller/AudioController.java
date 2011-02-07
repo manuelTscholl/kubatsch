@@ -34,7 +34,7 @@ import de.quippy.javamod.multimedia.MultimediaContainerManager;
 import de.quippy.javamod.system.Helpers;
 
 /**
- * The {@link AudioController} handles all audio things, link the playback music 
+ * The {@link AudioController} handles all audio things, like the playback music 
  * or the music effects. 
  * @author Daniel Kuschny (dku2375)
  */

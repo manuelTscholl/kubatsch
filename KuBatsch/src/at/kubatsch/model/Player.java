@@ -10,30 +10,16 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import at.kubatsch.uicontrols.HealthBarPainter;
-
 /**
+ * Player for the {@link GameState}. He has different parts with information
  * @author Manuel Tscholl (mts3970)
- * 
  */
 public class Player implements Serializable
 { 
-
-    /**
-     * 
-     */
     private static final long serialVersionUID = -7405085160073165238L;
 
     private String            _name;
-    private int               _uid;                                    // uid
-                                                                        // -1
-                                                                        // means
-                                                                        // there
-                                                                        // is no
-                                                                        // player
-                                                                        // on
-                                                                        // this
-                                                                        // position
+    private int               _uid;  // uid (-1 means there is no player on this position
     private int               _wins;
 
     private PlayerPosition    _position;
@@ -53,6 +39,9 @@ public class Player implements Serializable
         reset(position);
     }
     
+    /**
+     * @return if the player is alive
+     */
     public boolean isAlive()
     {
         return _health > 0 && getUid() >= 0;
@@ -180,6 +169,9 @@ public class Player implements Serializable
     }
     
 
+    /**
+     * @return is the Player in the hirizontal position
+     */
     public boolean isHorizontal()
     {
         return _position == PlayerPosition.NORTH
@@ -215,7 +207,8 @@ public class Player implements Serializable
     }
 
     /**
-     * 
+     * Reset the {@link PlayerPosition}
+     * @param position player position
      */
     public void reset(PlayerPosition position)
     {

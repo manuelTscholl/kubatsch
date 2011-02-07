@@ -1,8 +1,8 @@
 /**
  * This file is part of KuBatsch.
- *   created on: 19.01.2011
- *   filename: OnlineServer.java
- *   project: KuBatsch
+ * created on: 19.01.2011
+ * filename: OnlineServer.java
+ * project: KuBatsch
  */
 package at.kubatsch.model;
 
@@ -14,26 +14,25 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * This class is used to store all the required information for online servers
  * of KuBatsch.
  * @author Daniel Kuschny (dku2375)
- * 
  */
 public class ServerInfo implements Serializable
 {
     private static final long serialVersionUID = 896616323528049864L;
-    
-    @XStreamAlias(value="serverName")
-    private String _name;
-    @XStreamAlias(value="port")
-    private int    _port;
-    @XStreamAlias(value="serverAddress")
-    private String _server;
-    @XStreamAlias(value="currentPlayers")
-    private int _currentPlayers;
-    
+
+    @XStreamAlias(value = "serverName")
+    private String            _name;
+    @XStreamAlias(value = "port")
+    private int               _port;
+    @XStreamAlias(value = "serverAddress")
+    private String            _server;
+    @XStreamAlias(value = "currentPlayers")
+    private int               _currentPlayers;
+
     /**
      * Initializes a new instance of the {@link ServerInfo} class.
-     * @param name
-     * @param server
-     * @param port
+     * @param name of the server
+     * @param server ipaddress of the server
+     * @param port of the server
      */
     public ServerInfo(String name, String server, int port)
     {
@@ -41,10 +40,11 @@ public class ServerInfo implements Serializable
     }
 
     /**
-     * Initializes a new instance of the {@link ServerInfo} class.
-     * @param name
-     * @param server
-     * @param currentPlayers
+     * Initializes a new instance of the  {@link ServerInfo} class.
+     * @param name of the server
+     * @param server ipaddress of the server
+     * @param port of the server
+     * @param currentPlayers current players one the servers
      */
     public ServerInfo(String name, String server, int port, int currentPlayers)
     {

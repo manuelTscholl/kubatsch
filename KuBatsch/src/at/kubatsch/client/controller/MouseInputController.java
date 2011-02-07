@@ -24,42 +24,55 @@ import at.kubatsch.util.IEventHandler;
 import at.kubatsch.util.KuBaTschUtils;
 
 /**
+ * The {@link MouseInputController} handles the input of the Mouse which have 
+ * to be in the window. It caluculates the way that the player moves and moves
+ * the coursur back into the middle of the window.
  * @author Martin Balter
- * 
  */
 public class MouseInputController implements IInputController
 {
+    // Empty Cursor
     private static final Cursor EMPTY_CURSOR = Toolkit.getDefaultToolkit()
     .createCustomCursor(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB),
             new Point(0, 0), "Empty");
     
     private float              _sensity;
     private Component          _component;
-    private Robot              _r2d2;
+    private Robot              _r2d2; // Mouse Mover :)
     private MouseMotionAdapter _mouseMotionAdapter;
     
     private float              _currentValue;
     private Event<EventArgs>   _positionChanged = new Event<EventArgs>(this);
 
 
+    /**
+     * Initializes a new instance of the  {@link MouseInputController} class.
+     * @param sensity of the mouse
+     * @param component which you want to listen on Mousemovements
+     * @throws AWTException from the AWT {@link Component}
+     */
     public MouseInputController(float sensity, Component component) throws AWTException
     {
         _sensity = sensity;
         _component = component;
-        _r2d2 = new Robot();
+        _r2d2 = new Robot(); // moves the mouse on the middle of the window
 
         _mouseMotionAdapter = new MouseMotionAdapter()
         {
             @Override
             public void mouseMoved(MouseEvent e)
             {
+                // Center of the Frame
                 Point frameCenter = new Point(getMiddleOfFrame(), getMiddleOfFrame());
                 SwingUtilities.convertPointToScreen(frameCenter, _component);
                 
+                // Get the way which the mouse moves
                 int way =  e.getLocationOnScreen().x - frameCenter.x;
                 
+                // move with the specific sensity
                 move((getRelationToFrameSize(way) * _sensity));
                 
+                // move the mouse back to the center of the frame
                 _r2d2.mouseMove(frameCenter.x, frameCenter.y);
             }
 
@@ -73,6 +86,10 @@ public class MouseInputController implements IInputController
                 return (float) position / (float) _component.getWidth();
             }
 
+            /**
+             * returns the Middle of the frame
+             * @return middle way of the frame
+             */
             private int getMiddleOfFrame()
             {
                 return _component.getWidth() / 2;
@@ -81,14 +98,14 @@ public class MouseInputController implements IInputController
         };
 
         _component.addMouseMotionListener(_mouseMotionAdapter);
-        _component.setCursor(Toolkit.getDefaultToolkit()
-                .createCustomCursor(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB),
-                        new Point(0, 0), "Empty"));
+        _component.setCursor(EMPTY_CURSOR);
     }
     
-    
-    
-
+    /**
+     * Checks if the movement is posible and fires a new Events that the Mouse
+     * moved
+     * @param offset
+     */
     private synchronized void move(float offset)
     {
         _currentValue = KuBaTschUtils.getValueBetweenRange(_currentValue

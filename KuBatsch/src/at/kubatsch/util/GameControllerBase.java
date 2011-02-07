@@ -6,7 +6,6 @@
  */
 package at.kubatsch.util;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,8 +19,8 @@ import at.kubatsch.model.SpecialItem;
 import at.kubatsch.model.rules.ICollisionRule;
 
 /**
+ * Controller for the Collision handling, and fires updates to the listener
  * @author Manuel Tscholl (mts3970)
- * 
  */
 public abstract class GameControllerBase extends Thread
 {
@@ -47,7 +46,7 @@ public abstract class GameControllerBase extends Thread
     }
 
     /**
-     * Sets the stateUpdateInterval.
+     * Sets the stateUpdateInterval. Update all x states.
      * @param stateUpdateInterval the stateUpdateInterval to set
      */
     public void setStateUpdateInterval(int stateUpdateInterval)
@@ -55,6 +54,9 @@ public abstract class GameControllerBase extends Thread
         _stateUpdateInterval = stateUpdateInterval;
     }
 
+    /**
+     * @return returns the last Update
+     */
     public long getLastUpdate()
     {
         synchronized (_lastUpdateLock)
@@ -63,6 +65,9 @@ public abstract class GameControllerBase extends Thread
         }
     }
 
+    /**
+     * @param lastUpdate set the las update
+     */
     public synchronized void setLastUpdate(long lastUpdate)
     {
         synchronized (_lastUpdateLock)
@@ -72,10 +77,7 @@ public abstract class GameControllerBase extends Thread
     }
 
     /**
-     * 
      * Initializes a new instance of the {@link GameControllerBase} class.
-     * @param portToListen
-     * @throws IOException
      */
     protected GameControllerBase()
     {
@@ -87,7 +89,7 @@ public abstract class GameControllerBase extends Thread
     }
 
     /**
-     * 
+     * {@link Thread} which sends in a intervall all updates
      */
     protected void updateLoop()
     {
@@ -125,6 +127,9 @@ public abstract class GameControllerBase extends Thread
         }
     }
 
+    /**
+     * Update the Gamestate
+     */
     private void updateGameState()
     {
         if (getCurrentGameState() == null)
@@ -182,6 +187,11 @@ public abstract class GameControllerBase extends Thread
         }
     }
 
+    /**
+     * Apply all rules to the Collidables
+     * @param toApply which you want to apply the rule
+     * @param collidesWith which collides with the Collidable
+     */
     public static void applyAllRules(ICollidable toApply,
             ICollidable collidesWith)
     {
@@ -210,21 +220,37 @@ public abstract class GameControllerBase extends Thread
         _stateUpdated.fireEvent(EventArgs.Empty);
     }
 
+    /**
+     * Add a new ball to the currentgamestate
+     * @param ballToAdd ball you want to add
+     */
     public void addBall(Ball ballToAdd)
     {
         getCurrentGameState().getBalls().add(ballToAdd);
     }
 
+    /**
+     * Add a specialItem
+     * @param item the special Item you want to add
+     */
     public void addSpecialItem(SpecialItem item)
     {
         getCurrentGameState().getSpecialItems().add(item);
     }
 
+    /**
+     * Remove a ball from the game
+     * @param ballToRemove the ball which you want to remove
+     */
     public void removeBall(Ball ballToRemove)
     {
         getCurrentGameState().getBalls().remove(ballToRemove);
     }
 
+    /**
+     * Remove a specialitem
+     * @param itemToRemove you want to remove
+     */
     public void removeSpecialItems(SpecialItem itemToRemove)
     {
         getCurrentGameState().getSpecialItems().remove(itemToRemove);
@@ -286,6 +312,9 @@ public abstract class GameControllerBase extends Thread
         _stateUpdated.removeHandler(handler);
     }
 
+    /**
+     * Update the gamestate
+     */
     public void startUpdating()
     {
         if (_updateGameState != null)
@@ -308,6 +337,9 @@ public abstract class GameControllerBase extends Thread
         _updateGameState.start();
     }
 
+    /**
+     * suspend updating the gamestate
+     */
     public void suspendUpdating()
     {
         if (_updateGameState == null)
