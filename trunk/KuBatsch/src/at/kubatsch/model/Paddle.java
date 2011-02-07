@@ -94,7 +94,7 @@ public class Paddle extends CollidableBase implements IDrawable
     @Override
     public boolean collidesWith(ICollidable other)
     {
-        if(_player.getUid() < 0) return false;
+        if(!_player.isAlive()) return false;
         return super.collidesWith(other);
     }
     
