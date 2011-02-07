@@ -31,8 +31,7 @@ public class GameState implements Serializable
     public GameState()
     {
         _balls = Collections.synchronizedList(new ArrayList<Ball>());
-        _specialItems = Collections
-                .synchronizedList(new ArrayList<SpecialItem>());
+        _specialItems = Collections.synchronizedList(new ArrayList<SpecialItem>());
         _player = new Player[4];
         
         for (int i = 0; i < _player.length; i++)

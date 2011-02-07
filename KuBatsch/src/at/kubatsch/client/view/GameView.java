@@ -7,8 +7,13 @@
 package at.kubatsch.client.view;
 
 import java.awt.AWTException;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -17,6 +22,8 @@ import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
+
+import sun.java2d.loops.CustomComponent;
 
 import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.client.controller.ClientGameController;
@@ -34,9 +41,12 @@ import at.kubatsch.model.message.INetworkMessage;
 import at.kubatsch.model.message.PaddleMovedMessage;
 import at.kubatsch.model.message.SetUniqueIdMessage;
 import at.kubatsch.model.message.UpdateGameStateMessage;
+import at.kubatsch.model.rules.PaddleReflectRule;
 import at.kubatsch.server.controller.NetworkGameClientEventArgs;
 import at.kubatsch.server.controller.NetworkMessageEventArgs;
 import at.kubatsch.uicontrols.BloodPanel;
+import at.kubatsch.uicontrols.KuBatschTheme;
+import at.kubatsch.uicontrols.SmallCapsUtility;
 import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.IEventHandler;
 
@@ -106,7 +116,8 @@ public class GameView extends BloodPanel implements INotifiableView
             }
         });
 
-        ClientGameController gameController = ClientGameController.getInstance();
+        ClientGameController gameController = ClientGameController
+                .getInstance();
         gameController.addStateUpdatedListener(new IEventHandler<EventArgs>()
         {
             @Override
@@ -168,60 +179,15 @@ public class GameView extends BloodPanel implements INotifiableView
         {
             SetUniqueIdMessage uniqueIdMessage = (SetUniqueIdMessage) message;
             _networkController.setClientUid(uniqueIdMessage.getUniqueId());
+            ClientGameController.getInstance().setClientUid(
+                    uniqueIdMessage.getUniqueId());
         }
         else if (message.getMessageId().equalsIgnoreCase(
                 UpdateGameStateMessage.MESSAGE_ID))
         {
-            System.out.println("GameState updated on client");
             UpdateGameStateMessage updateMessage = (UpdateGameStateMessage) message;
 
-            // optimize view for clent:
             GameState s = updateMessage.getGameState();
-
-            // search index of myself.
-//            int index = s.getPlayerIndex(_networkController.getClientUid());
-//            System.out.printf("Found myself on position %d, rotate gameboard%n", index);
-
-//            // server stores 0->south, 1->north, 2->east, 3->west
-//            // we need to rotate this map so we are on south
-//
-//            Player[] players = s.getPlayer();
-//            Player[] newPlayers = new Player[players.length];
-//
-//            if (index == 0) // south
-//            { // no rotation
-//                newPlayers = players;
-//            }
-//            else if (index == 1) // north
-//            {
-//                // rotate 180°
-//                newPlayers[0] = players[1];
-//                newPlayers[1] = players[0];
-//                newPlayers[2] = players[3];
-//                newPlayers[3] = players[2];
-//            }
-//            else if (index == 2) // west
-//            {
-//                newPlayers[0] = players[2];
-//                newPlayers[1] = players[3];
-//                newPlayers[2] = players[1];
-//                newPlayers[3] = players[0];
-//            }
-//            else // east
-//            {
-//                newPlayers[0] = players[3];
-//                newPlayers[1] = players[2];
-//                newPlayers[2] = players[0];
-//                newPlayers[3] = players[1];
-//            }
-//
-//            for (int i = 0; i < newPlayers.length; i++)
-//            {
-//                newPlayers[i].setPosition(PlayerPosition
-//                        .getPositionForIndex(i));
-//            }
-//            s.setPlayer(newPlayers);
-            
             ClientGameController.getInstance().setCurrentGameState(s);
         }
     }
@@ -241,42 +207,40 @@ public class GameView extends BloodPanel implements INotifiableView
             return; // do not know who am I
         ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        
+
         AffineTransform t = ((Graphics2D) g).getTransform();
 
         GameState s = ClientGameController.getInstance().getCurrentGameState();
-        
-        
+
         // rotate the gameboard so we see us on bottom
-        int rotation = 0;
         int index = s.getPlayerIndex(_networkController.getClientUid());
         PlayerPosition position = PlayerPosition.getPositionForIndex(index);
-        switch (position)
-        {
-            case NORTH:
-                rotation = 180;
-                break;
-            case WEST:
-                rotation = 90;
-                break;
-            case EAST:
-                rotation = 270;
-                break;
-        }
 
+        int rotation = PlayerPosition.getRotationForPosition(position);
         if (rotation > 0)
         {
             ((Graphics2D) g).transform(AffineTransform.getRotateInstance(
-                    (double) (rotation * Math.PI) / 180, getSize().width / 2,
-                    getSize().height / 2));
+                    (double) rotation * PaddleReflectRule.GRAD_RAD_FACTOR,
+                    getSize().width / 2, getSize().height / 2));
         }
-        
+
         // draw players
         for (int i = 0; i < s.getPlayer().length; i++)
         {
+            AffineTransform t2 = ((Graphics2D) g).getTransform();
             Player player = s.getPlayer()[i];
+
+            rotation = PlayerPosition.getRotationForPosition(player
+                    .getPosition());
+            if (rotation > 0)
+            {
+                ((Graphics2D) g).transform(AffineTransform.getRotateInstance(
+                        (double) (rotation * Math.PI) / 180,
+                        getSize().width / 2, getSize().height / 2));
+            }
+
             if (player.getUid() == -1 || !player.isAlive()) // no player,
-                                                                  // or dead
+                                                            // or dead
             {
                 player.getWall().paint(g, getSize());
             }
@@ -285,27 +249,94 @@ public class GameView extends BloodPanel implements INotifiableView
             {
                 if (player.getPosition() == position)
                 {
-                    player.setPaddlePosition(_inputController.getCurrentPosition());
+                    player.setPaddlePosition(_inputController
+                            .getCurrentPosition());
                 }
                 player.getPaddle().paint(g, getSize());
             }
+
+            
+
+            Dimension nameSize = SmallCapsUtility.calculateSize(this,
+                    player.getName(), KuBatschTheme.MAIN_FONT,
+                    KuBatschTheme.SMALL_FONT);
+            String points = String.format("%d",player.getWins());
+            Dimension pointsSize = SmallCapsUtility.calculateSize(this,
+                    points, KuBatschTheme.MAIN_FONT,
+                    KuBatschTheme.SMALL_FONT);
+
+            int nameX = (getSize().width - nameSize.width) / 2;
+            int nameY = 0;
+            int pointsX = (getSize().width - pointsSize.width) / 2;
+            int pointsY = 0;
+            
+            
+            switch (ClientGameController.getInstance().getPositionMappings()[i])
+            {
+                case EAST:
+                case WEST:
+                case NORTH:
+                    nameY = 270;
+                    pointsY = 325;
+                    // rotate 180° to draw hud
+                    ((Graphics2D) g).transform(AffineTransform.getRotateInstance(
+                            (double) (180 * Math.PI) / 180, getSize().width / 2,
+                            getSize().height / 2));
+                    break;
+                case SOUTH:
+                    nameY = 495;
+                    pointsY = 440;
+                    break;
+            }
+
+           
+            Graphics2D g2d = (Graphics2D) g;
+            Composite c = g2d.getComposite();
+            AlphaComposite alphaComposite = AlphaComposite.getInstance(
+                    AlphaComposite.SRC_OVER, (float)ClientConfigController.getInstance().getConfig().getHudAlpha());
+            g2d.setComposite(alphaComposite);
+            
+            g.setColor(ClientGameController.getInstance().getColorForIndex(i).getAwtColor());
+            SmallCapsUtility.render(g, this, player.getName(),
+                    KuBatschTheme.MAIN_FONT, KuBatschTheme.SMALL_FONT, nameX, nameY);
+            SmallCapsUtility.render(g, this, points,
+                    KuBatschTheme.MAIN_FONT, KuBatschTheme.SMALL_FONT, pointsX, pointsY);
+
+            g2d.setComposite(c);
+
+            ((Graphics2D) g).setTransform(t2);
         }
-        
 
         // draw balls
         for (Ball ball : s.getBalls())
         {
             ball.paint(g, getSize());
         }
-        
+
         // special items
         for (SpecialItem item : s.getSpecialItems())
         {
             item.paint(g, getSize());
         }
-        
-        ((Graphics2D) g).setTransform(t);
 
+        ((Graphics2D) g).setTransform(t);
+        
+        // draw hud image 
+        Graphics2D g2d = (Graphics2D) g;
+        Composite c = g2d.getComposite();
+        AlphaComposite alphaComposite = AlphaComposite.getInstance(
+                AlphaComposite.SRC_OVER, (float)ClientConfigController.getInstance().getConfig().getHudAlpha());
+        g2d.setComposite(alphaComposite);
+        
+        Image hudImage = KuBatschTheme.HUD_IMAGE;
+        int hudW = hudImage.getWidth(this);
+        int hudH = hudImage.getHeight(this);
+        int hudX = (getSize().width - hudW)/2;
+        int hudY = (getSize().height - hudH)/2;
+       
+        g.drawImage(hudImage, hudX, hudY, null);
+        
+        g2d.setComposite(c);
 
         // draw status label
         s.getStatusLbl().paint(g, getSize());
@@ -344,5 +375,14 @@ public class GameView extends BloodPanel implements INotifiableView
     {
         disconnect();
         _inputController.disable();
+    }
+
+    /**
+     * 
+     */
+    public int getClientId()
+    {
+        return _networkController == null ? -1 : _networkController
+                .getClientUid();
     }
 }

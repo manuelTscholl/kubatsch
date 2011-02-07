@@ -30,6 +30,7 @@ public class SmallCapsUtility
     public static Dimension calculateSize(JComponent c, String text,
             Font normalFont, Font smallFont)
     {
+        if(text == null) return new Dimension();
         char[] chars = text.toCharArray();
 
         FontMetrics normalCapsFm = c.getFontMetrics(normalFont);
@@ -63,7 +64,7 @@ public class SmallCapsUtility
      */
     public static void render(Graphics g, JComponent c, String text, Font normalFont, Font smallCapsFont, int x, int y)
     {
-        
+        if(text == null) return;
         char[] chars = text.toCharArray();
 
         FontMetrics normalCapsFm = c.getFontMetrics(normalFont);

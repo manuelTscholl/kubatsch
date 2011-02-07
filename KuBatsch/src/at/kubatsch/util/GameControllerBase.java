@@ -26,7 +26,7 @@ import at.kubatsch.model.rules.ICollisionRule;
 public abstract class GameControllerBase extends Thread
 {
     protected static GameControllerBase _mainController = null;
-    protected static int                UPDATE_INTERVAL = 10;
+    protected static int                UPDATE_INTERVAL = 8;
     private GameState                   _currentGameState;
     protected Thread                    _updateGameState;
 
@@ -99,7 +99,7 @@ public abstract class GameControllerBase extends Thread
             updateGameState();
             count++;
 
-            if (count >= _stateUpdateInterval)
+            if (count >= _stateUpdateInterval && getCurrentGameState() != null)
             {
                 _stateUpdated.fireEvent(EventArgs.Empty);
                 count = 0;

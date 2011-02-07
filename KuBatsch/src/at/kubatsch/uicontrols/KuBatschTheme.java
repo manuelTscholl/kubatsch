@@ -28,7 +28,7 @@ import javax.imageio.ImageIO;
 public class KuBatschTheme
 {
     private static final String       RESOURCES_DIR = "resources";
-    
+
     public static final int           MAIN_SIZE;
     public static final Image         MAIN_BACKGROUND;
     public static final Image         CONTROL_SETTINGS;
@@ -80,7 +80,7 @@ public class KuBatschTheme
     public static final Image     PADDLE_BACKGROUND;
     public static final int[]     PADDLE_PARTS;
     public static final Insets    PADDLE_HEALTH_INSETS;
-    public static final Dimension       PADDLE_SIZE;
+    public static final Dimension PADDLE_SIZE;
 
     public static final Image     HEALTH_BACKGROUND;
     public static final Image[]   HEALTH_BALLS;
@@ -94,6 +94,8 @@ public class KuBatschTheme
     public static final Image[]   BALLS;
     public static final int       BALL_SIZE;
 
+    public static final Image     HUD_IMAGE;
+
     static
     {
         // general
@@ -102,7 +104,8 @@ public class KuBatschTheme
         BLOOD_BACKGROUND = getImage("blood-background.gif");
         KUBATSCH_LOGO = getImage("logo.png");
         CONTROL_SETTINGS = getImage("control-settings.png");
-
+        HUD_IMAGE = getImage("hud.png");
+        
         Font mainFont;
         try
         {
