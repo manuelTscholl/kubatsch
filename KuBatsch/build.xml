@@ -51,7 +51,16 @@
 		<antcall target="rebuild-src" />
 		<antcall target="package-jar">
 			<param name="binary-name" value="${packages}/nw-client.jar" />
-			<param name="main-class" value="at.kubatsch.samples.networkballserver.ClientTestStarter" />
+			<param name="main-class" value="at.kubatsch.client.KuBaTschClient" />
+		</antcall>
+
+	</target>
+	<target name="nw-server" depends="global-init">
+
+		<antcall target="rebuild-src" />
+		<antcall target="package-jar">
+			<param name="binary-name" value="${packages}/nw-server.jar" />
+			<param name="main-class" value="at.kubatsch.server.view.ConsoleServer" />
 		</antcall>
 
 	</target>

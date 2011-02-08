@@ -39,7 +39,7 @@ public class PlayerHitAreaReflectRule extends AbstractRule
             if (ball.collidesWith(hitArea.getPlayer().getPaddle()))
                 return false;
 
-            float bounceOffset = 0.005f;
+            float bounceOffset = 0.008f;
             switch (hitArea.getHitAreaPosition())
             {
                 case NORTH:

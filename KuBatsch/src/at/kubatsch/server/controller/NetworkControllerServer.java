@@ -24,16 +24,14 @@ import at.kubatsch.util.IEventHandler;
  * clients which this Controler can have is 4
  * 
  * @author Manuel Tscholl (mts3970)
- * 
  */
 public final class NetworkControllerServer
 {
-    private Logger LOGGER = Logger.getLogger(NetworkControllerServer.class); 
-    
+    private Logger                            LOGGER                  = Logger.getLogger(NetworkControllerServer.class);
+
     /**
      * the maximum of Players which connect to the server
      */
-    private static final int                  MAX_PLAYERS             = 4;
     private ServerSocket                      _serverSocket;
     private List<NetworkGameClient>           _networkGameClients;
     private Thread                            _waitForPlayers;
@@ -81,62 +79,58 @@ public final class NetworkControllerServer
     {
         while (isRunning())
         {
-            if (countConnectedPlayers() < MAX_PLAYERS)
-            {
+            try
+            {// clients connects to the server
+                NetworkGameClient client = new NetworkGameClient(_serverSocket.accept(),
+                        this);//
+
+                _networkGameClientsLock.lock();
                 try
-                {// clients connects to the server
-                    NetworkGameClient client = new NetworkGameClient(
-                            _serverSocket.accept(), this);//
-
-                    _networkGameClientsLock.lock();
-                    try
-                    {
-                        _networkGameClients.add(client);
-                    }
-                    finally
-                    {
-                        _networkGameClientsLock.unlock();
-                    }
-
-                    client.addMessageReceivedListener(new IEventHandler<NetworkMessageEventArgs>()
-                    {
-
-                        @Override
-                        public void fired(Object sender, NetworkMessageEventArgs e)
-                        {
-                            _clientMessageEvent.fireEvent(e);
-                        }
-                    });
-
-                    client.addConnectionLostListener(new IEventHandler<NetworkGameClientEventArgs>()
-                    {
-
-                        @Override
-                        public void fired(Object sender, NetworkGameClientEventArgs e)
-                        {
-                            clientDisconnected(((NetworkGameClient) sender));
-                        }
-                    });
-
-                    client.startWork();
-
-                    _clientConnectedEvent.fireEvent(new NetworkGameClientEventArgs(client
-                            .getClientUid()));
-                }
-                catch (IOException e)
                 {
-                    LOGGER.error(e);
+                    _networkGameClients.add(client);
                 }
+                finally
+                {
+                    _networkGameClientsLock.unlock();
+                }
+
+                client.addMessageReceivedListener(new IEventHandler<NetworkMessageEventArgs>()
+                {
+
+                    @Override
+                    public void fired(Object sender, NetworkMessageEventArgs e)
+                    {
+                        _clientMessageEvent.fireEvent(e);
+                    }
+                });
+
+                client.addConnectionLostListener(new IEventHandler<NetworkGameClientEventArgs>()
+                {
+
+                    @Override
+                    public void fired(Object sender, NetworkGameClientEventArgs e)
+                    {
+                        clientDisconnected(((NetworkGameClient) sender));
+                    }
+                });
+
+                client.startWork();
+
+                _clientConnectedEvent.fireEvent(new NetworkGameClientEventArgs(client
+                        .getClientUid()));
             }
-            
-//          Thread.sleep(1000);
+            catch (IOException e)
+            {
+                LOGGER.error(e);
+            }
+
+            // Thread.sleep(1000);
         }
 
         LOGGER.info("Client connected");
     }
 
     /**
-     * 
      * @return the number of players which are connected to the server
      */
     public int countConnectedPlayers()
@@ -153,7 +147,6 @@ public final class NetworkControllerServer
     }
 
     /**
-     * 
      * @param collidable the new mapping of collidables to update to all clients
      *            (all types will be added/updated)
      */
@@ -272,6 +265,31 @@ public final class NetworkControllerServer
     public synchronized void setRunning(boolean isRunning)
     {
         _isRunning = isRunning;
+    }
+
+    /**
+     * Forces a disconnect of the client with the specified
+     * unique client id. 
+     * @param uid the unique client id of the cilent which needs to be kicked from the server
+     */
+    public void kickClient(int uid)
+    {
+        _networkGameClientsLock.lock();
+        try
+        {
+            for (NetworkGameClient client : _networkGameClients)
+            {
+                if(client.getClientUid() == uid)
+                {
+                    client.disconnect();
+                    break;
+                }
+            }
+        }
+        finally
+        {
+            _networkGameClientsLock.unlock();
+        }
     }
 
 }
