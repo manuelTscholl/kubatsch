@@ -20,6 +20,7 @@ import at.kubatsch.model.message.INetworkMessage;
 import at.kubatsch.model.message.PaddleMovedMessage;
 import at.kubatsch.model.message.ServerInfoMessage;
 import at.kubatsch.server.model.IGameRule;
+import at.kubatsch.server.model.NoPlayerSurvivingRule;
 import at.kubatsch.server.model.OnePlayerSurvivingRule;
 import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.GameControllerBase;
@@ -36,6 +37,11 @@ public class ServerGameController extends GameControllerBase
 {
     private static Logger LOGGER = Logger.getLogger(ServerGameController.class);
     
+    /**
+     * Send all 50 gamestates to the client. 
+     */
+    private static int INTERVAL = 50;
+    
     private NetworkControllerServer _networkServer;
     private boolean                 _isRoundRunning;
     private List<IGameRule>         _roundRules;
@@ -51,8 +57,9 @@ public class ServerGameController extends GameControllerBase
         super();
         _roundRules = new ArrayList<IGameRule>();
         _roundRules.add(new OnePlayerSurvivingRule());
+//        _roundRules.add(new NoPlayerSurvivingRule());
         
-        setStateUpdateInterval(50);
+        setStateUpdateInterval(INTERVAL);
 
         _networkServer = new NetworkControllerServer(portToListen);
         // if we are on the next timeslice we need to update all clients
@@ -101,6 +108,10 @@ public class ServerGameController extends GameControllerBase
      */
     protected void removeClient(int clientUid)
     {
+        if (getCurrentGameState() == null)
+        {
+            return;
+        }
         LOGGER.info(String.format("Client %d left the server", clientUid));
 //        System.out.printf("Client %d left the server%n", clientUid);
        
@@ -133,6 +144,7 @@ public class ServerGameController extends GameControllerBase
             {
                 players = getCurrentGameState().getPlayerCount();
             }
+            LOGGER.info(String.format("Client requested server info: %d players", players));
             _networkServer.sendMessageToClients(new ServerInfoMessage(players));
         }
         // player wants to connect as player
@@ -166,6 +178,7 @@ public class ServerGameController extends GameControllerBase
 
                 p.setPaddlePosition(paddleMsg.getNewPosition());
 
+                LOGGER.debug(String.format("got paddlePosition %f from %d", paddleMsg.getNewPosition(), clientUid));
                 _networkServer.sendMessageToClients(new PaddleMovedMessage(clientUid, paddleMsg.getNewPosition()));
 //                _stateUpdated.fireEvent(EventArgs.Empty);
             }
@@ -214,6 +227,8 @@ public class ServerGameController extends GameControllerBase
         if (getCurrentGameState().getPlayerIndex(uid) >= 0)
             return; // already registered
         // find a free playing position for him
+        
+        boolean acceptSuccess = false;
         for (int i = 0; i < getCurrentGameState().getPlayer().length; i++)
         {
             if (getCurrentGameState().getPlayer()[i].getUid() == -1) // free
@@ -226,9 +241,17 @@ public class ServerGameController extends GameControllerBase
 //                        i);
                 getCurrentGameState().getPlayer()[i].setName(name);
                 getCurrentGameState().getPlayer()[i].setUid(uid);
+                acceptSuccess = true;
                 break;
             }
         }
+        
+        // server is full
+        if(!acceptSuccess)
+        {
+            _networkServer.kickClient(uid);
+        }
+        
         _stateUpdated.fireEvent(EventArgs.Empty);
     }
 

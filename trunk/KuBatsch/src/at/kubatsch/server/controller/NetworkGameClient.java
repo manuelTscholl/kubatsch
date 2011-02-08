@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import at.kubatsch.model.message.SetUniqueIdMessage;
 import at.kubatsch.util.NetworkMessageController;
+import at.kubatsch.util.StreamUtils;
 
 /**
  * For each Client which connects to an QuadPuck Server an Instance of this
@@ -28,7 +29,15 @@ import at.kubatsch.util.NetworkMessageController;
 public class NetworkGameClient extends NetworkMessageController
 {
     private static Logger LOGGER = Logger.getLogger(NetworkGameClient.class);
+
+    /**
+     * Send messages all 15ms to the client.
+     */
+    private static int INTERVAL = 15;
     
+    private Socket        _clientConnnection;
+    
+
     /**
      * Initializes a new instance of the {@link NetworkGameClient} class.
      */
@@ -41,13 +50,12 @@ public class NetworkGameClient extends NetworkMessageController
         setSocket(serverSocket);
 
         setNeedsReset(true);
-        setInterval(30);
-        
+        setMessageSendingInterval(INTERVAL);
+
         // notify unique ID to client
         addToMessageStack(new SetUniqueIdMessage(getClientUid()));
     }
 
- 
     /**
      * 
      * @param serverSocket the Socket of the server from which the outputstream
@@ -57,6 +65,7 @@ public class NetworkGameClient extends NetworkMessageController
     {
         try
         {
+            _clientConnnection = serverSocket;
             OutputStream outputStream = serverSocket.getOutputStream();
             setObjectOutputStream(new ObjectOutputStream(outputStream));
 
@@ -66,6 +75,19 @@ public class NetworkGameClient extends NetworkMessageController
         catch (IOException e)
         {
             LOGGER.fatal(e);
+        }
+    }
+
+    /**
+     * Disconnects the client from the server
+     */
+    public void disconnect()
+    {
+        setRunning(false);
+        if (_clientConnnection != null)
+        {
+            StreamUtils.close(_clientConnnection);
+            _clientConnnection = null;
         }
     }
 }

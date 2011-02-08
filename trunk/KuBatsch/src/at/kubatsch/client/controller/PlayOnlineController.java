@@ -129,14 +129,7 @@ public class PlayOnlineController
 
             for (ServerInfo serverInfo : infos)
             {// gets active Players of the Server
-                if (!getServers().contains(serverInfo))
-                {
-                    getServers().add(serverInfo);
-                }
-
                 getPlayersOf(serverInfo);
-
-                serverInfo.setCurrentPlayers(serverInfo.getCurrentPlayers());
             }
             setServers(infos);
             _serversUpdated.fireEvent(EventArgs.Empty);
@@ -147,6 +140,10 @@ public class PlayOnlineController
         }
     }
 
+    /**
+     * Return the Player
+     * @param serverInfo
+     */
     private void getPlayersOf(ServerInfo serverInfo)
     {
         final ServerInfo serverInfoTemp = serverInfo;
@@ -168,8 +165,9 @@ public class PlayOnlineController
                                         .getMessage();
                                 serverInfoTemp.setCurrentPlayers(infoMessage
                                         .getPlayers());
-                                networkController.setRunning(false);
+                                networkController.disconnect();
                             }
+                            _serversUpdated.fireEvent(EventArgs.Empty);
                         }
                     });
             networkController.addConnectionLostListener(new IEventHandler<NetworkGameClientEventArgs>()
@@ -180,6 +178,7 @@ public class PlayOnlineController
                 {
                     serverInfoTemp.setCurrentPlayers(-1);
                     networkController.setRunning(false);
+                    _serversUpdated.fireEvent(EventArgs.Empty);
                 }
             });
             // the object which bill be sent back with the serverinformation

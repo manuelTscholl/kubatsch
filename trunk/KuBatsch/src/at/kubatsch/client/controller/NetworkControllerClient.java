@@ -30,6 +30,9 @@ import at.kubatsch.util.StreamUtils;
 public class NetworkControllerClient extends NetworkMessageController
 {
     private static Logger LOGGER   = Logger.getLogger(NetworkControllerClient.class);
+    /**
+     * Send messages all 15ms to the server
+     */
     private static int    INTERVAL = 15;
 
     private Socket        _serverConnection;
@@ -51,7 +54,7 @@ public class NetworkControllerClient extends NetworkMessageController
         InputStream inputStream = _serverConnection.getInputStream();
         setObjectInputStream(new ObjectInputStream(inputStream));
 
-        setInterval(INTERVAL);
+        setMessageSendingInterval(INTERVAL);
 
         addConnectionLostListener(new IEventHandler<NetworkGameClientEventArgs>()
         {

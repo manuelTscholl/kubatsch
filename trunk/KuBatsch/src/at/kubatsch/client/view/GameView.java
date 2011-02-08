@@ -170,9 +170,7 @@ public final class GameView extends BloodPanel implements INotifiableView
         _networkController.startWork();
     }
 
-    /**
-     * @param message
-     */
+    
     /**
      * @param message
      */
@@ -193,6 +191,18 @@ public final class GameView extends BloodPanel implements INotifiableView
             GameState s = updateMessage.getGameState();
             ClientGameController.getInstance().setCurrentGameState(s);
         }
+        else if (message.getMessageId().equalsIgnoreCase(
+                PaddleMovedMessage.MESSAGE_ID))
+        {
+            PaddleMovedMessage updateMessage = (PaddleMovedMessage) message;
+            
+            int index = ClientGameController.getInstance().getCurrentGameState().getPlayerIndex(updateMessage.getClientId());
+            if(index >= 0)
+            {
+                ClientGameController.getInstance().getCurrentGameState().getPlayer()[index].setPaddlePosition(updateMessage.getNewPosition());
+            }
+        }
+        
     }
 
     /**

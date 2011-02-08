@@ -7,8 +7,11 @@
 package at.kubatsch.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
@@ -18,12 +21,13 @@ import at.kubatsch.server.controller.NetworkGameClientEventArgs;
 import at.kubatsch.server.controller.NetworkMessageEventArgs;
 
 /**
+ * The {@link NetworkMessageController} handles all Messages throught
+ * network so that the server and the client can interact with them.
  * @author Daniel Kuschny (dku2375)
- * 
  */
 public abstract class NetworkMessageController
 {
-    private static final int                         UPDATE_INTERVAL  = 100;
+    private static final int                  UPDATE_INTERVAL  = 100;
 
     private ObjectOutputStream                _objectOutputStream;
     private ObjectInputStream                 _objectInputStream;
@@ -44,17 +48,18 @@ public abstract class NetworkMessageController
     private long                              _lastUpdate;
     private int                               _clientUid;
 
-    private int                               _interval        = UPDATE_INTERVAL;
+    private int                               _messageSendingInterval        = UPDATE_INTERVAL;
 
     private boolean                           _needsReset;
 
     /**
-     * Gets the interval.
+     * Gets the message sending interval in milliseconds.
+     * The messageWriter will write the messages using this millisecond interval.
      * @return the interval
      */
-    public synchronized int getInterval()
+    public synchronized int getMessageSendingInterval()
     {
-        return _interval;
+        return _messageSendingInterval;
     }
 
     /**
@@ -76,14 +81,21 @@ public abstract class NetworkMessageController
     }
 
     /**
-     * Sets the interval.
+     * Sets the message sending interval in milliseconds.
+     * The messageWriter will write the messages in the millisecond interval
+     * specified by this call.
      * @param interval the interval to set
      */
-    public synchronized void setInterval(int interval)
+    public synchronized void setMessageSendingInterval(int interval)
     {
-        _interval = interval;
+        _messageSendingInterval = interval;
     }
 
+    /**
+     * Adds a {@link INetworkMessage} on the stack so the the Network controller can
+     * send it to the Server / Client
+     * @param msg which you want to send
+     */
     public void addToMessageStack(INetworkMessage msg)
     {
         synchronized (_messagesToSend)
@@ -149,10 +161,9 @@ public abstract class NetworkMessageController
                     }
                 }
             }
-            catch(IOException e)
+            catch (IOException e)
             {
-                _connectionLost.fireEvent(new NetworkGameClientEventArgs(
-                        getClientUid()));
+                _connectionLost.fireEvent(new NetworkGameClientEventArgs(getClientUid()));
                 setRunning(false);
             }
 
@@ -160,7 +171,7 @@ public abstract class NetworkMessageController
             {
                 // calculate how many time we need to wait
                 long timeElapsed = System.currentTimeMillis() - startTime;
-                long waitTime = _interval - timeElapsed;
+                long waitTime = _messageSendingInterval - timeElapsed;
                 if (waitTime > 0)
                 {
                     try
@@ -205,34 +216,47 @@ public abstract class NetworkMessageController
 
                 if (!(o instanceof INetworkMessage))
                 {
+
                     System.out.printf("Got an unknown object: %s%n", o);
                     continue;
                 }
 
                 INetworkMessage msg = (INetworkMessage) o;
-                _messageReceived.fireEvent(new NetworkMessageEventArgs(
-                        getClientUid(), msg));
+                _messageReceived.fireEvent(new NetworkMessageEventArgs(getClientUid(),
+                        msg));
             }
             catch (Exception e)
             {
                 // on connection error fire event
-                _connectionLost.fireEvent(new NetworkGameClientEventArgs(
-                        getClientUid()));
+                _connectionLost.fireEvent(new NetworkGameClientEventArgs(getClientUid()));
                 setRunning(false);
             }
         }
     }
 
+    /**
+     * flag that the {@link NetworkMessageController} send Messages through the network.
+     * @return if the {@link NetworkMessageController} is sending Message through the network
+     */
     public boolean isRunning()
     {
         return _isRunning;
     }
 
+    /**
+     * Sets the Running flag
+     * @see NetworkMessageController#isRunning()
+     * @param isRunning
+     */
     public void setRunning(boolean isRunning)
     {
         _isRunning = isRunning;
     }
 
+    /**
+     * get the last update which the {@link NetworkMessageController} has send
+     * @return last update
+     */
     protected long getLastUpdate()
     {
         synchronized (_lastUpdateLock)
@@ -241,6 +265,10 @@ public abstract class NetworkMessageController
         }
     }
 
+    /**
+     * Set the last update that the {@link NetworkMessageController} has send
+     * @param lastUpdate
+     */
     protected void setLastUpdate(long lastUpdate)
     {
         synchronized (_lastUpdateLock)
@@ -249,21 +277,37 @@ public abstract class NetworkMessageController
         }
     }
 
+    /**
+     * Get the ClientUid
+     * @return ClientUid
+     */
     public int getClientUid()
     {
         return _clientUid;
     }
 
+    /**
+     * sets the clientUid
+     * @param clientUid
+     */
     public void setClientUid(int clientUid)
     {
         _clientUid = clientUid;
     }
 
+    /**
+     * Set the {@link InputStream} for the Network connection. This should normally be the {@link Socket#getInputStream()}.
+     * @param objectInputStream {@link InputStream} (normal the {@link Socket#getInputStream()}
+     */
     protected void setObjectInputStream(ObjectInputStream objectInputStream)
     {
         _objectInputStream = objectInputStream;
     }
 
+    /**
+     * Set the {@link OutputStream} for the network connection. This should normal be the {@link Socket#getOutputStream()}.
+     * @param objectOutputStream {@link OutputStream} normally the {@link Socket#getOutputStream()}
+     */
     protected void setObjectOutputStream(ObjectOutputStream objectOutputStream)
     {
         _objectOutputStream = objectOutputStream;
@@ -293,8 +337,7 @@ public abstract class NetworkMessageController
      * @param handler
      * @see at.kubatsch.util.Event#addHandler(at.kubatsch.util.IEventHandler)
      */
-    public void addMessageReceivedListener(
-            IEventHandler<NetworkMessageEventArgs> handler)
+    public void addMessageReceivedListener(IEventHandler<NetworkMessageEventArgs> handler)
     {
         _messageReceived.addHandler(handler);
     }

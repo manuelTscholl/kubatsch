@@ -29,6 +29,10 @@ public abstract class GameControllerBase extends Thread
     private Logger LOGGER = Logger.getLogger(GameControllerBase.class);
     
     protected static GameControllerBase _mainController = null;
+    
+    /**
+     * Update the gamestate all 8ms. 
+     */
     protected static int                UPDATE_INTERVAL = 8;
     private GameState                   _currentGameState;
     protected Thread                    _updateGameState;
@@ -41,7 +45,9 @@ public abstract class GameControllerBase extends Thread
     private int                         _stateUpdateInterval;
 
     /**
-     * Gets the stateUpdateInterval.
+     * Gets the interval how often the stateUpdated intervall will be fired.
+     * If this value is on 10, the controller will fire each 10 timeslices the stateUpdated intervall.
+     * This inverval will be ignored if any collision happens between 0 and the specified interval. 
      * @return the stateUpdateInterval
      */
     public int getStateUpdateInterval()
@@ -50,8 +56,10 @@ public abstract class GameControllerBase extends Thread
     }
 
     /**
-     * Sets the stateUpdateInterval. Update all x states.
-     * @param stateUpdateInterval the stateUpdateInterval to set
+     * Gets the interval how often the stateUpdated intervall will be fired.
+     * If this value is on 10, the controller will fire each 10 timeslices the stateUpdated intervall.
+     * This inverval will be ignored if any collision happens between 0 and the specified interval. 
+     * @param stateUpdateInterval
      */
     public void setStateUpdateInterval(int stateUpdateInterval)
     {
@@ -59,7 +67,7 @@ public abstract class GameControllerBase extends Thread
     }
 
     /**
-     * @return returns the last Update
+     * @return returns the time of the last update 
      */
     public long getLastUpdate()
     {
@@ -70,7 +78,7 @@ public abstract class GameControllerBase extends Thread
     }
 
     /**
-     * @param lastUpdate set the las update
+     * @param lastUpdate set the last update
      */
     public synchronized void setLastUpdate(long lastUpdate)
     {
