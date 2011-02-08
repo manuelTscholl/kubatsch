@@ -6,16 +6,18 @@ pl * author: Daniel Kuschny (dku2375)
  */
 package at.kubatsch.model.message;
 
-
 /**
  * @author Daniel Kuschny (dku2375)
  *
  */
 public class PaddleMovedMessage implements INetworkMessage
 {
-    private static final long serialVersionUID = 8068554139613375084L;
-    public static final String MESSAGE_ID = "paddle-moved";
-    
+    private static final long  serialVersionUID = 8068554139613375084L;
+    public static final String MESSAGE_ID       = "paddle-moved";
+
+    private float              _newPosition;
+    private int                _clientId;
+
     /**
      * @see at.kubatsch.model.message.INetworkMessage#getMessageId()
      */
@@ -24,10 +26,7 @@ public class PaddleMovedMessage implements INetworkMessage
     {
         return MESSAGE_ID;
     }
-    
-    private float _newPosition;
-    private int _clientId;
-    
+
     /**
      * Gets the clientId.
      * @return the clientId
@@ -35,7 +34,7 @@ public class PaddleMovedMessage implements INetworkMessage
     public int getClientId()
     {
         return _clientId;
-    }   
+    }
 
     /**
      * Gets the newPosition.
@@ -45,7 +44,7 @@ public class PaddleMovedMessage implements INetworkMessage
     {
         return _newPosition;
     }
-    
+
     /**
      * Initializes a new instance of the {@link PaddleMovedMessage} class.
      * @param newPosition

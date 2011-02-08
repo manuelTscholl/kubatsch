@@ -25,9 +25,6 @@ import at.kubatsch.uicontrols.SmallCapsUtility;
  */
 public class StatusLabel implements IDrawable
 {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 8272973867314622352L;
     private String            _text;
 

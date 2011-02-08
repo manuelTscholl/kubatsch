@@ -19,14 +19,11 @@ import at.kubatsch.model.Paddle;
  */
 public class PaddleReflectRule extends AbstractRule
 {
+    private static final long  serialVersionUID = 8671041808905399550L;
+
     private static final float LEFT_EDGE_ANGLE  = 145;
     private static final float RIGHT_EDGE_ANGLE = 25;
-    public static final float GRAD_RAD_FACTOR  = (float) Math.PI / 180;
-
-    /**
-     * 
-     */
-    private static final long  serialVersionUID = 8671041808905399550L;
+    public static final float  GRAD_RAD_FACTOR  = (float) Math.PI / 180;
 
     /**
      * @see at.kubatsch.model.rules.AbstractRule#apply(at.kubatsch.model.ICollidable,
@@ -55,8 +52,7 @@ public class PaddleReflectRule extends AbstractRule
                 case NORTH:
 
                     // get sizes
-                    paddleWidth = paddle.getMaxPoint().x
-                            - paddle.getMinPoint().x;
+                    paddleWidth = paddle.getMaxPoint().x - paddle.getMinPoint().x;
                     ballHeight = ball.getMaxPoint().y - ball.getMinPoint().y;
                     ballHitX = ((paddlePos.x + paddle.getMaxPoint().x) - ballPos.x)
                             / paddleWidth;
@@ -70,11 +66,10 @@ public class PaddleReflectRule extends AbstractRule
 
                     // update velocity and position
                     ball.setVelocity(
-                            -(inSpeed * (float) Math.cos(newAngle
-                                    * GRAD_RAD_FACTOR)),
-                            (inSpeed * (float) Math.sin(newAngle
-                                    * GRAD_RAD_FACTOR)));
-                    ball.setPosition(ball.getPosition().x,
+                            -(inSpeed * (float) Math.cos(newAngle * GRAD_RAD_FACTOR)),
+                            (inSpeed * (float) Math.sin(newAngle * GRAD_RAD_FACTOR)));
+                    ball.setPosition(
+                            ball.getPosition().x,
                             paddlePos.y + paddle.getMaxPoint().y + bounceOffset
                                     - ball.getMinPoint().y);
 
@@ -82,8 +77,7 @@ public class PaddleReflectRule extends AbstractRule
                 case SOUTH:
 
                     // get sizes
-                    paddleWidth = paddle.getMaxPoint().x
-                            - paddle.getMinPoint().x;
+                    paddleWidth = paddle.getMaxPoint().x - paddle.getMinPoint().x;
                     ballHeight = ball.getMaxPoint().y - ball.getMinPoint().y;
                     ballHitX = (ballPos.x - paddlePos.x) / paddleWidth;
 
@@ -96,11 +90,8 @@ public class PaddleReflectRule extends AbstractRule
 
                     // update velocity and position
                     ball.setVelocity(
-                            inSpeed
-                                    * (float) Math.cos(newAngle
-                                            * GRAD_RAD_FACTOR),
-                            -(inSpeed * (float) Math.sin(newAngle
-                                    * GRAD_RAD_FACTOR)));
+                            inSpeed * (float) Math.cos(newAngle * GRAD_RAD_FACTOR),
+                            -(inSpeed * (float) Math.sin(newAngle * GRAD_RAD_FACTOR)));
                     ball.setPosition(ball.getPosition().x,
                             paddlePos.y + paddle.getMinPoint().y - bounceOffset
                                     - ballHeight);
@@ -109,8 +100,7 @@ public class PaddleReflectRule extends AbstractRule
                 case EAST:
 
                     // get sizes
-                    paddleWidth = paddle.getMaxPoint().y
-                            - paddle.getMinPoint().y;
+                    paddleWidth = paddle.getMaxPoint().y - paddle.getMinPoint().y;
                     ballHeight = ball.getMaxPoint().x - ball.getMinPoint().x;
                     ballHitX = ((paddlePos.y + paddle.getMaxPoint().y) - ballPos.y)
                             / paddleWidth;
@@ -126,20 +116,16 @@ public class PaddleReflectRule extends AbstractRule
 
                     // update velocity and position
                     ball.setVelocity(
-                            -(inSpeed * (float) Math.cos(newAngle
-                                    * GRAD_RAD_FACTOR)),
-                            (inSpeed * (float) Math.sin(newAngle
-                                    * GRAD_RAD_FACTOR)));
+                            -(inSpeed * (float) Math.cos(newAngle * GRAD_RAD_FACTOR)),
+                            (inSpeed * (float) Math.sin(newAngle * GRAD_RAD_FACTOR)));
 
-                    ball.setPosition(paddlePos.x - ballHeight - bounceOffset,
-                            ballPos.y);
+                    ball.setPosition(paddlePos.x - ballHeight - bounceOffset, ballPos.y);
 
                     break;
                 case WEST:
 
                     // get sizes
-                    paddleWidth = paddle.getMaxPoint().y
-                            - paddle.getMinPoint().y;
+                    paddleWidth = paddle.getMaxPoint().y - paddle.getMinPoint().y;
                     ballHeight = ball.getMaxPoint().x - ball.getMinPoint().x;
                     ballHitX = (ballPos.y - paddlePos.y) / paddleWidth;
 
@@ -154,12 +140,10 @@ public class PaddleReflectRule extends AbstractRule
 
                     // update velocity and position
                     ball.setVelocity(
-                            -(inSpeed * (float) Math.cos(newAngle
-                                    * GRAD_RAD_FACTOR)),
-                            (inSpeed * (float) Math.sin(newAngle
-                                    * GRAD_RAD_FACTOR)));
-                    ball.setPosition(paddlePos.x + paddle.getMaxPoint().x
-                            + bounceOffset - ball.getMinPoint().x, ballPos.y);
+                            -(inSpeed * (float) Math.cos(newAngle * GRAD_RAD_FACTOR)),
+                            (inSpeed * (float) Math.sin(newAngle * GRAD_RAD_FACTOR)));
+                    ball.setPosition(paddlePos.x + paddle.getMaxPoint().x + bounceOffset
+                            - ball.getMinPoint().x, ballPos.y);
 
                     break;
             }
@@ -168,5 +152,4 @@ public class PaddleReflectRule extends AbstractRule
         }
         return false;
     }
-
 }

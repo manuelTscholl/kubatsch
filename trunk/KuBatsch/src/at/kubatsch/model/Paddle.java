@@ -37,7 +37,9 @@ public class Paddle extends CollidableBase implements IDrawable
      */
     private static final float           DEFAULT_PADDLE_HEIGHT              = KuBatschTheme.PADDLE_SIZE.height
                                                                                     / (float) KuBatschTheme.MAIN_SIZE;
-    
+    /**
+     * The size how much the paddle should move with th mouse
+     */
     private static final float           PADDLE_OFFSET = 0.001f;
 
 
@@ -70,8 +72,7 @@ public class Paddle extends CollidableBase implements IDrawable
             new Point2D.Float(0.338f, 0.048f)                              // top-left
                                                                             // rounding
                                                                             };
-    // rounding
-
+    
     private float                        _x                                 = 0.5f;
     private Player                       _player;
 
@@ -115,6 +116,9 @@ public class Paddle extends CollidableBase implements IDrawable
         return _player.getPosition();
     }
 
+    /**
+     * Updates the Collision Map which depends where the Player is (vertical / horizontal)
+     */
     public void updateCollisionMap()
     {
         Point2D.Float[] map;
@@ -168,6 +172,10 @@ public class Paddle extends CollidableBase implements IDrawable
         return new Point2D.Float(x, y);
     }
 
+    /**
+     * Return the position for the painting
+     * @return Painting position
+     */
     public Point2D.Float getPaintPosition()
     {
         float x = 0;
@@ -223,6 +231,10 @@ public class Paddle extends CollidableBase implements IDrawable
                 + minValue, minValue, maxValue);
     }
 
+    /**
+     * Moves the paddle
+     * @param way which you want to move
+     */
     public void movePaddle(float way)
     {
         setRelativePosition(_player.getPaddlePosition() + way);

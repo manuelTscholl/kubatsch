@@ -18,7 +18,6 @@ public abstract class Config implements Serializable
 {
     private static final long serialVersionUID = 4226846703353197589L;
     
-    
     /**
      * @return the ConfigType as a String
      */

@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.GameState;
 import at.kubatsch.model.ICollidable;
@@ -24,6 +26,8 @@ import at.kubatsch.model.rules.ICollisionRule;
  */
 public abstract class GameControllerBase extends Thread
 {
+    private Logger LOGGER = Logger.getLogger(GameControllerBase.class);
+    
     protected static GameControllerBase _mainController = null;
     protected static int                UPDATE_INTERVAL = 8;
     private GameState                   _currentGameState;
@@ -327,7 +331,8 @@ public abstract class GameControllerBase extends Thread
         if (_updateGameState != null)
             return; // already running
 
-        System.out.println("Start Updating");
+        LOGGER.info("Start Updating");
+//        System.out.println("Start Updating");
         setCurrentGameState(null);
 
         // initialize
@@ -352,7 +357,8 @@ public abstract class GameControllerBase extends Thread
         if (_updateGameState == null)
             return; // not running
         setRunning(false);
-        System.out.println("Stop updating");
+        LOGGER.info("Stop updating");
+//        System.out.println("Stop updating");
 
         try
         {

@@ -38,8 +38,6 @@ public class UpdateGameStateMessage implements INetworkMessage
         _gameState = gameState;
     }
 
-
-
     /**
      * @see at.kubatsch.model.message.INetworkMessage#getMessageId()
      */

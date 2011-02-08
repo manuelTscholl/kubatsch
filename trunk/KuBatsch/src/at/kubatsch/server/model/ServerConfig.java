@@ -15,8 +15,8 @@ import at.kubatsch.model.Config;
 import at.kubatsch.util.KuBaTschUtils;
 
 /**
- * @author Martin Balter
  * Configuration of the server
+ * @author Martin Balter
  */
 public class ServerConfig extends Config
 {
@@ -70,7 +70,9 @@ public class ServerConfig extends Config
         return _specialItems;
     }
 
-    
+    /**
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString()
     {
@@ -95,6 +97,9 @@ public class ServerConfig extends Config
         return sb.toString();
     }
 
+    /**
+     * @see at.kubatsch.model.Config#getConfigType()
+     */
     @Override
     public String getConfigType()
     {

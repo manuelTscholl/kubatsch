@@ -92,8 +92,6 @@ public class DedicatedServerInfoController
             reader.close();
         }
 
-        
-
         return serverInfos;
     }
 }

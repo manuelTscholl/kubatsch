@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import at.kubatsch.model.Ball;
 import at.kubatsch.model.GameState;
 import at.kubatsch.model.Player;
@@ -32,6 +34,8 @@ import at.kubatsch.model.message.UpdateGameStateMessage;
  */
 public class ServerGameController extends GameControllerBase
 {
+    private static Logger LOGGER = Logger.getLogger(ServerGameController.class);
+    
     private NetworkControllerServer _networkServer;
     private boolean                 _isRoundRunning;
     private List<IGameRule>         _roundRules;
@@ -97,8 +101,10 @@ public class ServerGameController extends GameControllerBase
      */
     protected void removeClient(int clientUid)
     {
+        LOGGER.info(String.format("Client %d left the server", clientUid));
+//        System.out.printf("Client %d left the server%n", clientUid);
+       
         // remove player from gamestate
-        System.out.printf("Client %d left the server%n", clientUid);
         int index = getCurrentGameState().getPlayerIndex(clientUid);
         if (index >= 0)
         {
@@ -144,9 +150,11 @@ public class ServerGameController extends GameControllerBase
             // an unregistered player?
             if (index < 0)
             {
-                System.out.printf(
-                        "Got a %s message from an unregistered player %d%n",
-                        message.getMessageId(), clientUid);
+                LOGGER.warn(String.format("Got a %s message from an unregistered player %d", message.getMessageId(), clientUid));
+                
+//                System.out.printf(
+//                        "Got a %s message from an unregistered player %d%n",
+//                        message.getMessageId(), clientUid);
                 return;
             }
 
@@ -211,8 +219,11 @@ public class ServerGameController extends GameControllerBase
             if (getCurrentGameState().getPlayer()[i].getUid() == -1) // free
                                                                      // space?
             {
-                System.out.printf("Registered player %d on position %d%n", uid,
-                        i);
+                LOGGER.info(String.format("Registered player %d on position %d",  uid,
+                        i));
+                
+//                System.out.printf("Registered player %d on position %d%n", uid,
+//                        i);
                 getCurrentGameState().getPlayer()[i].setName(name);
                 getCurrentGameState().getPlayer()[i].setUid(uid);
                 break;

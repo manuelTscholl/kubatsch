@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.log4j.Logger;
+
 import at.kubatsch.model.message.INetworkMessage;
 import at.kubatsch.util.Event;
 import at.kubatsch.util.IEventHandler;
@@ -26,6 +28,8 @@ import at.kubatsch.util.IEventHandler;
  */
 public final class NetworkControllerServer
 {
+    private Logger LOGGER = Logger.getLogger(NetworkControllerServer.class); 
+    
     /**
      * the maximum of Players which connect to the server
      */
@@ -121,20 +125,14 @@ public final class NetworkControllerServer
                 }
                 catch (IOException e)
                 {
-                    e.printStackTrace();
+                    LOGGER.error(e);
                 }
             }
-            try
-            {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
+            
+//          Thread.sleep(1000);
         }
 
-        System.out.println("Client connected");
+        LOGGER.info("Client connected");
     }
 
     /**
@@ -251,12 +249,11 @@ public final class NetworkControllerServer
             _networkGameClientsLock.unlock();
         }
 
-        System.out.println("Client Disconnect (nwcs)");
+        LOGGER.info("Client Disconnect (nwcs)");
         networkGameClient.setRunning(false);
         // TODO: cleanup registered listeners for this instance
         _clientDisconnectedEvent.fireEvent(new NetworkGameClientEventArgs(
                 networkGameClient.getClientUid()));
-
     }
 
     /**

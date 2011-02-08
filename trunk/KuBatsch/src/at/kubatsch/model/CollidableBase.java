@@ -159,6 +159,12 @@ public abstract class CollidableBase implements ICollidable
         _rules.remove(rule);
     }
     
+    /**
+     * Paints the HitArea of a collidable
+     * @param g Graphic which you want to paint on
+     * @param coll collidable to paint
+     * @param bounds of the collidable
+     */
     public static void paintHitArea(Graphics g, ICollidable coll, Dimension bounds)
     {
         Point2D.Float position = coll.getPosition();

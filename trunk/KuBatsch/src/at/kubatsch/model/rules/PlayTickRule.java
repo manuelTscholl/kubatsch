@@ -12,7 +12,6 @@ import at.kubatsch.model.ICollidable;
 /**
  * A rule which plays a sound if a ball collides with anything
  * @author Daniel Kuschny (dku2375)
- *
  */
 public class PlayTickRule extends AbstractRule
 {

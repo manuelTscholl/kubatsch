@@ -36,34 +36,45 @@ public class Wall extends  CollidableBase implements IDrawable
         updateCollisionMap();
     }
     
+    /**
+     * Get the WallPositino
+     * @return wall postion
+     */
     public PlayerPosition getWallPosition()
     {
         return _player.getPosition();
     }
 
+    /**
+     * Update the Collision Map
+     */
     public void updateCollisionMap()
     {
-        int i = 0;
-        switch (getWallPosition())
-        {
-            case SOUTH:
-                i = 0;
-                break;
-            case NORTH:
-                i = 1;
-                break;
-            case WEST:
-                i = 2;
-                break;
-            case EAST:
-                i = 3;
-                break;
-        }
+//        int i = 0;
+//        switch (getWallPosition())
+//        {
+//            case SOUTH:
+//                i = 0;
+//                break;
+//            case NORTH:
+//                i = 1;
+//                break;
+//            case WEST:
+//                i = 2;
+//                break;
+//            case EAST:
+//                i = 3;
+//                break;
+//        }
 
         // TODO: Collision with wall
         updateCollisionMap(new Point2D.Float[0], 1, 1);
     }
     
+    /**
+     * The Painting position of the wall
+     * @return postion which you should paint the port
+     */
     public Point2D.Float getPaintPosition()
     {
         float x = 0;
@@ -110,7 +121,6 @@ public class Wall extends  CollidableBase implements IDrawable
         
         Rectangle bounds = new Rectangle((int)(pos.x * realSize.width),(int)(pos.y * realSize.height), 
                             w,h);
-        
 
         HealthBarPainter.paint(g, bounds, at.kubatsch.model.Color.GRAY, 1f);
     }

@@ -29,10 +29,10 @@ import at.kubatsch.util.StreamUtils;
  */
 public class NetworkControllerClient extends NetworkMessageController
 {
-    private static Logger LOGGER = Logger.getLogger(NetworkControllerClient.class);
-    
-    private Socket                         _serverConnection;
+    private static Logger LOGGER   = Logger.getLogger(NetworkControllerClient.class);
+    private static int    INTERVAL = 15;
 
+    private Socket        _serverConnection;
 
     /**
      * Initializes a new instance of the {@link NetworkControllerServer} class.
@@ -50,22 +50,15 @@ public class NetworkControllerClient extends NetworkMessageController
 
         InputStream inputStream = _serverConnection.getInputStream();
         setObjectInputStream(new ObjectInputStream(inputStream));
-        
-        // TODO constante
-        setInterval(15);
-        
+
+        setInterval(INTERVAL);
+
         addConnectionLostListener(new IEventHandler<NetworkGameClientEventArgs>()
         {
             @Override
             public void fired(Object sender, NetworkGameClientEventArgs e)
             {
-                System.out.println("Client Disconnected");
                 LOGGER.info("Client Disconnected");
-                StackTraceElement[] i = Thread.currentThread().getStackTrace();       
-                for (StackTraceElement stackTraceElement : i)
-                {
-                    System.out.println(stackTraceElement);
-                }
             }
         });
     }

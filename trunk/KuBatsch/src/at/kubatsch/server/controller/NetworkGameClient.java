@@ -14,6 +14,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
+
 import at.kubatsch.model.message.SetUniqueIdMessage;
 import at.kubatsch.util.NetworkMessageController;
 
@@ -22,11 +24,11 @@ import at.kubatsch.util.NetworkMessageController;
  * class exists and manages the update between Server and Client For correct
  * working of this class a synchronized map and list is a must have!
  * @author Manuel Tscholl (mts3970)
- * 
  */
 public class NetworkGameClient extends NetworkMessageController
 {
-
+    private static Logger LOGGER = Logger.getLogger(NetworkGameClient.class);
+    
     /**
      * Initializes a new instance of the {@link NetworkGameClient} class.
      */
@@ -63,7 +65,7 @@ public class NetworkGameClient extends NetworkMessageController
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            LOGGER.fatal(e);
         }
     }
 }
