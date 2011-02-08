@@ -15,10 +15,6 @@ import java.awt.Graphics;
  */
 public abstract class SpecialItem extends CollidableBase implements IDrawable
 {
-
-    /**
-     * 
-     */
     private static final long serialVersionUID = 84010523470059271L;
 
     /**

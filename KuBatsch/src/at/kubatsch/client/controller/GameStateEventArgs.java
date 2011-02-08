@@ -10,7 +10,7 @@ import at.kubatsch.util.EventArgs;
 import at.kubatsch.model.GameState;
 
 /**
- * TODO Comment
+ * EventArgs which a {@link GameState} uses
  * @author Daniel Kuschny (dku2375)
  */
 public class GameStateEventArgs extends EventArgs

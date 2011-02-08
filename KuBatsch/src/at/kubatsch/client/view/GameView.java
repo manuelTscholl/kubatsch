@@ -22,6 +22,8 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
+import org.apache.log4j.Logger;
+
 import at.kubatsch.client.controller.ClientConfigController;
 import at.kubatsch.client.controller.ClientGameController;
 import at.kubatsch.client.controller.MouseInputController;
@@ -53,14 +55,13 @@ import at.kubatsch.util.IEventHandler;
  */
 public final class GameView extends BloodPanel implements INotifiableView
 {
+    
+    private static Logger LOGGER = Logger.getLogger(GameView.class);
+    
     /**
      * The view-id used by this panel
      */
     public static final String      PANEL_ID         = "game";
-
-    /**
-     * 
-     */
     private static final long       serialVersionUID = 4868195256564051158L;
 
     private NetworkControllerClient _networkController;
@@ -94,7 +95,6 @@ public final class GameView extends BloodPanel implements INotifiableView
                         @Override
                         public void fired(Object sender, EventArgs e)
                         {
-                            System.out.println("adding paddle moved message");
                             if(_networkController!=null)
                             _networkController
                                     .addToMessageStack(new PaddleMovedMessage(
@@ -139,7 +139,8 @@ public final class GameView extends BloodPanel implements INotifiableView
     {
         if (_networkController != null)
             disconnect();
-        System.out.println("Connect to Server");
+//        System.out.println("Connect to Server");
+        LOGGER.info("Connect to Server");
         _networkController = new NetworkControllerClient(server, port);
 
         _networkController

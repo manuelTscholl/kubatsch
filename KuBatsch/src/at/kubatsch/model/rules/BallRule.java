@@ -18,10 +18,6 @@ import at.kubatsch.model.ICollidable;
  */
 public abstract class BallRule extends AbstractRule
 {
-
-    /**
-     * 
-     */
     private static final long serialVersionUID = -5499704803685187836L;
 
     /**
@@ -30,13 +26,13 @@ public abstract class BallRule extends AbstractRule
     @Override
     public boolean apply(ICollidable toApply, ICollidable collidesWith)
     {
-        if(toApply instanceof Ball)
+        if (toApply instanceof Ball)
         {
-            return apply((Ball)toApply, collidesWith);
+            return apply((Ball) toApply, collidesWith);
         }
         return false;
     }
-    
+
     /**
      * Applies the current rule to the specified ball. This method is called
      * as the specified ball collided with the {@link ICollidable} provided by the second parameter. 

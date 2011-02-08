@@ -12,6 +12,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import at.kubatsch.model.ServerInfo;
 import at.kubatsch.model.message.ServerInfoMessage;
 import at.kubatsch.server.controller.NetworkGameClientEventArgs;
@@ -27,6 +29,8 @@ import at.kubatsch.util.IEventHandler;
  */
 public class PlayOnlineController
 {
+    private static Logger LOGGER = Logger.getLogger(PlayOnlineController.class);
+    
     private static PlayOnlineController _instance;
     private static URL                  _url;
     private static String               _urlS = "http://kubatsch.googlecode.com/svn/trunk/KuBatsch/DedicatedServerList.xml";
@@ -58,7 +62,7 @@ public class PlayOnlineController
             }
             catch (MalformedURLException e)
             {
-                e.printStackTrace();
+                LOGGER.error(e);
             }
             _instance = new PlayOnlineController();
         }
@@ -139,7 +143,7 @@ public class PlayOnlineController
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -185,7 +189,7 @@ public class PlayOnlineController
         catch (IOException e1)
         {
             serverInfo.setCurrentPlayers(-1);
-            // e1.printStackTrace();
+            LOGGER.warn(e1);
         }
 
     }

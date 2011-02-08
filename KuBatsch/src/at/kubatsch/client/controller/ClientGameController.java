@@ -8,6 +8,8 @@ package at.kubatsch.client.controller;
 
 import java.util.Date;
 
+import org.apache.log4j.Logger;
+
 import at.kubatsch.model.Color;
 import at.kubatsch.model.GameState;
 import at.kubatsch.model.Player;
@@ -20,6 +22,8 @@ import at.kubatsch.util.GameControllerBase;
  */
 public class ClientGameController extends GameControllerBase
 {
+    private static Logger LOGGER = Logger.getLogger(ClientGameController.class);
+    
     private static ClientGameController _instance;
 
     public synchronized static ClientGameController getInstance()
@@ -72,7 +76,8 @@ public class ClientGameController extends GameControllerBase
         super.setCurrentGameState(currentGameState);
         if(currentGameState == null) return;
         // search index of myself.
-        System.out.println(new Date().toString() + ": new gamestate");
+        LOGGER.info(new Date().toString() + ": new gamestate");
+//        System.out.println(new Date().toString() + ": new gamestate");
         int index = currentGameState.getPlayerIndex(_clientUid);
 
         // server stores 0->south, 1->north, 2->east, 3->west

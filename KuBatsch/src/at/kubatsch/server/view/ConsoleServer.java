@@ -6,35 +6,42 @@
  */
 package at.kubatsch.server.view;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
 
 import at.kubatsch.client.controller.StartServerException;
-import at.kubatsch.model.Ball;
-import at.kubatsch.model.Color;
-import at.kubatsch.model.GameState;
-import at.kubatsch.server.controller.ServerGameController;
-import at.kubatsch.server.model.ServerConfig;
-import at.kubatsch.util.ConfigManager;
 import at.kubatsch.util.StartNewServerController;
 
 /**
- * @author Manuel Tscholl (mts3970)
+ * The {@link ConsoleServer} start the KuBaTsch Server
+ * he has specific parameters: <br>
+ * <ul>
+ *      <li>-p port</li>
+ *      <li>-c config filename</li>
+ * </ul>
  * 
+ * @author Manuel Tscholl (mts3970)
  */
 public class ConsoleServer
 {
+    private static Logger LOGGER = Logger.getLogger(ConsoleServer.class);
     
-
     /**
+     * Starts the Config server
+     * <ul>
+     *      <li>-p port</li>
+     *      <li>-c config filename</li>
+     * </ul>
      * @param args
      */
     public static void main(String[] args)
     {
+        // initialize log4j
+        DOMConfigurator.configure(ConsoleServer.class.getResource("server_log4j.xml"));
+
         int port = Integer.MIN_VALUE;
         String configName = "";
+        
         for (int i = 0; i < args.length; i++)
         {
             if (args[i].equalsIgnoreCase("-p "))
@@ -55,7 +62,7 @@ public class ConsoleServer
         }
         catch (StartServerException e)
         {
-            e.printStackTrace();
+            LOGGER.fatal(e);
         }
     }
 

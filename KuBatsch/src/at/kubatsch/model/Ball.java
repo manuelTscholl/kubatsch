@@ -29,9 +29,6 @@ import at.kubatsch.uicontrols.KuBatschTheme;
  */
 public class Ball extends CollidableBase implements IDrawable, IUpdatable
 {
-    /**
-     * 
-     */
     private static final long            serialVersionUID      = 3283765169642426276L;
 
     /**

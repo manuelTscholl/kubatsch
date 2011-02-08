@@ -15,12 +15,11 @@ import at.kubatsch.model.ICollidable;
  */
 public class IncreaseBallSpeedRule extends BallRule
 {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 2292702591434491876L;
-    public static final float MAX_SPEED = 0.013f;
-    private static final float SPEED_STEP = 0.0003f;
+    private static final long  serialVersionUID = 2292702591434491876L;
+
+    public static final float  MAX_SPEED        = 0.013f;
+    private static final float SPEED_STEP       = 0.0003f;
+
     /**
      * @see at.kubatsch.model.rules.BallRule#apply(at.kubatsch.model.Ball, at.kubatsch.model.ICollidable)
      */
@@ -28,20 +27,21 @@ public class IncreaseBallSpeedRule extends BallRule
     protected boolean apply(Ball toApply, ICollidable collidesWith)
     {
         // don't be faster than the max speed
-        float speed = (float)Math.sqrt(toApply.getVelocity().x*toApply.getVelocity().x + toApply.getVelocity().y*toApply.getVelocity().y);
-        if(speed >= MAX_SPEED) 
+        float speed = (float) Math.sqrt(toApply.getVelocity().x * toApply.getVelocity().x
+                + toApply.getVelocity().y * toApply.getVelocity().y);
+        if (speed >= MAX_SPEED)
         {
             return false;
         }
-        
+
         float stepX = SPEED_STEP;
-        if(toApply.getVelocity().x < 0)
+        if (toApply.getVelocity().x < 0)
             stepX = -stepX;
         float stepY = SPEED_STEP;
-        if(toApply.getVelocity().y < 0)
+        if (toApply.getVelocity().y < 0)
             stepY = -stepY;
-        toApply.setVelocity(toApply.getVelocity().x+stepX,
-                            toApply.getVelocity().y+stepY);
+        toApply.setVelocity(toApply.getVelocity().x + stepX, toApply.getVelocity().y
+                + stepY);
         return true;
     }
 }

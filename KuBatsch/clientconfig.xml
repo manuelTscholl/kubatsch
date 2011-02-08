@@ -14,7 +14,7 @@
   <south>RED</south>
   <west>GOLD</west>
   <east>GREEN</east>
-  <music>0.0</music>
+  <music>1.0</music>
   <effects>1.0</effects>
   <hudAlpha>0.5</hudAlpha>
 </at.kubatsch.client.model.ClientConfig>

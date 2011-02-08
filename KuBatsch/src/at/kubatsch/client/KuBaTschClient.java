@@ -30,7 +30,7 @@ public class KuBaTschClient
         // initialize Client Config Controller
         ClientConfigController.getInstance();
         // initialize log4j
-        DOMConfigurator.configureAndWatch("kubatsch-log.xml", 60000L);
+        DOMConfigurator.configure(KuBaTschClient.class.getResource("client_log4j.xml"));
         // create UI
         MainForm form = new MainForm();
         // tell javaMod to prepare for usage in a UI
@@ -40,6 +40,5 @@ public class KuBaTschClient
         // start audio player using correct volume
         AudioController.getInstance().setAudioEnabled(true);
         AudioController.getInstance().start();
-
     }
 }

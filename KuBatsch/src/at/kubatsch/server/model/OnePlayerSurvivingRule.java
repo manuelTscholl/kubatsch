@@ -15,8 +15,8 @@ import at.kubatsch.model.rules.PaddleReflectRule;
 import at.kubatsch.model.rules.PlayTickRule;
 
 /**
+ * Rule that the game startes only when minimum 2 players on the server
  * @author Daniel Kuschny (dku2375)
- * 
  */
 public class OnePlayerSurvivingRule implements IGameRule
 {
@@ -93,6 +93,9 @@ public class OnePlayerSurvivingRule implements IGameRule
         
     }
     
+    /**
+     * @see at.kubatsch.server.model.IGameRule#setupBall(at.kubatsch.model.Ball)
+     */
     public void setupBall(Ball ball)
     {
         ball.addCollisionRule(new PlayTickRule());

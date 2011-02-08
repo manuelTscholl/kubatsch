@@ -9,8 +9,8 @@ package at.kubatsch.server.controller;
 import at.kubatsch.util.EventArgs;
 
 /**
+ * Network EventArgs for the Client
  * @author Daniel Kuschny (dku2375)
- *
  */
 public class NetworkGameClientEventArgs extends EventArgs
 {

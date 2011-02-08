@@ -45,6 +45,11 @@ public enum Color
         return _index;
     }
     
+    /**
+     * Return the Color by the index. The default color is {@link Color#RED}
+     * @param index which you want the color
+     * @return color
+     */
     public static final Color getColor(int index)
     {
         for (Color color : values())

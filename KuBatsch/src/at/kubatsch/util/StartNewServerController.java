@@ -9,13 +9,12 @@ package at.kubatsch.util;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 import at.kubatsch.client.controller.StartServerException;
-import at.kubatsch.client.controller.ViewController;
-import at.kubatsch.client.view.MenuView;
 import at.kubatsch.model.GameState;
 import at.kubatsch.server.controller.ServerGameController;
 import at.kubatsch.server.model.ServerConfig;
-import at.kubatsch.server.view.ConsoleServer;
 
 /**
  * Controller to start a new game server on the local maschine.
@@ -24,6 +23,8 @@ import at.kubatsch.server.view.ConsoleServer;
  */
 public class StartNewServerController
 {
+    private Logger                          LOGGER = Logger.getLogger(StartNewServerController.class);
+
     private static StartNewServerController _instance;
 
     /**
@@ -41,22 +42,21 @@ public class StartNewServerController
      * Initializes a new instance of the {@link StartNewServerController} class.
      */
     private StartNewServerController()
-    {
-    }
+    {}
 
-/**
- * Starts a new KuBaTsch server with a specified port
- * @param port 
- * @param configName if empty than default config will be used
- * @throws StartServerException
- */
+    /**
+     * Starts a new KuBaTsch server with a specified port
+     * @param port 
+     * @param configName if empty than default config will be used
+     * @throws StartServerException
+     */
     public void startServer(int port, String configName) throws StartServerException
-    {                
-        if(configName.equals(""))
+    {
+        if (configName.equals(""))
         {
-            configName=ServerConfig.CONFIG_ID;            
+            configName = ServerConfig.CONFIG_ID;
         }
-        //not in port range
+        // not in port range
         if (!(port > 0 && port <= 65535))
         {
             ConfigManager configManager = ConfigManager.getInstance(configName);
@@ -65,7 +65,6 @@ public class StartNewServerController
             try
             {
                 serverConfig = configManager.loadConfig();
-
             }
             catch (FileNotFoundException e)
             {
@@ -73,15 +72,14 @@ public class StartNewServerController
             }
             catch (ClassCastException e)
             {
-                e.printStackTrace();
+                LOGGER.error(e);
             }
 
             port = serverConfig.getPort();
-
         }
 
-        GameState start= new GameState();
-        
+        GameState start = new GameState();
+
         try
         {
             ServerGameController game = ServerGameController.getInstance(port);
@@ -90,13 +88,10 @@ public class StartNewServerController
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
 
-        System.out.println("Server started!");
-        
-        
-       
+        LOGGER.info("Server started!");
     }
 
 }

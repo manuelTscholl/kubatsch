@@ -9,8 +9,8 @@ package at.kubatsch.server.controller;
 import at.kubatsch.model.message.INetworkMessage;
 
 /**
+ * EventArgs for the {@link NetworkMessageController}
  * @author Daniel Kuschny (dku2375)
- *
  */
 public class NetworkMessageEventArgs extends NetworkGameClientEventArgs
 {
