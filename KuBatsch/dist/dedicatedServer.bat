@@ -1,0 +1,1 @@
+java -cp .;KuBaTsch.jar at.kubatsch.server.view.ConsoleServer %*
