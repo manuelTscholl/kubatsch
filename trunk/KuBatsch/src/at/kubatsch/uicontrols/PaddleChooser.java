@@ -24,6 +24,7 @@ import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.IEventHandler;
 
 /**
+ * Its used for choosing the color in the settings view
  * @author Daniel Kuschny (dku2375)
  *
  */

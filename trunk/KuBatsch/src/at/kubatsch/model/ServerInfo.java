@@ -7,6 +7,12 @@
 package at.kubatsch.model;
 
 import java.io.Serializable;
+import java.net.Socket;
+
+import at.kubatsch.client.controller.NetworkControllerClient;
+import at.kubatsch.model.message.ServerInfoMessage;
+import at.kubatsch.server.controller.NetworkMessageEventArgs;
+import at.kubatsch.util.IEventHandler;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -24,9 +30,10 @@ public class ServerInfo implements Serializable
     @XStreamAlias(value = "port")
     private int               _port;
     @XStreamAlias(value = "serverAddress")
-    private String            _server;
+    private String            _host;
     @XStreamAlias(value = "currentPlayers")
     private int               _currentPlayers;
+
 
     /**
      * Initializes a new instance of the {@link ServerInfo} class.
@@ -46,11 +53,11 @@ public class ServerInfo implements Serializable
      * @param port of the server
      * @param currentPlayers current players one the servers
      */
-    public ServerInfo(String name, String server, int port, int currentPlayers)
+    public ServerInfo(String name, String host, int port, int currentPlayers)
     {
         super();
         _name = name;
-        _server = server;
+        _host = host;
         _port = port;
         _currentPlayers = currentPlayers;
     }
@@ -79,7 +86,7 @@ public class ServerInfo implements Serializable
      */
     public String getServer()
     {
-        return _server;
+        return _host;
     }
 
     /**
@@ -88,7 +95,7 @@ public class ServerInfo implements Serializable
      */
     public void setServer(String server)
     {
-        _server = server;
+        _host = server;
     }
 
     /**
@@ -97,6 +104,7 @@ public class ServerInfo implements Serializable
      */
     public int getPort()
     {
+
         return _port;
     }
 
@@ -117,13 +125,33 @@ public class ServerInfo implements Serializable
     {
         return _currentPlayers;
     }
-
+    
     /**
      * Sets the currentPlayers.
      * @param currentPlayers the currentPlayers to set
      */
-    public void setCurrentPlayers(int currentPlayers)
+    public synchronized void setCurrentPlayers(int currentPlayers)
     {
         _currentPlayers = currentPlayers;
     }
+
+    /**
+     * Gets the host.
+     * @return the host
+     */
+    public String getHost()
+    {
+        return _host;
+    }
+
+    /**
+     * Sets the host.
+     * @param host the host to set
+     */
+    public void setHost(String host)
+    {
+        _host = host;
+    }
+
+
 }

@@ -20,14 +20,13 @@ import at.kubatsch.model.message.INetworkMessage;
 import at.kubatsch.model.message.PaddleMovedMessage;
 import at.kubatsch.model.message.ServerInfoMessage;
 import at.kubatsch.server.model.IGameRule;
-import at.kubatsch.server.model.NoPlayerSurvivingRule;
+//import at.kubatsch.server.model.NoPlayerSurvivingRule;
 import at.kubatsch.server.model.OnePlayerSurvivingRule;
 import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.GameControllerBase;
 import at.kubatsch.util.IEventHandler;
 import at.kubatsch.model.message.UpdateGameStateMessage;
 
-;
 
 /**
  * @author Manuel Tscholl (mts3970)

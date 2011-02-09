@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 
 /**
+ * Such an item will be placed on a Gameview.
  * @author Manuel Tscholl (mts3970)
  *
  */

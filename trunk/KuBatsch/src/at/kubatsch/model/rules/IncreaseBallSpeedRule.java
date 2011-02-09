@@ -10,6 +10,7 @@ import at.kubatsch.model.Ball;
 import at.kubatsch.model.ICollidable;
 
 /**
+ * This rule increases  the speed of the ball
  * @author Daniel Kuschny (dku2375)
  *
  */

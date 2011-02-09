@@ -14,6 +14,7 @@ import java.awt.Graphics;
 import javax.swing.JComponent;
 
 /**
+ * Sets the first {@link Character} bigger then the others 
  * @author Daniel Kuschny (dku2375)
  * 
  */
