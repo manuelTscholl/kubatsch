@@ -13,7 +13,7 @@ import java.awt.Rectangle;
 import at.kubatsch.model.Color;
 
 /**
- * sdlkgjss
+ * Paints the Gui for the paddle
  * @author Daniel Kuschny (dku2375)
  * 
  */

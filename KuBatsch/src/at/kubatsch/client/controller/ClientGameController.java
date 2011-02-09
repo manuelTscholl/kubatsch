@@ -12,11 +12,15 @@ import org.apache.log4j.Logger;
 
 import at.kubatsch.model.Color;
 import at.kubatsch.model.GameState;
+import at.kubatsch.model.Paddle;
 import at.kubatsch.model.Player;
 import at.kubatsch.model.PlayerPosition;
 import at.kubatsch.util.GameControllerBase;
 
 /**
+ * 
+ * Interpolates the game and sets the player to the correct position.
+ * {@link GameControllerBase}
  * @author Daniel Kuschny (dku2375)
  * 
  */
@@ -25,7 +29,12 @@ public class ClientGameController extends GameControllerBase
     private static Logger LOGGER = Logger.getLogger(ClientGameController.class);
     
     private static ClientGameController _instance;
+    private PlayerPosition[] _positionMappings;
 
+    /**
+     * Singelton of {@link ClientConfigController}
+     * @return
+     */
     public synchronized static ClientGameController getInstance()
     {
         if (_instance == null)
@@ -33,13 +42,20 @@ public class ClientGameController extends GameControllerBase
         return _instance;
     }
 
-    private PlayerPosition[] _positionMappings;
 
+    /**
+     * Returns the Position of the paddles 
+     * @return Returns a position of a {@link Paddle}
+     */
     public synchronized PlayerPosition[] getPositionMappings()
     {
         return _positionMappings;
     }
 
+    /**
+     * Sets the correct position of the {@link Paddle}s
+     * @param positionMappings
+     */
     private synchronized void setPositionMappings(
             PlayerPosition[] positionMappings)
     {
@@ -48,16 +64,28 @@ public class ClientGameController extends GameControllerBase
 
     private int _clientUid;
 
+    /**
+     * The unic ID of this Client
+     * @return
+     */
     public int getClientUid()
     {
         return _clientUid;
     }
 
+    /**
+     * Setting a new Unic id
+     * @param clientUid
+     */
     public void setClientUid(int clientUid)
     {
         _clientUid = clientUid;
     }
     
+    /**
+     * 
+     * @return The {@link Player} of this Instance will be returned
+     */
     public Player getCurrentPlayer()
     {
         GameState s = getCurrentGameState();
@@ -68,6 +96,7 @@ public class ClientGameController extends GameControllerBase
     }
 
     /**
+     * Is used for the correct positioning of the {@link Player} 
      * @see at.kubatsch.util.GameControllerBase#setCurrentGameState(at.kubatsch.model.GameState)
      */
     @Override
@@ -120,7 +149,11 @@ public class ClientGameController extends GameControllerBase
 
         setPositionMappings(position);
     }
-
+    
+    /**
+     * 
+     * Initializes a new instance of the {@link ClientGameController} class.
+     */
     private ClientGameController()
     {
         setStateUpdateInterval(1);
@@ -137,8 +170,9 @@ public class ClientGameController extends GameControllerBase
     }
 
     /**
+     * 
      * @param clientId
-     * @return
+     * @return the {@link Color} of the specified Id
      */
     public Color getColorForPlayer(int clientId)
     {
@@ -149,7 +183,7 @@ public class ClientGameController extends GameControllerBase
 
     /**
      * @param i
-     * @return
+     * @return the {@link Color} for the specified index
      */
     public Color getColorForIndex(int index)
     {
@@ -175,8 +209,8 @@ public class ClientGameController extends GameControllerBase
     }
 
     /**
-     * @param clientId
-     * @param newPosition
+     * @param clientId The client which the position should be setted
+     * @param newPosition the new {@link Paddle} position 
      */
     public void updatePaddlePosition(int clientId, float newPosition)
     {

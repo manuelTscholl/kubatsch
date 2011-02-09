@@ -44,13 +44,13 @@ public class ConsoleServer
         
         for (int i = 0; i < args.length; i++)
         {
-            if (args[i].equalsIgnoreCase("-p "))
+            if (args[i].equalsIgnoreCase("-p"))
             {
                 if (i + 1 < args.length)
                     port = Integer.parseInt(args[i + 1]);
 
             }
-            else if (args[i].equalsIgnoreCase("-c "))
+            else if (args[i].equalsIgnoreCase("-c"))
             {
                 if (i + 1 < args.length)
                     configName = args[i + 1];

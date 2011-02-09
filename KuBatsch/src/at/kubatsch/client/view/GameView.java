@@ -50,6 +50,8 @@ import at.kubatsch.util.EventArgs;
 import at.kubatsch.util.IEventHandler;
 
 /**
+ * The {@link GameView} is the Background of the running Game
+ * implements {@link INotifiableView}
  * @author Daniel Kuschny (dku2375)
  * 
  */
@@ -381,7 +383,7 @@ public final class GameView extends BloodPanel implements INotifiableView
     }
 
     /**
-     * 
+     * Disconnects from the client
      */
     private void disconnect()
     {
@@ -416,7 +418,7 @@ public final class GameView extends BloodPanel implements INotifiableView
     }
 
     /**
-     * 
+     * returns the Id of the client
      */
     public int getClientId()
     {

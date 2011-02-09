@@ -7,6 +7,7 @@ pl * author: Daniel Kuschny (dku2375)
 package at.kubatsch.model.message;
 
 /**
+ * This message should be fired when the clients moves the paddle
  * @author Daniel Kuschny (dku2375)
  *
  */
